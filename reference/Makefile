@@ -1,8 +1,14 @@
 SUBDIRS = $(shell ls | grep [0-9]*)
 
-.PHONY: subdirs $(SUBDIRS) ../target
+.PHONY: subdirs $(SUBDIRS)
 
 all: $(SUBDIRS)
 
 $(SUBDIRS):
-	@ echo $(MAKE) -s -C $@
+	@$(MAKE) -s -C $@
+
+publish:
+	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) publish;)
+
+clean:
+	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)

@@ -1,4 +1,5 @@
-SUBDIRS = reference landing
+include variables.mk
+SUBDIRS = landing reference
 
 .PHONY: subdirs $(SUBDIRS) ../target
 
@@ -7,16 +8,15 @@ all: $(SUBDIRS)
 $(SUBDIRS):
 	@$(MAKE) -s -C $@
 
-../target/gh-pages:
-	mkdir -p ../target
-	git clone $(shell git config --get remote.origin.url) -b gh-pages ../target/gh-pages
+$(GH_PAGES):
+	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
 
-publish: all ../target/gh-pages
-	@cd ../target/gh-pages ; git pull
+publish: all $(GH_PAGES)
+	@cd $(GH_PAGES) ; git pull
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
-	cd ../target/gh-pages ; git add . && git commit -a -m "pushing docs updates"
-	cd ../target/gh-pages && git push
+	#cd $(GH_PAGES) ; git add . && git commit -a -m "pushing docs updates"
+	#cd $(GH_PAGES) && git push
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
-	@rm -rf ../target/gh-pages
+	@rm -rf $(GH_PAGES)

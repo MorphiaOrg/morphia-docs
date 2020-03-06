@@ -1,4 +1,6 @@
-include ../variables.mk
+MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
+
+include $(MAKE_ROOT)/variables.mk
 
 data/releases.toml: $(shell find ../reference | grep -v public)
 	@sh ../bin/branches.sh
@@ -9,7 +11,8 @@ public/index.html: $(shell find . | grep -v public)
 all: data/releases.toml public/index.html
 
 publish: all
-	rsync -ra public/ ../../target/gh-pages/
+	@rm -r $(GH_PAGES)/[a-z0-9]*
+	@rsync -ra public/ $(GH_PAGES)
 
 watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch

@@ -1,10 +1,14 @@
+MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
+
+include $(MAKE_ROOT)/variables.mk
+
 $(MORPHIA_REPO):
-	[ -d $@ ] || git clone git@github.com:MorphiaOrg/morphia.git $@
+	[ -d $@ ] || git clone $(MORPHIA_GITHUB) $@
 
 branch: $(MORPHIA_REPO)
 	cd $(MORPHIA_REPO) ; git checkout $(BRANCH)
 
-version.toml: $(POM) Makefile ../main.mk ../version.template.toml
+version.toml: $(POM) Makefile ../reference.mk ../version.template.toml
 	cat ../version.template.toml | \
 		sed -e "s/ARTIFACT/$(ARTIFACT)/g" | \
 		sed -e "s/MAJOR/$(MAJOR)/g" | \
@@ -12,7 +16,7 @@ version.toml: $(POM) Makefile ../main.mk ../version.template.toml
 		sed -e "s/VERSION/$(CURRENT)/g" | \
 		tee version.toml
 
-data/morphia.toml: $(POM) Makefile ../main.mk
+data/morphia.toml: $(POM) Makefile ../reference.mk
 	@echo Updating documentation to use $(CURRENT) for the current version
 	@echo with the major version of $(MAJOR) and driver version of $(DRIVER).
 	@sed -e "s/currentVersion.*/currentVersion = \"$(CURRENT)\"/" \
@@ -37,8 +41,8 @@ all: public/index.html $(JAVADOC)/index.html
 	@rsync -ra $(JAVADOC)/ public/javadoc
 
 publish: all
-	rsync -ra --delete public/ ../../target/gh-pages/$(MAJOR)
-	cd ../../target/gh-pages/ ; git add $(MAJOR)
+	rsync -ra --delete public/ $(GH_PAGES)/$(MAJOR)
+	cd $(GH_PAGES) ; git add $(MAJOR)
 
 watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch
