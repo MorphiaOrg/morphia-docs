@@ -1,5 +1,4 @@
 include ../reference.mk
 
-ARTIFACT=morphia-core
-BRANCH=master
-RELEASE_STATUS=development
+ARTIFACT=core
+RELEASE_STATUS=current

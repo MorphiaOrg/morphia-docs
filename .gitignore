@@ -1,4 +1,8 @@
 *.iml
 .idea
-public
-version.toml
+reference/*/config.toml
+reference/*/version.toml
+reference/*/layouts
+reference/*/public
+reference/*/resources
+reference/*/static

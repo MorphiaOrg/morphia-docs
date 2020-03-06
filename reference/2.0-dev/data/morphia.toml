@@ -1,4 +1,4 @@
 gitBranch = "2.0-dev"
 currentVersion = "2.0.0-SNAPSHOT"
 apiUrl = "/javadoc"
-coreApiUrl = "http://mongodb.github.io/mongo-java-driver/4.0/apidocs/"
+coreApiUrl = "http://mongodb.github.io/mongo-java-driver/4.0.0-rc0/javadoc/"

@@ -1,22 +1,23 @@
 MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
+BRANCH=$(shell basename `pwd`)
 
 include $(MAKE_ROOT)/variables.mk
 
 $(MORPHIA_REPO):
-	[ -d $@ ] || git clone $(MORPHIA_GITHUB) $@
+	[ -d $@ ] || git clone $(MORPHIA_GITHUB) --branch $(BRANCH) $@
 
-branch: $(MORPHIA_REPO)
-	cd $(MORPHIA_REPO) ; git checkout $(BRANCH)
+$(POM) : $(MORPHIA_REPO)
 
 version.toml: $(POM) Makefile ../reference.mk ../version.template.toml
 	cat ../version.template.toml | \
 		sed -e "s/ARTIFACT/$(ARTIFACT)/g" | \
 		sed -e "s/MAJOR/$(MAJOR)/g" | \
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
-		sed -e "s/VERSION/$(CURRENT)/g" | \
-		tee version.toml
+		sed -e "s/VERSION/$(CURRENT)/g" \
+		> version.toml
 
-data/morphia.toml: $(POM) Makefile ../reference.mk
+config.toml data/morphia.toml: $(POM) Makefile ../reference.mk $(COMMON_FILES)
+	@rsync -ra ../common/* .
 	@echo Updating documentation to use $(CURRENT) for the current version
 	@echo with the major version of $(MAJOR) and driver version of $(DRIVER).
 	@sed -e "s/currentVersion.*/currentVersion = \"$(CURRENT)\"/" \
@@ -26,6 +27,10 @@ data/morphia.toml: $(POM) Makefile ../reference.mk
 		data/morphia.toml > data/morphia.toml.sed
 	@mv data/morphia.toml.sed data/morphia.toml
 
+	@sed -e "s/baseurl.*/baseurl = \"\/$(MAJOR)\"/" \
+		config.toml > config.toml.sed
+	@mv config.toml.sed config.toml
+
 	@sed -e "s|<span id=\"version-tag\">.*|<span id=\"version-tag\">$(TEXT)</span>|" \
 		layouts/partials/logo.html > layouts/partials/logo.html.sed
 	@mv layouts/partials/logo.html.sed layouts/partials/logo.html
@@ -33,7 +38,7 @@ data/morphia.toml: $(POM) Makefile ../reference.mk
 $(JAVADOC)/index.html: $(shell find $(CORE)/src/main/java -name *.java)
 	mvn -f $(CORE) clean javadoc:javadoc
 
-public/index.html: $(POM) $(shell find . | grep -v public) $(shell find ../commmon)
+public/index.html: $(POM) $(shell find data) $(shell find content) $(COMMON_FILES)
 	@$(HUGO)
 
 all: public/index.html $(JAVADOC)/index.html
@@ -48,4 +53,4 @@ watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch
 
 clean:
-	rm -rf public
+	@rm -rf $(shell cd ../common ; echo *) public resources version.toml $(MORPHIA_REPO)
