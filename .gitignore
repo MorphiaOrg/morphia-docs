@@ -1,2 +1,4 @@
 *.iml
 .idea
+public
+version.toml
