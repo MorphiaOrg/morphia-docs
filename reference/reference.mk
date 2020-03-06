@@ -33,7 +33,7 @@ data/morphia.toml: $(POM) Makefile ../reference.mk
 $(JAVADOC)/index.html: $(shell find $(CORE)/src/main/java -name *.java)
 	mvn -f $(CORE) clean javadoc:javadoc
 
-public/index.html: $(POM) $(shell find . | grep -v public)
+public/index.html: $(POM) $(shell find . | grep -v public) $(shell find ../commmon)
 	@$(HUGO)
 
 all: public/index.html $(JAVADOC)/index.html

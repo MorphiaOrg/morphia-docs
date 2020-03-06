@@ -1,4 +1,4 @@
-SUBDIRS = $(shell ls | grep [0-9]*)
+SUBDIRS = $(shell find . -maxdepth 1 -type d | grep / | grep -v common)
 
 .PHONY: subdirs $(SUBDIRS)
 
