@@ -1,7 +1,7 @@
 include variables.mk
 SUBDIRS = landing reference
 
-.PHONY: subdirs $(SUBDIRS) ../target
+.PHONY: subdirs $(SUBDIRS)
 
 all: $(SUBDIRS)
 

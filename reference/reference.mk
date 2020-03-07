@@ -9,10 +9,11 @@ $(MORPHIA_REPO):
 
 $(POM) : $(MORPHIA_REPO)
 
-config.toml data/morphia.toml version.toml: $(POM) Makefile ../reference.mk ../version.template.toml $(COMMON_FILES)
-	@rsync -ra ../common/* .
+config.toml data/morphia.toml version.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk \
+	$(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
+	@rsync -ra $(MAKE_ROOT)/reference/common/* .
 
-	@sed ../version.template.toml -e "s/ARTIFACT/$(ARTIFACT)/g" | \
+	@sed $(MAKE_ROOT)/reference/version.template.toml -e "s/ARTIFACT/$(ARTIFACT)/g" | \
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" \
 		> version.toml
@@ -49,7 +50,7 @@ watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch
 
 clean:
-	@rm -rf $(shell cd ../common ; echo *) public resources version.toml
+	@rm -rf $(shell cd $(MAKE_ROOT)/reference/common ; echo *) public resources version.toml
 
 mrclean: clean
 	@rm -rf $(MORPHIA_REPO)
