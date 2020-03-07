@@ -1,12 +1,14 @@
 #! /bin/sh
 
 > data/releases.toml
-for i in ../reference/*
+for i in r1.4.1 r1.5.8 master 2.0-dev
 do
-  if [ -d $i/content ]
+  VERSION=../reference/$i
+  if [ -d ${VERSION}/content ]
   then
-    make -C $i -s version.toml
-    cat $i/version.toml >> data/releases.toml
+    echo Processing $i
+    make -C ${VERSION} -s version.toml
+    cat  ${VERSION}/version.toml | tee -a data/releases.toml
     echo >> data/releases.toml
   fi
 done
