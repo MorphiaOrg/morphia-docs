@@ -9,20 +9,18 @@ $(MORPHIA_REPO):
 
 $(POM) : $(MORPHIA_REPO)
 
-config.toml data/morphia.toml version.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk \
+data/morphia.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk
+	@echo "coreApiUrl = \"$(CORE_API_URL)\"" > data/morphia.toml
+	@echo "currentVersion = \"$(CURRENT)\"" >> data/morphia.toml
+	@echo "gitBranch = \"$(BRANCH)\"" >> data/morphia.toml
+
+config.toml version.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk \
 	$(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 	@rsync -ra $(MAKE_ROOT)/reference/common/* .
 
 	@sed $(MAKE_ROOT)/reference/version.template.toml -e "s/ARTIFACT/$(ARTIFACT)/g" | \
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
-		sed -e "s/VERSION/$(CURRENT)/g" \
-		> version.toml
-
-	@sed -e "s/currentVersion.*/currentVersion = \"$(CURRENT)\"/" \
-		-e "s|coreApiUrl.*|coreApiUrl = \"http://mongodb.github.io/mongo-java-driver/$(DRIVER)/javadoc/\"|" \
-		-e "s|gitBranch.*|gitBranch = \"$(BRANCH)\"|" \
-		data/morphia.toml > data/morphia.toml.sed
-	@mv data/morphia.toml.sed data/morphia.toml
+		sed -e "s/VERSION/$(CURRENT)/g" > version.toml
 
 	@sed -e "s/baseurl.*/baseurl = \"\/$(CURRENT)\"/" \
 		config.toml > config.toml.sed

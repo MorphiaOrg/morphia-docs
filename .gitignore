@@ -3,6 +3,7 @@
 landing/public
 landing/data/releases.toml
 reference/*/config.toml
+reference/*/data/morphia.toml
 reference/*/version.toml
 reference/*/layouts
 reference/*/public

@@ -1,3 +1,0 @@
-gitBranch = "master"
-currentVersion = "1.5.9-SNAPSHOT"
-coreApiUrl = "http://mongodb.github.io/mongo-java-driver/3.10.1/javadoc/"
