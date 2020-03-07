@@ -1,6 +1,7 @@
 *.iml
 .idea
 landing/public
+landing/data/releases.toml
 reference/*/config.toml
 reference/*/version.toml
 reference/*/layouts
