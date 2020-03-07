@@ -19,13 +19,12 @@ config.toml data/morphia.toml version.toml: $(POM) Makefile ../reference.mk ../v
 
 	@echo Updating documentation to use $(CURRENT) for the current version and a driver version of $(DRIVER).
 	@sed -e "s/currentVersion.*/currentVersion = \"$(CURRENT)\"/" \
-	 	-e "s/majorVersion.*/majorVersion = \"$(MAJOR)\"/" \
 		-e "s|coreApiUrl.*|coreApiUrl = \"http://mongodb.github.io/mongo-java-driver/$(DRIVER)/javadoc/\"|" \
 		-e "s|gitBranch.*|gitBranch = \"$(BRANCH)\"|" \
 		data/morphia.toml > data/morphia.toml.sed
 	@mv data/morphia.toml.sed data/morphia.toml
 
-	@sed -e "s/baseurl.*/baseurl = \"\/$(MAJOR)\"/" \
+	@sed -e "s/baseurl.*/baseurl = \"\/$(CURRENT)\"/" \
 		config.toml > config.toml.sed
 	@mv config.toml.sed config.toml
 
