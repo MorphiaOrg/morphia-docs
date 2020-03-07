@@ -4,8 +4,8 @@ BRANCH=$(shell basename `pwd`)
 include $(MAKE_ROOT)/variables.mk
 
 $(MORPHIA_REPO):
-	[ -d $@ ] || git clone $(MORPHIA_GITHUB) --branch $(BRANCH) $@
-	[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO)
+	@[ -d $@ ] || git clone $(MORPHIA_GITHUB) --branch $(BRANCH) $@
+	@[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
 
 $(POM) : $(MORPHIA_REPO)
 
@@ -59,4 +59,6 @@ mrclean: clean
 	@rm -rf $(MORPHIA_REPO)
 
 temp:
+	@echo BRANCH = $(BRANCH)
+	@echo CURRENT = $(CURRENT)
 	@echo RELEASE_STATUS = $(RELEASE_STATUS)

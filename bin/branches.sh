@@ -1,7 +1,7 @@
 #! /bin/sh
 
 > data/releases.toml
-for i in r1.4.1 r1.5.8 master 2.0-dev
+for i in r1.5.8 r1.4.1 r2.0.0-BETA1 master 2.0-dev
 do
   VERSION=../reference/$i
   if [ -d ${VERSION}/content ]

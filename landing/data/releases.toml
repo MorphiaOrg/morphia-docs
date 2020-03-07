@@ -1,4 +1,12 @@
 [[versions]]
+  version = "1.5.8"
+  status = "current"
+  docs = "./1.5"
+  api = "/javadoc"
+  group = "dev.morphia.morphia"
+  artifact = "core"
+
+[[versions]]
   version = "1.4.1"
   status = "current"
   docs = "./1.4"
@@ -7,12 +15,12 @@
   artifact = "core"
 
 [[versions]]
-  version = "1.5.8"
+  version = "2.0.0-BETA1"
   status = "current"
-  docs = "./1.5"
+  docs = "./2.0.0-BET"
   api = "/javadoc"
   group = "dev.morphia.morphia"
-  artifact = "core"
+  artifact = "morphia-core"
 
 [[versions]]
   version = "1.5.9-SNAPSHOT"

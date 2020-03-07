@@ -12,3 +12,6 @@ publish:
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
+
+mrclean:
+	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) mrclean;)
