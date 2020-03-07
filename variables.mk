@@ -17,5 +17,6 @@ MAJOR = $(shell echo ${CURRENT} | sed -e 's/-SNAPSHOT//')
 SRC_LINK = "https://github.com/MorphiaOrg/morphia/tree/$(BRANCH)"
 TEXT = Morphia $(CURRENT)
 CORE = $(MORPHIA_REPO)/morphia
+BUILD_PLUGINS = $(MORPHIA_REPO)/build-plugins
 UTIL = $(MORPHIA_REPO)/util
 JAVADOC = $(CORE)/target/site/apidocs

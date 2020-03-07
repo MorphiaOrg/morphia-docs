@@ -33,10 +33,11 @@ config.toml data/morphia.toml version.toml: $(POM) Makefile $(MAKE_ROOT)/referen
 	@mv layouts/partials/logo.html.sed layouts/partials/logo.html
 
 $(JAVADOC)/index.html: $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
+	[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
 	mvn -f $(UTIL) install -DskipTestsk
 	mvn -f $(CORE) javadoc:javadoc
 
-public/index.html: $(POM) $(shell find data) $(shell find content) $(COMMON_FILES)
+public/index.html: $(POM) $(shell find data) $(shell find content) $(COMMON_FILES) config.toml
 	@$(HUGO)
 
 all: public/index.html $(JAVADOC)/index.html
