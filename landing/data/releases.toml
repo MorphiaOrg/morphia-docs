@@ -1,7 +1,7 @@
 [[versions]]
   version = "1.5.8"
   status = "current"
-  docs = "./1.5"
+  docs = "./1.5.8"
   api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "core"
@@ -9,7 +9,7 @@
 [[versions]]
   version = "1.4.1"
   status = "current"
-  docs = "./1.4"
+  docs = "./1.4.1"
   api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "core"
@@ -17,7 +17,7 @@
 [[versions]]
   version = "2.0.0-BETA1"
   status = "current"
-  docs = "./2.0.0-BET"
+  docs = "./2.0.0-BETA1"
   api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "morphia-core"
@@ -25,7 +25,7 @@
 [[versions]]
   version = "1.5.9-SNAPSHOT"
   status = "development"
-  docs = "./1.5"
+  docs = "./1.5.9"
   api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "core"
@@ -33,7 +33,7 @@
 [[versions]]
   version = "2.0.0-SNAPSHOT"
   status = "development"
-  docs = "./2.0"
+  docs = "./2.0.0"
   api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "morphia-core"

@@ -18,4 +18,3 @@ publish: all $(GH_PAGES)
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
-	@rm -rf $(GH_PAGES)

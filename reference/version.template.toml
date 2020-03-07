@@ -1,7 +1,5 @@
 [[versions]]
   version = "VERSION"
   status = "STATUS"
-  docs = "./MAJOR"
-  api = "/javadoc"
   group = "dev.morphia.morphia"
   artifact = "ARTIFACT"

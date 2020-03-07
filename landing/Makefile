@@ -2,7 +2,7 @@ MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
 
 include $(MAKE_ROOT)/variables.mk
 
-data/releases.toml: $(shell find ../reference | grep -v public) ../bin/branches.sh
+data/releases.toml: $(shell find ../reference -name version.toml ) ../bin/branches.sh
 	@sh ../bin/branches.sh
 
 public/index.html: $(shell find . | grep -v public)

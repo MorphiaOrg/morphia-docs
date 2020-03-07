@@ -1,7 +1,3 @@
-githubUser = "MorphiaOrg"
-githubRepo = "morphia"
 gitBranch = "r2.0.0-BETA1"
 currentVersion = "2.0.0-BETA1"
-highlightTheme = "idea.css"
-apiUrl = "/javadoc"
 coreApiUrl = "http://mongodb.github.io/mongo-java-driver/4.0.0-rc0/javadoc/"

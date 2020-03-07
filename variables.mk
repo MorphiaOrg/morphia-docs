@@ -13,8 +13,8 @@ HUGO = hugo --themesDir=$(MAKE_ROOT)/themes
 COMMON_FILES=$(shell find $(MAKE_ROOT)/reference/common/)
 RELEASE_STATUS = $(shell [ "`echo $(BRANCH) | grep '^r'`" ] && echo "current" || echo "development" )
 
-MAJOR = $(shell echo ${CURRENT} | sed -e 's/-SNAPSHOT//' -e 's/.[0-9]*$$//')
+MAJOR = $(shell echo ${CURRENT} | sed -e 's/-SNAPSHOT//')
 SRC_LINK = "https://github.com/MorphiaOrg/morphia/tree/$(BRANCH)"
-TEXT = Morphia $(MAJOR)
+TEXT = Morphia $(CURRENT)
 CORE = $(MORPHIA_REPO)/morphia
 JAVADOC = $(CORE)/target/site/apidocs

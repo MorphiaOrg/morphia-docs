@@ -13,13 +13,11 @@ config.toml data/morphia.toml version.toml: $(POM) Makefile ../reference.mk ../v
 	@rsync -ra ../common/* .
 
 	@sed ../version.template.toml -e "s/ARTIFACT/$(ARTIFACT)/g" | \
-		sed -e "s/MAJOR/$(MAJOR)/g" | \
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" \
 		> version.toml
 
-	@echo Updating documentation to use $(CURRENT) for the current version
-	@echo with the major version of $(MAJOR) and driver version of $(DRIVER).
+	@echo Updating documentation to use $(CURRENT) for the current version and a driver version of $(DRIVER).
 	@sed -e "s/currentVersion.*/currentVersion = \"$(CURRENT)\"/" \
 	 	-e "s/majorVersion.*/majorVersion = \"$(MAJOR)\"/" \
 		-e "s|coreApiUrl.*|coreApiUrl = \"http://mongodb.github.io/mongo-java-driver/$(DRIVER)/javadoc/\"|" \
