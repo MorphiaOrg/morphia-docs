@@ -14,8 +14,7 @@ $(GH_PAGES):
 publish: all $(GH_PAGES)
 	@cd $(GH_PAGES) ; git pull
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
-	#cd $(GH_PAGES) ; git add . && git commit -a -m "pushing docs updates"
-	#cd $(GH_PAGES) && git push
+	cd $(GH_PAGES) ; git add . && git commit -a -m "pushing docs updates" && git push
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
