@@ -19,3 +19,6 @@ watch: all
 
 clean:
 	rm -rf public
+
+mrclean: clean
+	@rm -rf $(GH_PAGES)

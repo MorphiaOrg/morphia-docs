@@ -55,8 +55,3 @@ clean:
 
 mrclean: clean
 	@rm -rf $(MORPHIA_REPO)
-
-temp:
-	@echo BRANCH = $(BRANCH)
-	@echo CURRENT = $(CURRENT)
-	@echo RELEASE_STATUS = $(RELEASE_STATUS)
