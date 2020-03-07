@@ -36,7 +36,7 @@ config.toml data/morphia.toml version.toml: $(POM) Makefile ../reference.mk ../v
 	@mv layouts/partials/logo.html.sed layouts/partials/logo.html
 
 $(JAVADOC)/index.html: $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
-	mvn -f $(CORE) clean javadoc:javadoc
+	mvn -f $(CORE) javadoc:javadoc
 
 public/index.html: $(POM) $(shell find data) $(shell find content) $(COMMON_FILES)
 	@$(HUGO)
