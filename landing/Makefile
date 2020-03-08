@@ -11,7 +11,7 @@ public/index.html: $(shell find . | grep -v public)
 all: data/releases.toml public/index.html
 
 publish: all
-	@rm -r $(GH_PAGES)/[a-z0-9]*
+	@rm -rf $(GH_PAGES)/[a-z]*
 	@rsync -ra public/ $(GH_PAGES)
 
 watch: all

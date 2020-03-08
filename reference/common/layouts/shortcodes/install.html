@@ -1,86 +1,65 @@
-<section class="maven">
-<pre><code class="ini">
+{{ $version := .Page.Site.Data.morphia.currentVersion }}
+{{ $artifactId := .Page.Site.Data.morphia.artifactId }}
+{{ $groupId := "dev.morphia.morphia" }}
+
+{{ if in $version "SNAPSHOT" }}
+<div class="download">
+<pre><code>
 &lt;dependencies&gt;
     &lt;dependency&gt;
-        &lt;groupId&gt;dev.morphia&lt;/groupId&gt;
-        &lt;artifactId&gt;morphia&lt;/artifactId&gt;
-        &lt;version&gt;{{ .Page.Site.Data.morphia.currentVersion }}&lt;/version&gt;
+        &lt;groupId&gt;{{$groupId}}&lt;/groupId&gt;
+        &lt;artifactId&gt;{{$artifactId}}&lt;/artifactId&gt;
+        &lt;version&gt;{{$version}}&lt;/version&gt;
     &lt;/dependency&gt;
 &lt;/dependencies&gt;
-
+&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;sonatype-snapshots&lt;/id&gt;
+        &lt;name&gt;Sontatype Snapshots&lt;/name&gt;
+        &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
 </code></pre>
-</section>
-<section class="gradle hidden">
-<pre><code>
-  dependencies {
-      compile 'dev.morphia:morphia:{{ .Page.Site.Data.morphia.currentVersion }}'
-  }
-
-</code></pre>
-</section>
-<section class="downloadInfo">
-<p class="small">You can also download the jars
-  <a href="https://oss.sonatype.org/content/repositories/releases/dev/morphia/morphia/{{ .Page.Site.Data.morphia.currentVersion }}" target="_blank">directly</a>
-  from sonatype.</a>
-</p>
-
-</section>
-
-<!--
-<div class="download {{if or (ne $firstDriver true) (ne $currentVersion.status "current") }} hidden{{end}}">
-<pre><code>
-      &lt;dependencies&gt;
-          &lt;dependency&gt;
-              &lt;groupId&gt;{{$currentVersion.group}}&lt;/groupId&gt;
-              &lt;artifactId&gt;{{$currentVersion.artifact}}&lt;/artifactId&gt;
-              &lt;version&gt;{{$currentVersion.version}}&lt;/version&gt;
-          &lt;/dependency&gt;
-      &lt;/dependencies&gt;
-      &lt;repositories&gt;
-          &lt;repository&gt;
-              &lt;id&gt;sonatype-snapshots&lt;/id&gt;
-              &lt;name&gt;Sontatype Snapshots&lt;/name&gt;
-              &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
-              &lt;snapshots&gt;
-                  &lt;enabled&gt;true&lt;/enabled&gt;
-              &lt;/snapshots&gt;
-          &lt;/repository&gt;
-      &lt;/repositories&gt;
-
-      </code></pre>
 </div>
-<div id="gradle-{{$versionPos}}" class="download hidden">
-      <pre><code>
-        dependencies {
-            compile '{{$currentVersion.group}}:{{$currentVersion.artifact}}:{{$currentVersion.version}}'
-        }
-        repositories {
-          maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots'
-          }
-        }
-      </code></pre>
+<div class="download hidden">
+<pre><code>
+dependencies {
+    compile '{{$groupId}}:{{$artifactId}}:{{$version}}'
+}
+repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+</code></pre>
 </div>
 {{ else }}
-<div id="maven-{{$versionPos}}" class="download {{if or (ne $firstDriver true) (ne $currentVersion.status "current") }} hidden{{end}}">
+<div class="download">
 <pre><code>
-      &lt;dependencies&gt;
-          &lt;dependency&gt;
-              &lt;groupId&gt;{{$currentVersion.group}}&lt;/groupId&gt;
-              &lt;artifactId&gt;{{$currentVersion.artifact}}&lt;/artifactId&gt;
-              &lt;version&gt;{{$currentVersion.version}}&lt;/version&gt;
-          &lt;/dependency&gt;
-      &lt;/dependencies&gt;
-
-      </code></pre>
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;{{$groupId}}&lt;/groupId&gt;
+        &lt;artifactId&gt;{{$artifactId}}&lt;/artifactId&gt;
+        &lt;version&gt;{{$version}}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
 </div>
-<div id="gradle-{{$versionPos}}" class="download hidden">
-      <pre><code>
-        dependencies {
-          compile '{{$currentVersion.group}}:{{$currentVersion.artifact}}:{{$currentVersion.version}}'
-        }
-
-
-      </code></pre>
+<div class="download">
+<pre><code>
+dependencies {
+    compile '{{$groupId}}:{{$artifactId}}:{{$version}}'
+}
+</code></pre>
 </div>
--->
+{{end}}
+<section class="downloadInfo">
+    <p class="small">You can also download the jars
+        <a href="https://oss.sonatype.org/content/repositories/releases/dev/morphia/morphia/{{ $version }}" target="_blank">directly</a>
+        from sonatype.</a>
+    </p>
+
+</section>

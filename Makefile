@@ -1,3 +1,5 @@
+MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
+
 include variables.mk
 SUBDIRS = landing reference
 
@@ -11,9 +13,11 @@ $(SUBDIRS):
 $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
 
-publish: all $(GH_PAGES)
+stage: all $(GH_PAGES)
 	@cd $(GH_PAGES) ; git pull
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
+
+publish: stage
 	cd $(GH_PAGES) ; git add . && git commit -a -m "pushing docs updates" && git push
 
 clean:

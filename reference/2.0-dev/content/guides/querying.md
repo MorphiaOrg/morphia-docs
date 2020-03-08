@@ -5,95 +5,40 @@ title = "Querying"
   pre = "<i class='fa fa-file-text-o'></i>"
 +++
 
-Morphia offers a fluent API with which to build up a query and map the results back to instances of your entity classes.  It attempts
- to provide as much type safety and validation as possible.  To this end, Morphia offers the `Query<T>` class which can be parameterized to
-the type of your entity.
-
 ## Creating a Query
 
-The `Datastore` is the key class when using Morphia.  Virtually all operations begin with the `Datastore`.  To create the `Query`, we
-invoke the following code:
+Morphia provides `Query<T>` class to build a query and map the results back to instances of your entity classes and attempts
+ to provide as much type safety and validation as possible.  To create the `Query`, we invoke the following code:
 
 ```java
-Query<Product> query = datastore.createQuery(Product.class);
+Query<Product> query = datastore.find(Product.class);
 ```
 
-`createQuery()` returns an instance of `Query` with which we can build a query.
+`find()` returns an instance of `Query` which we can use to build a query.
 
 ### `filter()`
 
-The first method of interest is `filter()`.  This method takes two values: a condition string and a value.  The `value` parameter is, of
-course, the value to use when applying the `condition` clause.  The `condition` parameter is a bit more complicated.  At its simplest,
-the condition is just a field name.  In this case, the condition is assumed to be an [equality]({{< docsref "reference/operator/query/eq/" >}}) check.  There is a slightly more complicated variant, however.
-
-The `condition` value can also contain an operator.  For example, to compare a numeric field against a value, you might write something
-like this:
-
-```java
-query.filter("price >=", 1000);
-```
-
-In this case, we're instructing Morphia to add a filter using [$gte]({{< docsref "reference/operator/query/gte/" >}}).  This would result
- in a query that looks like this:
-
-```javascript
-{ price: { $gte: 1000 } }
-```
-
-The list of supported filter operations can be found in the [FilterOperator]({{< srcref
- "morphia/src/main/java/dev/morphia/query/FilterOperator.java">}}) class.
-
-| Operator | Alias |
-| ---------|------- |
-|$center | |
-|$centerSphere | |
-|$box | |
-|$eq | =, == |
-|$ne | !=, <> |
-|$gt | > |
-|$gte | >= |
-|$lt | < |
-|$lte | <= |
-|$exists | exists |
-|$type | type |
-|$not | |
-|$mod | mod |
-|$size | size |
-|$in | in |
-|$nin | nin |
-|$all | all |
-|$elemMatch | elem, elemMatch |
-|$where | |
-|$near | near |
-|$nearSphere | |
-|$within (deprecated replaced by $geoWithin) | within |
-|$geoNear | geoNear |
-|$geoWithin | geoWithin |
-|$geoIntersects | geoIntersects |
-
- Each filter operator can either be referenced by its MongoDB "dollar operator" or by the aliases listed afterward.  For example, with
- the equal operator, you can use the canonical `$eq` operator as you would when building a query in the shell or you could opt to use
- either the `=` or `==` aliases which might feel a little more natural to use than the dollar operators.
-
-### `field()`
-
-For those who would prefer more compile time validation of their queries, there is `field()`.  This method takes only the field name and
-returns an instance of a [class]({{< srcref "morphia/src/main/java/dev/morphia/query/FieldEnd.java">}}) providing methods with which
- to define your filters.  This approach is slightly more verbose but can be validated by the compiler to a much greater degree than
- `filter()` can be.  To perform the same query as above, you'd write this:
-
-```java
-query.field("price").greaterThanOrEq(1000);
-```
-
-This results in the exact same query as the `filter()` version but has the advantage that any typo in the operation name (method in this
-case) would easily be caught by an IDE or compiler.  Which version you use is largely a question of preference.
-
+The most significant method `filter(Filter...)`.  This method takes takes a number of filters to apply to the query being built.  The
+ filters are added to any existing, previously defined filters so you needn't add them all at once.  There are dozens of filters
+  predefined in Morphia and can be found in the `dev.morphia.query.experimental.filters` package.  
+  
 {{% note %}}
-Regardless of the approach used, the field name given can be either the Java field name or the document field name as defined by the
-[`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}) annotation on the field.  Morphia will normalize the name and validate the name such that a query with a bad field name will
-result in an error.
+The package is currently `experimental`.  This done to signify that this API is a new one and might change based on user feedback
+prior to a final release.  It is expected that the API will be largely the same in the final release and you are highly encouraged
+to try it out before then.  If you encounter and bugs or usability issues, please file an 
+[issue](https://github.com/MorphiaOrg/morphia/issues)
 {{% /note %}}
+
+The filters can be accessed via the [Filters]({{< apiref "dev/morphia/query/experimental/filters/Filters" >}}) class.  The method names
+ largely match the operation name you would use querying via the mongo shell so this should help you translate queries in to Morphia's
+  API.  For example, to query for products whose prices is greater than or equal to 1000, you would write this:
+
+```java
+query.filter(Filters.gte("price", 1000));
+```
+
+This will append the new criteria to any existing criteria already defined.  You can define as many filters in one call as you'd like or
+ you may choose to append them in smaller groups based on whatever query building logic your application might have.
 
 ## Complex Queries
 
@@ -101,68 +46,23 @@ Of course, queries are usually more complex than single field comparisons.  Morp
 complex queries.  An `and` query might look something like this:
 
 ```java
-q.and(
-    q.criteria("width").equal(10),
-    q.criteria("height").equal(1)
-);
+q.filter(and(
+    eq("width", 10), 
+    eq("height", 1)));
 ```
 
-An `or` clause looks exactly the same except for using `or()` instead of `and()`, of course.  For these clauses we use the `criteria()`
-method instead of `field()` but it is used in much the same fashion.  `and()` and `or()` take a [`varargs`](https://docs.oracle
-.com/javase/8/docs/technotes/guides/language/varargs.html) parameter of type `Criteria` so you can include as many filters as necessary.
- If all you need is an `and` clause, you don't need an explicit call to `and()`:
+An `or` clause looks exactly the same except for using `or()` instead of `and()`, of course.  The default is to "and" filter criteria
+ together so if all you need is an `and` clause, you don't need an explicit call to `and()`:
 
 ```java
-datastore.createQuery(UserLocation.class)
-    .field("x").lessThan(5)
-    .field("y").greaterThan(4)
-    .field("z").greaterThan(10);
+datastore.find(UserLocation.class)
+    .filter(
+        lt("x", 5),
+        gt("y", 4),
+        gt("z", 10));
 ```
 
 This generates an implicit `and` across the field comparisons.
-
-## Text Searching
-
-Morphia also supports MongoDB's text search capabilities.  In order to execute a text search against a collection, the collection must
-have a [text index]({{< docsref "/core/index-text/" >}}) defined first.  Using Morphia that definition would look like this:
-
-```java
-@Indexes(@Index(fields = @Field(value = "$**", type = IndexType.TEXT)))
-public static class Greeting {
-    @Id
-    private ObjectId id;
-    private String value;
-    private String language;
-
-    ...
-}
-```
-
-The `$**` value tells MongoDB to create a text index on all the text fields in a document.  A more targeted index can be created, if
-desired, by explicitly listing which fields to index.  Once the index is defined, we can start querying against it like this [test]({{<
-srcref "morphia/src/test/java/dev/morphia/query/TestTextSearching.java">}}) does:
-
-```java
-morphia.map(Greeting.class);
-datastore.ensureIndexes();
-
-datastore.save(new Greeting("good morning", "english"),
-    new Greeting("good afternoon", "english"),
-    new Greeting("good night", "english"),
-    new Greeting("good riddance", "english"),
-    new Greeting("guten Morgen", "german"),
-    new Greeting("guten Tag", "german")),
-    new Greeting("gute Nacht", "german"));
-
-List<Greeting> good = datastore.createQuery(Greeting.class)
-                             .search("good")
-                             .order("_id")
-                             .asList();
-Assert.assertEquals(4, good.size());
-```
-
-As you can see here, we create `Greeting` objects for multiple languages.  In our test query, we're looking for occurrences of the word
-"good" in any document.  We created four such documents and our query returns exactly those four.
 
 ## Other Query Options
 
@@ -177,28 +77,21 @@ document.  This is useful when you need to only return a smaller view of a large
 
 ```java
 ContainsRenamedFields user = new ContainsRenamedFields("Frank", "Zappa");
-getDs().save(user);
+datastore.save(user);
 
-ContainsRenamedFields found = getDs()
-    .find(ContainsRenamedFields.class)
-    .project("first_name", true)
-    .get();
-Assert.assertNotNull(found.firstName);
-Assert.assertNull(found.lastName);
-
-found = getDs()
-    .find(ContainsRenamedFields.class)
-    .project("firstName", true)
-    .get();
-Assert.assertNotNull(found.firstName);
-Assert.assertNull(found.lastName);
+ContainsRenamedFields found = datastore
+                                  .find(ContainsRenamedFields.class)
+                                  .execute(new FindOptions()
+                                               .projection().include("first_name")
+                                               .limit(1))
+                                  .tryNext();
+assertNotNull(found.firstName);
+assertNull(found.lastName);
 ```
 
-As you can see here, we're saving this entity with a first and last name but our query only returns the first name (and the _id value) in
+As you can see here, we're saving this entity with a first and last name but our query only returns the first name (and the `_id` value) in
  the returned instance of our type.  It's also worth noting that this project works with both the mapped document field name
  `"first_name"` and the Java field name `"firstName"`.
-
- The boolean value passed in instructs Morphia to either include (`true`) or exclude (`false`) the field.  It is not currently possible to list both inclusions and exclusions in one query.
 
 {{% note class="important" %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
