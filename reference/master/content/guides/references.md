@@ -9,9 +9,9 @@ Morphia supports two styles of defining references:  the `@Reference` annotation
 "dev/morphia/mapping/experimental/MorphiaReference" >}}).  The annotation based approach is discussed 
 [here]({{< ref "guides/annotations" >}}).  This guide will cover the wrapper based approach.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 This API is experimental.  Its implementation and API subject to change based on user feedback.  However, users are encouraged to experiment with the API and provide as much feedback as possible both positive and negative as this will likely be the approach used going forward.
-{{% /note %}}
+{{% /notice %}}
 
 An alternative to the traditional annotation-based approach is the [`MorphiaReference`]({{< apiref
  "dev/morphia/mapping/experimental/MorphiaReference" >}}) wrapper.  This type can not be instantiated directly.  Instead a `wrap()` 
@@ -119,11 +119,11 @@ In both cases, we have a document field called `list` but as you can see in the 
 `DBRef` instances storing both the collection name, "books" in this case, and `ObjectId` values from the Books.  This lets the wrapper 
 properly reconstitute these references when you're ready to use them.
 
-{{% note %}}
+{{% notice tip %}}
 Before we go too much further, it's important to point that, regardless of the type of the references, they are fetched lazily.  So if 
 you multiple fields with referenced entities, they will not be fetched until you call `get()` on the `MorphiaReference`.  If the type is 
 a `Collection` or a `Map`, all the referenced entities are fetched and loaded via a single query if possible.  This saves on server round trips but does raise the risk of potential `OutOfMemoryError` problems if you load too many objects in to memory this way.
-{{% /note %}}
+{{% /notice %}}
 
 A `Set` of references will look no different in the database than the `List` does.  However, `Map`s of references are slightly more 
 complicated.  A `Map` might look something like this:
@@ -146,6 +146,6 @@ complicated.  A `Map` might look something like this:
 
 References to single entities will follow the same pattern with regards to the `_id` values vs `DBRef` entries.
 
-{{% note  %}}
+{{% notice %}}
 Currently there is no support for configuring the `ignoreMissing` parameter as there is via the annotation.  The wrapper will silently drop  missing ID values or return null depending on the type of the reference.  Depending on the response to this feature in generalconsideration can be given to adding such functionality in the future.
-{{% /note %}}
+{{% /notice %}}

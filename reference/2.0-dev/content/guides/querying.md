@@ -22,12 +22,12 @@ The most significant method `filter(Filter...)`.  This method takes takes a numb
  filters are added to any existing, previously defined filters so you needn't add them all at once.  There are dozens of filters
   predefined in Morphia and can be found in the `dev.morphia.query.experimental.filters` package.  
   
-{{% note %}}
+{{% notice note %}}
 The package is currently `experimental`.  This done to signify that this API is a new one and might change based on user feedback
 prior to a final release.  It is expected that the API will be largely the same in the final release and you are highly encouraged
 to try it out before then.  If you encounter and bugs or usability issues, please file an 
 [issue](https://github.com/MorphiaOrg/morphia/issues)
-{{% /note %}}
+{{% /notice %}}
 
 The filters can be accessed via the [Filters]({{< apiref "dev/morphia/query/experimental/filters/Filters" >}}) class.  The method names
  largely match the operation name you would use querying via the mongo shell so this should help you translate queries in to Morphia's
@@ -93,17 +93,17 @@ As you can see here, we're saving this entity with a first and last name but our
  the returned instance of our type.  It's also worth noting that this project works with both the mapped document field name
  `"first_name"` and the Java field name `"firstName"`.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
  MongoDB.  Any fields in the existing document in the database that are missing from the entity will be removed if this entity is
   saved. For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database
   for this entity will be removed.  To save such instances back consider using [`Datastore#merge(T)`]({{< apiref "dev/morphia/Datastore#merge-T-" >}})
-{{% /note %}}
+{{% /notice %}}
 
 ### Limiting and Skipping
 
-Pagination of query results is often done as a combination of skips and limits.  Morphia offers `Query.limit(int)` and `Query.offset(int)`
-for these cases.  An example of these methods in action would look like this:
+Pagination of query results is often done as a combination of skips and limits.  Morphia offers `FindOptions.limit(int)` and 
+`FindOptions.offset(int)` for these cases.  An example of these methods in action would look like this:
 
 ```java
 datastore.createQuery(Person.class)
@@ -117,13 +117,16 @@ pagination, however.  See the [skip]({{< docsref "reference/method/cursor.skip" 
 
 ### Ordering
 
-Ordering the results of a query is done via [`Query.order(String)`](/javadoc/dev/morphia/query/Query.html#order-java.lang.String-)
-.  The javadoc has complete examples but this String consists of a list of comma delimited fields to order by.  To reverse the sort order
- for a particular field simply prefix that field with a `-`.  For example, to sort by age (youngest to oldest) and then income (highest
- to lowest), you would use this:
+Ordering the results of a query is done via [`FindOptions.sort(Sort...)`](/javadoc/dev/morphia/query/Query.html#order-java.lang.String-) 
+and a handful of other overloads. For example, to sort by `age` (youngest to oldest) and then `income` (highest to lowest), you would
+ use this:
 
 ```java
-query.order("age,-income");
+getDs().find(User.class)
+       .execute(new FindOptions()
+                    .sort(ascending("age"), descending("income"))
+                    .limit(1))
+       .tryNext();
 ```
 
 ### Tailable Cursors
@@ -137,11 +140,10 @@ are added to the collection that match your query, they'll be returned by the [t
 getMorphia().map(CappedPic.class);
 getDs().ensureCaps();                                                          // #1
 final Query<CappedPic> query = getDs().createQuery(CappedPic.class);
-final List<CappedPic> found = new ArrayList<CappedPic>();
+final List<CappedPic> found = new ArrayList<>();
 
-final Iterator<CappedPic> tail = query
-	.fetch(new FindOptions()
-		.cursorType(CursorType.Tailable));
+final Iterator<CappedPic> tail = query.execute(new FindOptions()
+                                                   .cursorType(CursorType.Tailable));
 while(found.size() < 10) {
 	found.add(tail.next());                                                    // #2
 }
@@ -154,21 +156,3 @@ created correctly.  If the collection already exists and is not capped, you will
 1.  Since this `Iterator` is backed by a tailable cursor, `hasNext()` and `next()` will block until a new item is found.  In this
 version of the unit test, we tail the cursor waiting to pull out objects until we have 10 of them and then proceed with the rest of the
 application.
-
-### Raw Querying
-
-You can use Morphia to map queries you might have already written using the raw Java API against your objects, or to access features which are not yet present in Morphia.
-
-For example:
-
-```
-Document query = new Document()
-	.append("albums",
-            new Document("$elemMatch",
-                    new Document("$and", new Document[] {
-                        new Document("albumId", albumDto.getAlbumId()),
-                        new Document("album",
-                            new Document("$exists", false))})));
-
-Artist result = datastore.createQuery(Artist.class, query).get();
-```

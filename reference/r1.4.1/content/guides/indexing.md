@@ -85,9 +85,9 @@ mapped document names.  Setting this to __true__ disables this validation.
 
 When defining a [unique]({{< relref "#unique" >}}) index, if there are duplicate values found, the index creation will.  Setting this value to true will instruct MongoDB to drop the documents with duplicate values.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 As of MongoDB version 3.0, the dropDups option is no longer available.
-{{% /note %}}
+{{% /notice %}}
 
 #### expireAfterSeconds()
 *Optional*
@@ -185,6 +185,6 @@ A wild card text index declaration would look like this:
     @Indexes(@Index(fields = @Field(value = "$**", type = TEXT)))
 ```
 
-{{% note class="important" %}}
+{{% notice warn %}}
 A collection can have at most one text index.
-{{% /note %}}
+{{% /notice %}}

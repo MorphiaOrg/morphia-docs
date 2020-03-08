@@ -89,11 +89,11 @@ query.field("price").greaterThanOrEq(1000);
 This results in the exact same query as the `filter()` version but has the advantage that any typo in the operation name (method in this
 case) would easily be caught by an IDE or compiler.  Which version you use is largely a question of preference.
 
-{{% note %}}
+{{% notice tip %}}
 Regardless of the approach used, the field name given can be either the Java field name or the document field name as defined by the
 [`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}) annotation on the field.  Morphia will normalize the name and validate the name such that a query with a bad field name will
 result in an error.
-{{% /note %}}
+{{% /notice %}}
 
 ## Complex Queries
 
@@ -200,12 +200,12 @@ As you can see here, we're saving this entity with a first and last name but our
 
  The boolean value passed in instructs Morphia to either include (`true`) or exclude (`false`) the field.  It is not currently possible to list both inclusions and exclusions in one query.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
  MongoDB.  Any fields in the existing document in the database that are missing from the entity will be removed if this entity is
   saved. For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database
   for this entity will be removed.  To save such instances back consider using [`Datastore#merge(T)`]({{< apiref "dev/morphia/Datastore#merge-T-" >}})
-{{% /note %}}
+{{% /notice %}}
 
 ### Limiting and Skipping
 

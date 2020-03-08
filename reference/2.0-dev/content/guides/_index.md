@@ -8,7 +8,9 @@ title = "Reference Guides"
 +++
 
 ## Core Guides
+* [Configuration]({{< ref "guides/configuration.md" >}})
 * [Querying]({{< ref "guides/querying.md" >}})
+* [Querying (Deprecated)]({{< ref "guides/querying-old.md" >}})
 * [Text Search]({{< ref "guides/textSearch.md" >}})
 * [Updating]({{< ref "guides/updating.md" >}})
 * [Aggregation]({{< ref "guides/aggregation.md" >}})

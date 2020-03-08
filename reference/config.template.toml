@@ -2,12 +2,12 @@ baseUrl = "      "
 homePageUrl = "https://morphia.dev/"
 languageCode = "en-us"
 title = "Morphia"
-theme = "learn"
+theme = "hugo-theme-learn-2.4.0"
 canonifyurls = false
 
 [params]
   disableBreadCrumb = true
-  disableNextPrev = false
+  disableNextPrev = true
   disableInlineCopyToClipBoard = true
   disableSearch = true
 

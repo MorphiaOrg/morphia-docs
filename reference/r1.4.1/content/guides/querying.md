@@ -89,11 +89,11 @@ query.field("price").greaterThanOrEq(1000);
 This results in the exact same query as the __filter()__ version but has the advantage that any typo in the operation name (method in this
 case) would easily be caught by an IDE or compiler.  Which version you use is largely a question of preference.
 
-{{% note %}}
+{{% notice tip %}}
 Regardless of the approach used, the field name given can be either the Java field name or the document field name as defined by the
 __@Property__ annotation on the field.  Morphia will normalize the name and validate the name such that a query with a bad field name will
 result in an error.
-{{% /note %}}
+{{% /notice %}}
 
 ## Complex Queries
 
@@ -200,12 +200,12 @@ As you can see here, we're saving this entity with a first and last name but our
 
  The boolean value passed in instructs Morphia to either include (__true__) or exclude (__false__) the field.  It is not currently possible to list both inclusions and exclusions in one query.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
  MongoDB.  Any fields in the existing document in the database that are missing from the entity will be removed if this entity is
   saved. For example, in the example above if __found__ is saved back to MongoDB, the __last_name__ field that currently exists in the database
   for this entity will be removed.  To save such instances back consider using [__Datastore#merge(T)__]({{< apiref "dev/morphia/Datastore#merge-T-" >}})
-{{% /note %}}
+{{% /notice %}}
 
 ### Limiting and Skipping
 

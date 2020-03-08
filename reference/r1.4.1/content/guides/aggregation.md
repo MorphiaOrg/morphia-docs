@@ -67,9 +67,9 @@ But this example doesn't use __aggregate()__, of course, it uses __out()__ which
 pipeline to be stored in to a named collection.  This collection can not be sharded or a capped collection, however.  This collection,
 if it does not exist, will be created upon execution of the pipeline.
 
-{{% note class="important" %}}
+{{% notice warn %}}
 Any existing data in the collection will be replaced by the output of the aggregation.
-{{% /note %}}
+{{% /notice %}}
 
 Using __out()__ is implicitly asking for the results to be returned via a cursor.  What is happening under the covers is the aggregation
 framework is writing out to the collection and is done.  Morphia goes one extra step further and executes an implicit __find__ on the output

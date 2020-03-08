@@ -15,8 +15,8 @@ data/morphia.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk
 	@echo "currentVersion = \"$(CURRENT)\"" >> data/morphia.toml
 	@echo "gitBranch = \"$(BRANCH)\"" >> data/morphia.toml
 
-config.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk $(MAKE_ROOT)/reference/config.toml
-	@sed -e "s/baseUrl.*/baseUrl = \"\/$(CURRENT)\"/" $(MAKE_ROOT)/reference/config.toml > config.toml
+config.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk $(MAKE_ROOT)/reference/config.template.toml
+	@sed -e "s/baseUrl.*/baseUrl = \"\/$(CURRENT)\"/" $(MAKE_ROOT)/reference/config.template.toml > config.toml
 
 version.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk \
 	$(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
