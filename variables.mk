@@ -3,8 +3,8 @@
 
 HUGO = hugo --themesDir=$(MAKE_ROOT)/themes
 
-GH_PAGES=$(MAKE_ROOT)/gh_pages
 MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
+GH_PAGES=/tmp/gh_pages
 MORPHIA_REPO=/tmp/morphia-for-docs-$(BRANCH)
 
 POM = $(MORPHIA_REPO)/pom.xml
