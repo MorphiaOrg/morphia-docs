@@ -5,12 +5,14 @@ title = "References"
   pre = "<i class='fa fa-file-text-o'></i>"
 +++
 
-Morphia supports two styles of defining references:  the `@Reference` annotation and the experimental [`MorphiaReference`]({{< apiref 
+Morphia supports two styles of defining references:  the [`@Reference`]({{< apiref "dev/morphia/annotations/Reference" >}}) annotation and the experimental [`MorphiaReference`]({{< apiref 
 "dev/morphia/mapping/experimental/MorphiaReference" >}}).  The annotation based approach is discussed 
-[here]({{< ref "guides/annotations" >}}).  This guide will cover the wrapper based approach.
+[here]({{< ref "guides/annotations/#reference" >}}).  This guide will cover the wrapper based approach.
 
-{{% notice warn %}}
-This API is experimental.  Its implementation and API subject to change based on user feedback.  However, users are encouraged to experiment with the API and provide as much feedback as possible both positive and negative as this will likely be the approach used going forward.
+{{% notice note %}}
+This API is experimental.  Its implementation and API subject to change based on user feedback.  However, users are encouraged to
+ experiment with the API and provide as much feedback as possible both positive and negative as this will likely be the approach used
+  going forward.
 {{% /notice %}}
 
 An alternative to the traditional annotation-based approach is the [`MorphiaReference`]({{< apiref

@@ -69,9 +69,11 @@ but also the collection name.  In most cases, this is probably redundant informa
 entity's mapping information.  To reduce the amount of storage necessary to track these references, use `idOnly = true` in the mapping.
 This will result in only the ID value being stored in the document.
 
+{{% notice tip %}}
 Morphia 1.5.0 introduced a new experimental API help with some of the complications involved with the annotation based mapping.  As this 
 is an experimental API, details may change and the entire API might be removed.  But users are encouraged to experiment with the API and 
 provide any feedback via GitHub Issues.  Further documentation can be found [here]({{< ref "guides/references.md" >}}).
+{{% /notice %}}
  
 ### Embedded
 In contrast to `@Reference` where a nested Java reference ends up as a separate document in a collection, 

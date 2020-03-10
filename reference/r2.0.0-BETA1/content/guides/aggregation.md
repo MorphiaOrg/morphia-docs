@@ -9,14 +9,13 @@ The [aggregation framework]({{< docsref "aggregation" >}}) in MongoDB allows you
 operations (called stages) against the data in a collection.  These pipelines can be used for analytics or they can be used to
 convert your data from one form to another.  This guide will not go in to the details of how aggregation works, however.  The official
  MongoDB [documentation]({{< docsref "aggregation" >}}) has extensive tutorials on such details.  Rather, this
- guide will
- focus on the Morphia API.  The examples shown here are taken from the [tests]({{< srcref
+ guide will focus on the Morphia API.  The examples shown here are taken from the [tests]({{< srcref
   "morphia/src/test/java/dev/morphia/aggregation/AggregationTest.java">}}) in Morphia itself.
 
 Writing an aggregation pipeline starts just like writing a standard query.  As with querying, we start with the `Datastore`:
 
 ```java
-Iterator<Author> aggregate = datastore.createAggregation(Book.class)
+Iterator<Author> aggregate = datastore.aggregate(Book.class)
       .group("author", grouping("books", push("title")))
       .out(Author.class, options);
 ```

@@ -9,8 +9,6 @@ There are various annotations which can be used to register callbacks on certain
 , and Pre/Post-Load.
 
 - `@PrePersist` - Called before save, it can return a `Document` in place of an empty one.
-- `@PreSave` - Called right before `DBCollection.save()` is called. Changes made to the entity will not be persisted; the `Document` can
- be passed as an argument (you can add/remove/change values)
 - `@PostPersist` - Called after the save call to the database
 - `@PreLoad` - Called before mapping the document from the database to the entity; the Document is passed as an argument (you can
 add/remove/change values)
@@ -66,5 +64,7 @@ class DigitalSigner {
 }
 ```
 
-## No Delete Support
-Because deletes are usually done with queries there is no way to support a Delete lifecycle event. If, or when, server-side triggers are enabled there may be some support for this, but even then it will be hard to imagine how this would logically fit.
+{{% notice info %}}
+**No Delete Support**
+Because deletes are usually done with queries there is no way to support a Delete lifecycle event. 
+{{% /notice %}}

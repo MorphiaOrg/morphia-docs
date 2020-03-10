@@ -9,8 +9,7 @@ title = "Quick Tour"
 +++
 
 Morphia wraps the MongoDB Java driver so some level of familiarity with using the driver can be helpful.  Morphia does its best to 
-abstract much of that away but if something is confusing, please consult the Java driver [documentation](http://mongodb.github
-.io/mongo-java-driver/) as well.
+abstract much of that away but if something is confusing, please consult the Java driver [documentation](http://mongodb.github.io/mongo-java-driver/) as well.
 
 The following code snippets come from the [QuickTour.java]({{< srcref "examples/src/test/java/dev/morphia/example/QuickTour.java">}}) 
 example code that can be found with the [Morphia source](http://morphia.dev/morphia).
