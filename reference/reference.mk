@@ -10,6 +10,7 @@ $(MORPHIA_REPO):
 $(POM) : $(MORPHIA_REPO)
 
 data/morphia.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk
+	mkdir -p data
 	echo "artifactId = \"$(ARTIFACT)\"" > data/morphia.toml
 	echo "coreApiUrl = \"$(CORE_API_URL)\"" >> data/morphia.toml
 	echo "currentVersion = \"$(CURRENT)\"" >> data/morphia.toml
