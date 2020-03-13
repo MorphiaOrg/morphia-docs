@@ -10,11 +10,13 @@ all: $(SUBDIRS)
 $(SUBDIRS):
 	@$(MAKE) -s -C $@
 
-$(GH_PAGES):
+$(GH_PAGES): $(GH_PAGES)/index.html
+	cd $(GH_PAGES) ; git reset --hard ; git pull
+
+$(GH_PAGES)/index.html:
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
 
-stage: all $(GH_PAGES)
-	@cd $(GH_PAGES) ; git pull
+stage: $(GH_PAGES) all
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
 
 publish: stage

@@ -19,6 +19,7 @@ DRIVER = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=driver.version | grep 
 RELEASE_STATUS = $(shell [ "`echo $(BRANCH) | grep '^r'`" ] && echo "current" || echo "development" )
 
 COMMON_FILES=$(shell find $(MAKE_ROOT)/reference/common -type f )
+PUBLISH_FILES=$(GH_PAGES)/$(CURRENT)/index.html
 HUGO_CONFIG_FILES=config.toml data/morphia.toml version.toml
 
 TEXT = Morphia $(CURRENT)

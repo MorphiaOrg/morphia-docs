@@ -9,33 +9,34 @@ $(MORPHIA_REPO):
 
 $(POM) : $(MORPHIA_REPO)
 
-data/morphia.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk
+data/morphia.toml: $(MAKE_ROOT)/variables.mk
 	mkdir -p data
 	echo "artifactId = \"$(ARTIFACT)\"" > data/morphia.toml
 	echo "coreApiUrl = \"$(CORE_API_URL)\"" >> data/morphia.toml
 	echo "currentVersion = \"$(CURRENT)\"" >> data/morphia.toml
 	echo "gitBranch = \"$(BRANCH)\"" >> data/morphia.toml
 
-config.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk $(MAKE_ROOT)/reference/config.template.toml
+config.toml: $(MAKE_ROOT)/reference/config.template.toml
 	sed -e "s/baseUrl.*/baseUrl = \"\/$(CURRENT)\"/" $(MAKE_ROOT)/reference/config.template.toml > config.toml
 
-version.toml: $(POM) Makefile $(MAKE_ROOT)/reference/reference.mk \
-	$(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
+version.toml: $(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 	rsync -ra $(MAKE_ROOT)/reference/common/* .
 
 	sed $(MAKE_ROOT)/reference/version.template.toml -e "s/ARTIFACT/$(ARTIFACT)/g" | \
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" > version.toml
 
-$(JAVADOC)/index.html: $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
+public/javadoc/index.html: $(POM) $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java) $(PUBLISH_FILES)
 	[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
 	mvn -f $(UTIL) install -DskipTestsk
 	mvn -f $(CORE) javadoc:javadoc
+	mkdir -p public/javadoc
+	rsync -ra $(JAVADOC)/ public/javadoc
 
 sync:
 	rsync -ra $(MAKE_ROOT)/reference/common/* .
 
-public/index.html: $(POM) $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
+public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
 	rsync -ra $(MAKE_ROOT)/reference/common/* .
 	sed -e "s|<span id=\"version-tag\">.*|<span id=\"version-tag\">$(TEXT)</span>|" \
 		layouts/partials/logo.html > layouts/partials/logo.html.sed
@@ -43,9 +44,7 @@ public/index.html: $(POM) $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FI
 
 	$(HUGO)
 
-all: public/index.html $(JAVADOC)/index.html
-	mkdir -p public/javadoc
-	rsync -ra $(JAVADOC)/ public/javadoc
+all: public/index.html public/javadoc/index.html
 
 publish: all
 	rsync -ra --delete public/ $(GH_PAGES)/$(CURRENT)
