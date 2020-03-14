@@ -18,7 +18,7 @@ Query<Product> query = datastore.find(Product.class);
 
 ### `filter()`
 
-The most significant method `filter(Filter...)`.  This method takes takes a number of filters to apply to the query being built.  The
+The most significant method `filter(Filter...)`.  This method takes a number of filters to apply to the query being built.  The
  filters are added to any existing, previously defined filters so you needn't add them all at once.  There are dozens of filters
   predefined in Morphia and can be found in the `dev.morphia.query.experimental.filters` package.  
   
