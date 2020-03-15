@@ -3,10 +3,11 @@ BRANCH=$(shell basename `pwd`)
 
 include $(MAKE_ROOT)/variables.mk
 
-MORPHIA_REPO=/tmp/morphia-for-docs-$(BRANCH)
+MORPHIA_REPO=$(REPO_ROOT)/morphia-for-docs-$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
 CORE = $(MORPHIA_REPO)/morphia
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate
+HUGO_CONFIG_FILES=config.toml data/morphia.toml version.toml
 
 CURRENT = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=project.version | grep -v "^\[" | grep -v "Download" )
 ARTIFACT = $(shell mvn -f $(CORE)/pom.xml $(MAVEN_HELP) -Dexpression=project.artifactId | grep -v "^\[" | grep -v "Download" )
@@ -40,7 +41,7 @@ version.toml: $(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" > version.toml
 
-public/javadoc/index.html: $(POM) $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java) $(PUBLISH_FILES)
+public/javadoc/index.html: $(POM) # $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
 	[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
 	mvn -f $(UTIL) install -DskipTestsk
 	mvn -f $(CORE) javadoc:javadoc
@@ -68,7 +69,7 @@ watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch
 
 clean:
-	rm -rf $(shell cd $(MAKE_ROOT)/reference/common ; echo *) public resources version.toml data/morphia.toml
+	rm -rf $(shell cd $(MAKE_ROOT)/reference/common ; echo *) public resources version.toml data
 
 mrclean: clean
 	rm -rf $(MORPHIA_REPO)

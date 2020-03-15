@@ -10,10 +10,7 @@ all: $(SUBDIRS)
 $(SUBDIRS):
 	@$(MAKE) -s -C $@
 
-$(GH_PAGES): $(GH_PAGES)/index.html
-	cd $(GH_PAGES) ; git reset --hard ; git pull
-
-$(GH_PAGES)/index.html:
+$(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
 
 stage: $(GH_PAGES) all
