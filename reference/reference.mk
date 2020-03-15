@@ -3,9 +3,23 @@ BRANCH=$(shell basename `pwd`)
 
 include $(MAKE_ROOT)/variables.mk
 
+MORPHIA_REPO=/tmp/morphia-for-docs-$(BRANCH)
+POM = $(MORPHIA_REPO)/pom.xml
+CORE = $(MORPHIA_REPO)/morphia
+MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate
+
+CURRENT = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=project.version | grep -v "^\[" | grep -v "Download" )
+ARTIFACT = $(shell mvn -f $(CORE)/pom.xml $(MAVEN_HELP) -Dexpression=project.artifactId | grep -v "^\[" | grep -v "Download" )
+DRIVER = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=driver.version | grep -v "^\[" | grep -v "Download" )
+RELEASE_STATUS = $(shell [ "`echo $(BRANCH) | grep '^r'`" ] && echo "current" || echo "development" )
+TEXT = Morphia $(CURRENT)
+BUILD_PLUGINS = $(MORPHIA_REPO)/build-plugins
+UTIL = $(MORPHIA_REPO)/util
+JAVADOC = $(CORE)/target/site/apidocs
+
 $(MORPHIA_REPO):
-	[ -d $@ ] || git clone $(MORPHIA_GITHUB) --branch $(BRANCH) $@
-	[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
+	@[ -d $@ ] || git clone $(MORPHIA_GITHUB) --branch $(BRANCH) $@
+	@[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
 
 $(POM) : $(MORPHIA_REPO)
 
@@ -44,7 +58,7 @@ public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
 
 	$(HUGO)
 
-all: public/index.html public/javadoc/index.html
+all: $(POM) public/index.html public/javadoc/index.html
 
 publish: all
 	rsync -ra --delete public/ $(GH_PAGES)/$(CURRENT)
