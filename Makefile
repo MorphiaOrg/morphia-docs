@@ -1,7 +1,7 @@
 MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
 
 include variables.mk
-SUBDIRS = landing reference
+SUBDIRS = reference landing
 
 .PHONY: subdirs $(SUBDIRS)
 
