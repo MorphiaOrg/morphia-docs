@@ -6,7 +6,7 @@ include $(MAKE_ROOT)/variables.mk
 MORPHIA_REPO=$(REPO_ROOT)/morphia-for-docs-$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
 CORE = $(MORPHIA_REPO)/morphia
-MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate
+MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
 HUGO_CONFIG_FILES=config.toml data/morphia.toml version.toml
 
 CURRENT = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=project.version | grep -v "^\[" | grep -v "Download" )
