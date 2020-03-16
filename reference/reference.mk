@@ -23,7 +23,7 @@ $(MORPHIA_REPO):
 	@[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
 
 $(POM) : $(MORPHIA_REPO)
-	cd $(MORPHIA_REPO) ; git pull
+	[ -z "$(shell echo $(BRANCH) | grep '^r')" ] && (cd $(MORPHIA_REPO) ; git pull) || true
 
 data/morphia.toml: $(MAKE_ROOT)/variables.mk
 	mkdir -p data

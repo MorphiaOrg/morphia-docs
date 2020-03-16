@@ -9,7 +9,7 @@ do
   then
     echo Processing $i
     make -C ${VERSION} -s version.toml
-    cat ${VERSION}/version.toml | tee -a data/releases.toml
+    cat ${VERSION}/version.toml >> data/releases.toml
     echo >> data/releases.toml
   fi
 done
