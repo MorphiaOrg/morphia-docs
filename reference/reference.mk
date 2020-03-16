@@ -3,7 +3,7 @@ BRANCH=$(shell basename `pwd`)
 
 include $(MAKE_ROOT)/variables.mk
 
-MORPHIA_REPO=$(REPO_ROOT)/morphia-for-docs-$(BRANCH)
+MORPHIA_REPO=$(REPO_ROOT)/$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
 CORE = $(MORPHIA_REPO)/morphia
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
@@ -23,6 +23,7 @@ $(MORPHIA_REPO):
 	@[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
 
 $(POM) : $(MORPHIA_REPO)
+	cd $(MORPHIA_REPO) ; git pull
 
 data/morphia.toml: $(MAKE_ROOT)/variables.mk
 	mkdir -p data
