@@ -45,9 +45,9 @@ version.toml: $(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 public/javadoc/index.html: $(POM) $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
 	[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
 	mvn -f $(UTIL) install -DskipTestsk
-	mvn -f $(CORE) javadoc:javadoc
+	mvn -f $(CORE) clean javadoc:javadoc
 	mkdir -p public/javadoc
-	rsync -ra $(JAVADOC)/ public/javadoc
+	rsync -ra --delete $(JAVADOC)/ public/javadoc
 
 sync:
 	rsync -ra $(MAKE_ROOT)/reference/common/* .
