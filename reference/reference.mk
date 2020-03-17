@@ -42,7 +42,7 @@ version.toml: $(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" > version.toml
 
-public/javadoc/index.html: $(POM) # $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
+public/javadoc/index.html: $(POM) $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
 	[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
 	mvn -f $(UTIL) install -DskipTestsk
 	mvn -f $(CORE) javadoc:javadoc
