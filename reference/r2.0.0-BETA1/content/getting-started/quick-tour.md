@@ -21,43 +21,51 @@ Morphia maps your entities and validates your queries.
 
 
 ```java
-final Morphia morphia = new Morphia();
-
+final Datastore datastore = Morphia.createDatastore(MongoClients.create(), "morphia_example");
 // tell Morphia where to find your classes
 // can be called multiple times with different packages or classes
-morphia.mapPackage("dev.morphia.example");
+datastore.getMapper().mapPackage("dev.morphia.example");
 
-// create the Datastore connecting to the default port on the local host
-final Datastore datastore = morphia.createDatastore(new MongoClient(), "morphia_example");
 datastore.ensureIndexes();
 ```
 
-This snippet creates the Morphia instance we'll be using in our simple application.  The `Morphia` class exists to configure the `Mapper`
- to be used and to define various system-wide defaults.  It is also what is used to create the `Datastore` we'll be using.  The 
- `Datastore` takes two parameters:  the `MongoClient` used to connect to MongoDB and the name of the database to use.  With this 
- approach we could conceivably configure Morphia once and then connect to multiple databases by creating different `Datastore` instances.
-   In practice, this is likely pretty rare but it is possible.
+This snippet creates the Morphia instance we'll be using in our simple application.  The `Morphia` class is a factor for `Datastore`
+instances, if you will.  There are several values we can pass in to create a `Datastore` but the absolute minimum is the name of the
+database you would like to connect to.  If this is all you pass in, Morphia will create a `Datastore` that connects to the named
+database on the local machine using the default port of `27017`.  However, outside of tests this isn't usually enough.  There are two
+other items you might pass in as well:  a `MongoClient` reference to use when connecting to the database and a `MapperOptions`
+reference to configure how the mapping is done.
    
-The second line, which we skipped over, deserves a bit of consideration.  In this case, we're telling Morphia to look at every class in the 
-package we've given and find every class annotated with [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) (which we'll cover shortly) and discover the mapping metadata we've 
-put on our classes.  There are several variations of mapping that can be done and they can be called multiple times with different values
- to properly cover all your entities wherever they might live in your application.
+With the second line we're telling Morphia to look at every class in the 
+package we've given and find every class annotated with [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) (which we'll cover 
+shortly) or [`@Embedded`]({{< apiref "dev/morphia/annotations/Embedded" >}}) and registoer the mapping metadata we've put on our classes.
+This method can be called multiple times to cover all your entities wherever they might live in your application.
  
 ## Mapping Options
 
-Once you have an instance of Morphia, you can configure various mapping options via the `MappingOptions` class.  While it's possible to 
-specify the `Mapper` when creating an instance of Morphia, most users will use the default mapper.  In either case, the `Mapper` can
- be fetched using the `getMapper()` method on the `Morphia` instance.  The two most common elements to configure are `storeEmpties` and
- `storeNulls`.  By default Morphia will not store empty `List` or `Map` values nor will it store null values in to MongoDB.  If your 
- application needs empty or null values to be present for whatever reason, setting these values to true will tell Morphia to save them 
- for you.  There are a few other options to configure on `MappingOptions`, but we'll not be covering them here.
+You can configure various mapping options via the `MappingOptions` class.  There are a number of items to configure here but for now we
+'ll just cover two.  For a discussion of the remainder, please see the [configuration guide]({{< ref "guides/configuration.md" >}}).  The
+ two most common elements to configure are probably `storeEmpties` and `storeNulls`.  By default Morphia will not store empty `List` or
+`Map` values nor will it store null values in to MongoDB.  If your application needs empty or null values to be present for whatever
+reason, setting these values to true will tell Morphia to save them for you.  There are a few other options to configure on
+`MappingOptions`, but we'll not be covering them here.
  
 ## Mapping Classes
 
-There are two ways that Morphia can handle your classes:  as top level entities or embedded in others.  Any class annotated with [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}})
- is treated as a top level document stored directly in a collection.  Any class with [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) must have a field annotated with [`@Id`]({{< apiref "dev/morphia/annotations/Id" >}}) to 
-define which field to use as the `_id` value in the document written to MongoDB.  [`@Embedded`]({{< apiref "dev/morphia/annotations/Embedded" >}}) indicates that the class will result in a 
-subdocument inside another document.  [`@Embedded`]({{< apiref "dev/morphia/annotations/Embedded" >}}) classes do not require the presence of an [`@Id`]({{< apiref "dev/morphia/annotations/Id" >}}) field.
+There are two ways that Morphia can handle your classes:  as top level entities or embedded in others.  Any class annotated with
+[`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) is treated as a top level document stored directly in a collection.  Any
+class with [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) must have a field annotated with 
+[`@Id`]({{< apiref "dev/morphia/annotations/Id" >}}) to define which field to use as the `_id` value in the document written to
+MongoDB.  [`@Embedded`]({{< apiref "dev/morphia/annotations/Embedded" >}}) indicates that the class will result in a subdocument inside
+another document.  [`@Embedded`]({{< apiref "dev/morphia/annotations/Embedded" >}}) classes do not require the presence of an
+[`@Id `]({{< apiref "dev/morphia/annotations/Id" >}}) field.
+
+{{% notice note %}}
+In order to be considered for persistence by Morphia, classes *must* be annotated with either `@Entity` or `@Embedded`.  Classes lacking
+ either of these annotations will effectively be ignored by Morphia.
+{{% /notice %}}
+
+Let's examine a more complete example:
 
 ```java
 @Entity("employees")
@@ -77,31 +85,38 @@ class Employee {
 }
 ```
 
-There are a few things here to discuss and others we'll defer to later sections.  This class is annotated using the [`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) annotation 
-so we know that it will be a top level document.  In the annotation, you'll see `"employees"`.  By default, Morphia will use the class 
-name as the collection name.  If you pass a String instead, it will use that value for the collection name.  In this case, all 
-`Employee` instances will be saved in to the `employees` collection instead.  There is a little more to this annotation but the 
-[annotations guide]({{< relref "/guides/annotations.md#entity" >}}) covers those details.
+There are a few things here to discuss and others we'll defer to later sections.  This class is annotated with the
+[`@Entity`]({{< apiref "dev/morphia/annotations/Entity" >}}) annotation so we know that it will be a top level document.  In the
+annotation, you'll see `"employees"`.  By default, Morphia will use the camel case class name as the collection name.  If you pass a String
+instead, it will use that value for the collection name.  In this case, all `Employee` instances will be saved in to the `employees` 
+collection instead.  There is a little more to this annotation but the [annotations guide]({{< relref "/guides/annotations.md#entity" >}}) 
+covers those details.
 
-The [`@Indexes`]({{< apiref "dev/morphia/annotations/Indexes" >}}) annotation lists which indexes Morphia should create.  In this instance, we're defining an index named `salary` on the
- field salary with the default ordering of ascending.  More information on indexing can found
-  [here]({{< relref "/guides/annotations.md#indexes" >}}).
+The [`@Indexes`]({{< apiref "dev/morphia/annotations/Indexes" >}}) annotation lists which indexes Morphia should create.  In this
+instance, we're defining an index named `salary` on the field salary with the default ordering of ascending.  More information on
+ indexing can found [here]({{< relref "/guides/annotations.md#indexes" >}}).
  
 We've marked the `id` field to be used as our primary key (the `_id` field in the document).  In this instance we're using the Java driver 
-type of `ObjectId` as the ID type.  The ID can be any type you'd like but is generally something like `ObjectId` or `Long`.  There are 
+type of `ObjectId` as the ID type.  The ID can be any type you'd like but is generally something like `ObjectId` or `long`.  There are 
 two other annotations to cover but it should be pointed out now that other than transient and static fields, Morphia will attempt to copy 
 every field to a document bound for the database.
 
-The simplest of the two remaining annotations is [`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}).  This annotation is entirely optional.  If you leave this annotation off, 
-Morphia will use the Java field name as the document field name.  Often times this is fine.  However, some times you'll want to change 
-the document field name for any number of reasons.  In those cases, you can use [`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}) and pass it the name to be used when this 
-class is serialized out to a document to be handed off to MongoDB.  
+The simplest of the two remaining annotations is [`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}).  This annotation is
+entirely optional.  If you leave this annotation off, Morphia will use the Java field name as the document field name.  Often times
+this is fine.  However, some times you'll want to change the document field name.  In those cases, you can use 
+[`@Property`]({{< apiref "dev/morphia/annotations/Property" >}}) and pass it the name to be used when this class is serialized out to the
+database.  
 
-This just leaves [`@Reference`]({{< apiref "dev/morphia/annotations/Reference" >}}).  This annotation is telling Morphia that this field refers to other Morphia mapped entities.  In this case 
-Morphia will store what MongoDB calls a [`DBRef`]({{< docsref "reference/database-references/#dbrefs" >}}) which is just a 
-collection name and key value.  These referenced entities must already be saved or at least have an ID assigned or Morphia will throw an
- exception.
+This just leaves [`@Reference`]({{< apiref "dev/morphia/annotations/Reference" >}}).  This annotation is telling Morphia that this field
+refers to other Morphia mapped entities.  In this case Morphia will store what MongoDB calls a 
+[`DBRef`]({{< docsref "reference/database-references/#dbrefs" >}}) which is just a collection name and key value.  These referenced
+entities must already be saved or at least have an ID assigned or Morphia will throw an exception.
  
+{{% notice note %}}
+There is a newer approach for defining references that is explained more fully [here]({{< relref "/guides/references.md" >}}).
+{{% /notice %}}
+
+
 ## Saving Data
 
 For the most part, you treat your Java objects just like you normally would.  When you're ready to write an object to the database, it's 
@@ -140,40 +155,27 @@ Morphia attempts to make your queries as type safe as possible.  All of the deta
 directly and only rarely do you need to take additional action.  As with everything else, `Datastore` is where we start:
 
 ```java
-final Query<Employee> query = datastore.createQuery(Employee.class);
-final List<Employee> employees = query.asList();
+final Query<Employee> query = datastore.find(Employee.class);
+final List<Employee> employees = query.execute().toList();
 ```
 
 This is a basic Morphia query.  Here, we're telling the `Datastore` to create a query that's been typed to `Employee`.  In this 
 case, we're fetching every `Employee` in to a `List`.  For very large query results, this could very well be too much to fit in to 
-memory.  For this simple example, using `asList()` is fine but in practice `fetch()` is usually the more appropriate choice.  Most queries 
-will, of course, want to filter the data in some way. There are two ways of doing this:
+memory.  For this simple example, using `toList()` is fine but in practice `execute()` is usually the more appropriate choice.  Most
+queries will, of course, want to filter the data in some way. Here's how to do that:
 
 ```java
 underpaid = datastore.createQuery(Employee.class)
-                     .field("salary").lessThanOrEq(30000)
-                     .asList();
+                     .filter(Filters.lte("salary", 30000))
+                     .execute()
+                     .toList();
 ```
 
-The `field()` method here is used to filter on the named field and returns an instance of an interface with a number of methods to build 
-a query.  This approach is helpful if compile-time checking is needed.  Between javac failing on missing methods and IDE auto-completion,
- query building can be done quite safely.
+Morphia supports all the query filters defined in the Mongodb query language.  You can find helper methods for all these filers on the
+[Filters class]({{< apiref "dev/morphia/query/experimental/filters/Filters" >}}).  The `filter()` method can take as many `Filter`
+references as you need to define your query.  It can also be called multiple times as any subsequent calls are cumulative with the rest
+ of the filters already defined.
  
- 
-The other approach uses the `filter()` method which is a little more free form and succinct than `field()`.  Here we can embed 
-certain operators in the query string.  While this is less verbose than the alternative, it does leave more things in the string to 
-validate and potentially get wrong:
-
-```java
-List<Employee> underpaid = datastore.createQuery(Employee.class)
-                                    .filter("salary <=", 30000)
-                                    .asList();
-```
-
-Either query works.  It comes down to a question of preference in most cases.  In either approach, Morphia will validate that there is a 
-field called `salary` on the `Employee` class.  If you happen to have mapped that field such that the name in the database doesn't match 
-the Java field, Morphia can use either form and will validate against either name.
-
 ## Updates
 
 Now that we can query, however simply, we can turn to in-database updates.  These updates take two components: a query, and a set 
@@ -181,37 +183,33 @@ of update operations.  In this example, we'll find all the underpaid employees a
  the query to find all the underpaid employees.  This is one we've already seen:
  
 ```java
-final Query<Employee> underPaidQuery = datastore.createQuery(Employee.class)
-                                             .filter("salary <=", 30000);
+final Query<Employee> underPaidQuery = datastore.find(Employee.class)
+                                                .filter(Filters.lte("salary", 30000));
 ```
 
-To define how we want to update the documents matched by this query, we create an `UpdateOperations` instance:
+To define how we want to update the documents matched by this query, we can call `update()` on our query:
 
 ```java
-final UpdateOperations<Employee> updateOperations = datastore.createUpdateOperations(Employee.class)
-                                                   .inc("salary", 10000);
+final UpdateResult results = underPaidQuery.update()
+                                           .inc("salary", 10000)
+                                           .execute();
 ```
 
-There are many operations on this class but, in this case, we're only updating the `salary` field by 10000.  This corresponds to the 
-[`$inc`]({{< docsref "reference/operator/update/inc/" >}}) operator.  There's one last step involved here:
-
-```java
-final UpdateResults results = datastore.update(underPaidQuery, updateOperations);
-```
-
-This line executes the update in the database without having to pull in however many documents are matched by the query.  The 
-`UpdateResults` instance returned will contain various statistics about the update operation.
+There are many operations on this class but, in this case, we're only updating the `salary` field by `10000`.  This corresponds to the 
+[`$inc`]({{< docsref "reference/operator/update/inc/" >}}) operator.  The `UpdateResult` instance returned will contain various
+ statistics about the update operation.
 
 ## Removes
 
 After everything else, removes are really quite simple.  Removing just needs a query to find and delete the documents in question and 
-then tell the `Datastore` to delete them:
+then call `remove()` the remove them from the database:
 
 ```java
-final Query<Employee> overPaidQuery = datastore.createQuery(Employee.class)
-                                                .filter("salary >", 100000);
-datastore.delete(overPaidQuery);
+datastore.find(Employee.class)
+         .filter(Filters.gt("salary", 100000))
+         .remove(new DeleteOptions()
+                .multi(true));
 ```
 
-There are a couple of variations on `delete()` but this is probably the most common usage.  If you already have an object in hand, there 
-is a `delete` that can take that reference and delete it.  There is more information in the [javadoc](/javadoc).
+Take note of the `DeleteOptions` being passed in here.  By default, mongodb will only delete the first matching document.  If you want to
+ delete all of them, you need to pass the `multi(true)` option as well.
