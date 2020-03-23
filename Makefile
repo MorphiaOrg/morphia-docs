@@ -18,7 +18,7 @@ stage: $(GH_PAGES) all
 
 publish: stage
 	@cd $(GH_PAGES) \
- 		[ -z "$(shell git status -s)" ] \
+		[ -z "$(shell git status -s)" ] \
 		&& (git add . && git commit -a -m "pushing docs updates" && git push) \
 		|| echo "nothing to push"
 
