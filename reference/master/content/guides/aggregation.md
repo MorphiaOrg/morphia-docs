@@ -15,25 +15,30 @@ convert your data from one form to another.  This guide will not go in to the de
 Writing an aggregation pipeline starts just like writing a standard query.  As with querying, we start with the `Datastore`:
 
 ```java
-Iterator<Author> aggregate = datastore.aggregate(Book.class)
-      .group("author", grouping("books", push("title")))
-      .out(Author.class, options);
+MorphiaCursor<Author> aggregate = getDs().aggregate(Book.class)
+     .group(of(id("author"))
+                .field("books", push(field("title"))))
+     .sort(Sort.on().ascending("name"))
+     .execute(Author.class);
 ```
 
-`createAggregation()` takes a `Class` literal.  This lets Morphia know which collection to perform this aggregation
-against.  Because of the transformational operations available in the aggregation [pipeline]({{< docsref "core/aggregation-pipeline" >}}),
- Morphia can not validate as much as it can with querying so care will need to be taken to ensure
- document fields actually exist when referencing them in your pipeline.
+`aggregate()` takes a `Class` literal.  This lets Morphia know which collection to perform this aggregation against.  Because of the
+ transformational operations available in the aggregation [pipeline]({{< docsref "core/aggregation-pipeline" >}}), Morphia can not
+  validate as much as it can with querying so care will need to be taken to ensure document fields actually exist when referencing them
+   in your pipeline.
 
 ## The Pipeline
-Aggregation operations are comprised of a series stages.  Our example here has only one readerState: `group()`.  This method is the Morphia
-equivalent of the [`$group`]({{< docsref "reference/operator/aggregation/group/" >}}) operator.  This readerState, as the name
-suggests, groups together documents based on the given field's values.  In this example, we are collecting together all the books by
-author.  The first parameter to `group()` defines the `_id` of the resulting documents.  Within this grouping, this pipeline takes the
-`books` fields for each author and extracts the `title`.  With this grouping of data, we're then `push()`ing the titles in to an array
-in the final document.  This example is the Morphia equivalent of an [example]({{< docsref
-"reference/operator/aggregation/group/#group-title-by-author" >}}) found in the aggregation tutorials.  This results in a series of
- documents that look like this:
+Aggregation pipelines are comprised of a series stages.  Our example here has only one stage: `group()`.  This method is the Morphia
+equivalent of the [`$group`]({{< docsref "reference/operator/aggregation/group/" >}}) operator.  This stage, as the name
+suggests, groups together documents based on various criteria.  In this example, we are collecting together all the books by
+author.  `group()` takes one parameter:  a `Group` instance.  This instance is created using the `Group.of()` method which will return a
+ new `Group` stage instance.  There are a few overloads but the simplest version, `of()`, will generate a `$group` stage with no `_id
+ ` field in the document.  In this case, we're passing the output of the `id(String)` method which creates an `_id` field using the
+  values found in the `author` properties found in the collection's documents.
+ 
+ The next step defines a new field, `books` comprised of the titles of the books found in each document.  (For reference, this example is
+  the Morphia equivalent of an [example]({{< docsref "reference/operator/aggregation/group/#group-title-by-author" >}}) found in the
+   aggregation tutorials.)  This results in a series of documents that look like this:
 
  ```json
  { "_id" : "Homer", "books" : [ "The Odyssey", "Iliad" ] }
@@ -50,8 +55,8 @@ Once your pipeline is complete, you can execute it via the `execute()` method.  
 
 ### $out
 
-But this example doesn't use `aggregate()`, of course, it uses `out()` which gives us access to the `$out` pipeline readerState.  [`$out`]
-({{< docsref "reference/operator/aggregation/out/" >}}) is a new operator in MongoDB 2.6 that allows the results of a
+Depending your use case, you might not watch to return the results of your aggregation but simply output them to another collection.
+That's where `$out` comes in.  [`$out`]({{< docsref "reference/operator/aggregation/out/" >}}) is an operator that allows the results of a
 pipeline to be stored in to a named collection.  This collection can not be sharded or a capped collection, however.  This collection,
 if it does not exist, will be created upon execution of the pipeline.
 
