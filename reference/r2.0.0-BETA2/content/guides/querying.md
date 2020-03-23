@@ -81,7 +81,7 @@ datastore.save(user);
 
 ContainsRenamedFields found = datastore
                                   .find(ContainsRenamedFields.class)
-                                  .execute(new FindOptions()
+                                  .iterator(new FindOptions()
                                                .projection().include("first_name")
                                                .limit(1))
                                   .tryNext();
@@ -107,7 +107,7 @@ Pagination of query results is often done as a combination of skips and limits. 
 
 ```java
 datastore.createQuery(Person.class)
-    .asList(new FindOptions()
+    .iterator(new FindOptions()
 	    .offset(1)
 	    .limit(10))
 ```
@@ -123,7 +123,7 @@ and a handful of other overloads. For example, to sort by `age` (youngest to old
 
 ```java
 getDs().find(User.class)
-       .execute(new FindOptions()
+       .iterator(new FindOptions()
                     .sort(ascending("age"), descending("income"))
                     .limit(1))
        .tryNext();
@@ -142,7 +142,7 @@ getDs().ensureCaps();                                                          /
 final Query<CappedPic> query = getDs().createQuery(CappedPic.class);
 final List<CappedPic> found = new ArrayList<>();
 
-final Iterator<CappedPic> tail = query.execute(new FindOptions()
+final MorphiaCursor<CappedPic> tail = query.iterator(new FindOptions()
                                                    .cursorType(CursorType.Tailable));
 while(found.size() < 10) {
 	found.add(tail.next());                                                    // #2
@@ -150,9 +150,9 @@ while(found.size() < 10) {
 ```
 There are two things to note about this code sample:
 
-1.  This tells Morphia to make sure that any entity [configured](/guides/annotations/#entity) to use a capped collection has its collection
-created correctly.  If the collection already exists and is not capped, you will have to manually [update]({{< docsref
-"core/capped-collections/#convert-a-collection-to-capped" >}}) your collection to be a capped collection.
+1.  This tells Morphia to make sure that any entity [configured]({{< ref "/guides/annotations#entity" >}}) to use a capped
+ collection has its collection created correctly.  If the collection already exists and is not capped, you will have to manually 
+ [update]({{< docsref "core/capped-collections/#convert-a-collection-to-capped" >}}) your collection to be a capped collection.
 1.  Since this `Iterator` is backed by a tailable cursor, `hasNext()` and `next()` will block until a new item is found.  In this
 version of the unit test, we tail the cursor waiting to pull out objects until we have 10 of them and then proceed with the rest of the
 application.

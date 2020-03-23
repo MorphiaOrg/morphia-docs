@@ -94,7 +94,7 @@ covers those details.
 
 The [`@Indexes`]({{< apiref "dev/morphia/annotations/Indexes" >}}) annotation lists which indexes Morphia should create.  In this
 instance, we're defining an index named `salary` on the field salary with the default ordering of ascending.  More information on
- indexing can found [here]({{< relref "/guides/annotations.md#indexes" >}}).
+ indexing can found [here]({{< ref "/guides/annotations#indexes" >}}).
  
 We've marked the `id` field to be used as our primary key (the `_id` field in the document).  In this instance we're using the Java driver 
 type of `ObjectId` as the ID type.  The ID can be any type you'd like but is generally something like `ObjectId` or `long`.  There are 

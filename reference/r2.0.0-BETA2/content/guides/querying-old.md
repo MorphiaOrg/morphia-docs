@@ -6,8 +6,8 @@ title = "Querying (Deprecated)"
 +++
 {{% notice warning %}}
 This page describes the older approach to querying.  While this older API is still supported, efforts should be made to update to the new
- API as outlined in the other [querying]({{< relref "querying" >}}) guide.  This old API is active using the [legacy]({{< relref
-  "configuration" >}}).  The new API will attempt to redirect most calls to use the new 
+ API as outlined in the other [querying]({{< relref "querying" >}}) guide.  This old API is active using the 
+ [legacy configuration]({{< relref "/configuration#legacy" >}}).  The new API will attempt to redirect most calls to use the new 
   [Filters]({{< apiref "dev/morphia/query/experimental/filters/Filters" >}}) based approach. 
 
 Note that at this time complex queries using `and` or `or` clauses can not be correctly transparently translated and will require manual
@@ -264,9 +264,9 @@ while(found.size() < 10) {
 ```
 There are two things to note about this code sample:
 
-1.  This tells Morphia to make sure that any entity [configured](/guides/annotations/#entity) to use a capped collection has its collection
-created correctly.  If the collection already exists and is not capped, you will have to manually [update]({{< docsref
-"core/capped-collections/#convert-a-collection-to-capped" >}}) your collection to be a capped collection.
+1.  This tells Morphia to make sure that any entity [configured]({{< ref "/guides/annotations#entity" >}}) to use a capped
+ collection has its collection created correctly.  If the collection already exists and is not capped, you will have to manually 
+ [update]({{< docsref "core/capped-collections/#convert-a-collection-to-capped" >}}) your collection to be a capped collection.
 1.  Since this `Iterator` is backed by a tailable cursor, `hasNext()` and `next()` will block until a new item is found.  In this
 version of the unit test, we tail the cursor waiting to pull out objects until we have 10 of them and then proceed with the rest of the
 application.

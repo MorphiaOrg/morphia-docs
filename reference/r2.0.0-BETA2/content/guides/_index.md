@@ -18,6 +18,3 @@ title = "Reference Guides"
 * [Annotations]({{< ref "guides/annotations.md" >}})
 * [Indexing]({{< ref "guides/indexing.md" >}})
 * [Life Cycle Methods]({{< ref "guides/lifeCycleMethods.md" >}})
-
-## Extension Guides
-* [Validation Extension]({{< ref "guides/validationExtension.md" >}})
