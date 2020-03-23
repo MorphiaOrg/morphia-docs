@@ -70,7 +70,7 @@ watch: all
 	$(HUGO) server --baseUrl=http://localhost/ --buildDrafts --watch
 
 clean:
-	rm -rf $(shell cd $(MAKE_ROOT)/reference/common ; echo *) public resources version.toml data
+	rm -rf $(shell cd $(MAKE_ROOT)/reference/common ; echo *) public resources config.toml version.toml data
 
 mrclean: clean
 	rm -rf $(MORPHIA_REPO)
