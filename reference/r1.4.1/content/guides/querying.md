@@ -255,7 +255,7 @@ while(found.size() < 10) {
 ```
 There are two things to note about this code sample:
 
-1.  This tells Morphia to make sure that any entity [configured](/guides/annotations/#entity) to use a capped collection has its collection
+1.  This tells Morphia to make sure that any entity [configured]({{< ref "/guides/annotations#entity" >}}) to use a capped collection has its collection
 created correctly.  If the collection already exists and is not capped, you will have to manually [update]({{< docsref
 "core/capped-collections/#convert-a-collection-to-capped" >}}) your collection to be a capped collection.
 1.  Since this __Iterator__ is backed by a tailable cursor, __hasNext()__ and __next()__ will block until a new item is found.  In this

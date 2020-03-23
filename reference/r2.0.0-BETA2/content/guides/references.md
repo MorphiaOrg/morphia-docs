@@ -7,7 +7,7 @@ title = "References"
 
 Morphia supports two styles of defining references:  the [`@Reference`]({{< apiref "dev/morphia/annotations/Reference" >}}) annotation and the experimental [`MorphiaReference`]({{< apiref 
 "dev/morphia/mapping/experimental/MorphiaReference" >}}).  The annotation based approach is discussed 
-[here]({{< ref "guides/annotations/#reference" >}}).  This guide will cover the wrapper based approach.
+[here]({{< ref "guides/annotations#reference" >}}).  This guide will cover the wrapper based approach.
 
 {{% notice note %}}
 This API is experimental.  Its implementation and API subject to change based on user feedback.  However, users are encouraged to
