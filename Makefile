@@ -17,7 +17,9 @@ stage: $(GH_PAGES) all
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
 
 publish: stage
-	@cd $(GH_PAGES) ; [ -z "$(shell git status -s)" ]  && (git add . && git commit -a -m "pushing docs updates" && git push) \
+	@cd $(GH_PAGES) \
+ 		[ -z "$(shell git status -s)" ] \
+		&& (git add . && git commit -a -m "pushing docs updates" && git push) \
 		|| echo "nothing to push"
 
 clean:
