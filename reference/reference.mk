@@ -25,7 +25,7 @@ $(MORPHIA_REPO):
 $(POM) : $(MORPHIA_REPO)
 	[ -z "$(shell echo $(BRANCH) | grep '^r')" ] && (cd $(MORPHIA_REPO) ; git pull) || true
 
-data/morphia.toml: $(MAKE_ROOT)/variables.mk
+data/morphia.toml: $(MAKE_ROOT)/variables.mk Makefile
 	mkdir -p data
 	echo "artifactId = \"$(ARTIFACT)\"" > data/morphia.toml
 	echo "coreApiUrl = \"$(CORE_API_URL)\"" >> data/morphia.toml

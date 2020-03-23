@@ -42,22 +42,11 @@ in the final document.  This example is the Morphia equivalent of an [example]({
 
 ## Executing the Pipeline
 
-There are two basic ways to execute an aggregation pipeline:  `aggregate()` and `out()`.  These methods are Morphia's cues to send the
- pipeline to MongoDB for execution.  In that regard, both are similar.  In practice, how the results are processed is even very similar.
-  The differences, however, can have huge implications on the performance of your application.  `aggregate()` by default will use the
- 'inline' method for returning the aggregation results.  This approach has the same 16MB limitation that all documents in MongoDB share.
-  We can changes this behavior using the [`AggregationOptions`](http://api.mongodb.org/java/3.0/com/mongodb/AggregationOptions.html)
-  class.  The `options` reference we passed to `out()` also applies to `aggregate()`.
-
-### Aggregation Options
-
-There are a handful options here but there's one that deserves some extra attention. As mentioned, the aggregation pipeline, by default,
- returns everything "inline" but as of MongoDB 2.6 you can tell the aggregation framework to return a cursor instead.  This is what the
- value of [AggregationOptions#getOutputMode()](http://api.mongodb.org/java/3.0/com/mongodb/AggregationOptions.html#getOutputMode--)
- determines.  By setting the output mode to `CURSOR`, MongoDB can return a result size much larger than 16MB.  The options can also be
- configured to update the batch size or to set the time out threshold after which an aggregation will fail.  It is also possible to tell
-  the aggregation framework to use disk space which allows, among other things, sorting of larger data sets than what can fit in memory
-  on the server.
+Once your pipeline is complete, you can execute it via the `execute()` method.  This method takes a `Class` reference for the target
+ type of your aggregation.  Given this type, Morphia will map each document in the results and return it.  Additionally, you can also
+  include some options to `execute()`. We can use the various options on the 
+[`AggregationOptions`]({{< apiref "dev/morphia/aggregation/experimental/AggregationOptions.html" >}}) class to configure how we want the
+ pipeline to execute.
 
 ### $out
 
@@ -70,17 +59,52 @@ if it does not exist, will be created upon execution of the pipeline.
 Any existing data in the collection will be replaced by the output of the aggregation.
 {{% /notice %}}
 
-Using `out()` is implicitly asking for the results to be returned via a cursor.  What is happening under the covers is the aggregation
-framework is writing out to the collection and is done.  Morphia goes one extra step further and executes an implicit `find` on the output
-collection and returns a cursor for all the documents in the collection.  In practice, this behaves no differently than setting the
-output mode to `CURSOR` with `aggregate()` and your application need not know the difference.  It does, of course, have an impact on your
-database and any existing data.  The use of `$out` and `out()` can be greatly beneficial in scenarios such as precomputed aggregated
-results for later retrieval.
+An example aggregation using the `$out` stage looks like this:
 
-### Typed Results
+```java
+datastore.aggregate(Book.class)
+       .group(Group.of(id("author"))
+                   .field("books", push()
+                                       .single(field("title"))))
+       .out(Out.to(Author.class));
+```
 
-`out()` has several variants.  In this example, we're passing in `Author.class` which tells Morphia that we want to map each document
-returned to an instance of `Author`.  Because we're using `out()` instead of `aggregate()`, Morphia will use the mapped collection for
-`Author` as the output collection for the pipeline.  If you'd like to use an alternate collection but still return a cursor of `Author`
-instances, you can use [`out(String,Class,AggregationOptions)`](/javadoc/dev/morphia/aggregation/AggregationPipeline.html#out-java
-.lang.String-java.lang.Class-com.mongodb.AggregationOptions-) instead.
+You'll note that `out()` is the final method called here rather than `execute()`.  This is because `$out` must be the final stage in the
+pipeline and it simply makes no sense to do anything other than execute the pipeline at that point.  If you look at what we're passing
+to the method, you'll notice the `Out` class.  There are currently two methods of note on `Out`:  `to(Class)` and `to(String)`.  Using
+either of these methods instructs Morphia to write to either the collection mapped for the given `Class` or the named collection as
+noted by the String give.
+
+{{% notice info %}}
+You may be wondering about the use of `Out` here and that it seems a bit overcomplicated.  One of the design goals for the 2.0 API is to
+simplify the overall API and to reduce the number of overloads through the introduction of parameter or options objects.  By limiting
+the `Aggregation` API to two methods for `$out` (the seconds takes an `AggregationOptions` reference), we can keep `Aggregation` itself
+slim and incorporate any future variations in `$out` limited to the `Out` class.  This should, hopefully, make both APIs easier to
+digest and evolve.
+{{% /notice %}}
+
+### $merge
+[`$merge`]({{< docsref "reference/operator/aggregation/merge/" >}}) is a very similar option with a some major differences.  The biggest
+ difference is that `$merge` can write to existing collections without destroying the existing documents.  `$out` would obliterate any
+  existing documents and replace them with the results of the pipeline.  `$merge`, however, can deposit these new results alongside
+   existing data and update existing data.
+
+Using `$merge` might look something like this:
+
+```java
+datastore.aggregate(Salary.class)
+   .group(Group.of(id()
+                       .field("fiscal_year")
+                       .field("dept"))
+               .field("salaries", sum(field("salary"))))
+   .merge(Merge.into("budgets")
+               .on("_id")
+               .whenMatched(WhenMatched.REPLACE)
+               .whenNotMatched(WhenNotMatched.INSERT));
+```
+
+Much like `out()` above, for `merge()` we pass in a `Merge` reference as created by the `Merge.into()` method.  A merge is slightly more
+complex and so has more options to consider.  In this example, we're merging in to the `budgets` collection and merging any existing
+documents based on the `_id` as denoted using the `on()` method.  Because there may be existing data in the collection, we need to
+instruct the operation how to handle those cases.  In this example, when documents matching we're choosing to replace them and when
+they don't we're instructing the operation to insert the new documents in to the collection.
