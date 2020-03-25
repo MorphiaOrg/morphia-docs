@@ -12,6 +12,7 @@ $(SUBDIRS):
 
 $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
+	touch $(GH_PAGES)
 
 stage: $(GH_PAGES) all
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
