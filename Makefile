@@ -18,7 +18,7 @@ stage: $(GH_PAGES) all
 	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
 
 publish: stage
-	@bin/pushGhPages.sh
+	@cd $(GH_PAGES) ; sh ../../bin/pushGhPages.sh
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
