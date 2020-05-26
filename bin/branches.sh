@@ -1,15 +1,18 @@
 #! /bin/sh
 
+echo root = ${MAKE_ROOT}
+RELEASES=${MAKE_ROOT}/landing/data/releases.toml
 mkdir -p data
 > data/releases.toml
-for i in r1.5.8 r1.4.1 r2.0.0-BETA2 1.6.x master
+cd ${MAKE_ROOT}/reference
+for i in *
 do
-  VERSION=../reference/$i
+  VERSION=$i
   if [ -d ${VERSION}/content ]
   then
-    echo Processing $i
+    echo Processing version data for $i
     make -C ${VERSION} -s version.toml
-    cat ${VERSION}/version.toml >> data/releases.toml
-    echo >> data/releases.toml
+    cat ${VERSION}/version.toml >> ${RELEASES}
+    echo >> ${RELEASES}
   fi
 done
