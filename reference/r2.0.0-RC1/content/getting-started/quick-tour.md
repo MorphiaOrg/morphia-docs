@@ -202,12 +202,12 @@ There are many operations on this class but, in this case, we're only updating t
 ## Removes
 
 After everything else, removes are really quite simple.  Removing just needs a query to find and delete the documents in question and 
-then call `remove()` the remove them from the database:
+then call `delete()` the remove them from the database:
 
 ```java
 datastore.find(Employee.class)
          .filter(Filters.gt("salary", 100000))
-         .remove(new DeleteOptions()
+         .delete(new DeleteOptions()
                 .multi(true));
 ```
 
