@@ -5,7 +5,7 @@ RELEASES=${MAKE_ROOT}/landing/data/releases.toml
 mkdir -p data
 > data/releases.toml
 cd ${MAKE_ROOT}/reference
-VERSIONS=`find . -maxdepth 1 -type d | cut -c3- | grep 'r[0-9]'`
+VERSIONS=`find . -maxdepth 1 -type d | cut -c3- | grep 'r[0-9]' | sort -r`
 VERSIONS="$VERSIONS `find . -maxdepth 1 -type d | cut -c3- | grep ^[^r]`"
 for i in $VERSIONS
 do
