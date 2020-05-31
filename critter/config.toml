@@ -1,0 +1,20 @@
+baseUrl = "      "
+homePageUrl = "https://morphia.dev/"
+languageCode = "en-us"
+title = "Critter"
+theme = "hugo-theme-learn-2.4.0"
+canonifyurls = false
+
+[params]
+  disableBreadCrumb = true
+  disableNextPrev = true
+  disableInlineCopyToClipBoard = true
+  disableSearch = true
+
+[[menu.main]]
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fab fa-fw fa-github'></i> Source Code"
+identifier = "githubLink"
+url = "https://github.com/MorphiaOrg/critter"
+weight = 10

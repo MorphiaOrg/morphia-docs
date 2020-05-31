@@ -19,13 +19,16 @@
   <!-- Main content -->
   <div class="container" id="mainContent">
     <div class="row">
-      <div class="col-md-8">
-        {{ partial "features.html" . }}
-
-        {{ partial "quickStart.html" . }}
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-5">
+        {{ partial "morphia-features.html" . }}
         {{ partial "releases.html" . }}
+
+<!--        {{ partial "quickStart.html" . }}-->
+      </div>
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-5">
+        {{ partial "critter-features.html" . }}
      </div>
     </div>
   </div>

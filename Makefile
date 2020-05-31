@@ -1,7 +1,7 @@
 MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
 
 include variables.mk
-SUBDIRS = reference landing
+SUBDIRS = critter reference landing
 
 .PHONY: subdirs $(SUBDIRS)
 
@@ -15,7 +15,7 @@ $(GH_PAGES):
 	touch $(GH_PAGES)
 
 stage: $(GH_PAGES) all
-	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) publish;)
+	@$(foreach var, $(SUBDIRS), $(MAKE) -C $(var) stage;)
 
 publish: stage
 	@cd $(GH_PAGES) ; sh ../../bin/pushGhPages.sh

@@ -25,7 +25,7 @@ repo on your account or perhaps attaching a zip of the project to the associated
 ## Pull Requests
 
 We are happy to accept contributions to help improve Morphia.  We will guide user contributions to ensure they meet the standards of the 
-codebase. Please ensure that any pull requests include documentation, tests and also pass a the build checks.
+codebase. Please ensure that any pull requests include documentation, tests, and also pass the build checks.
 
 To get started check out the source and work on a branch:
 

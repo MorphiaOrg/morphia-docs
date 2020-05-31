@@ -5,14 +5,6 @@
   pre = "<i class='fa fa-book'></i>"
 +++
 
-# Issues & Help
-
-We are lucky to have a vibrant MongoDB Java community with lots of varying
-experience of using Morphia.  We often find the quickest way to get support for
-general questions is through the [Morphia google group](https://groups.google.com/forum/#!forum/morphia),
-[the mongoDB community forums](https://community.mongodb.com/c/drivers-odms-connectors/),
-or through [stackoverflow](https://stackoverflow.com/questions/tagged/morphia).
-
 ## Bugs / Feature Requests
 
 If you think you’ve found a bug or want to see a new feature in the Morphia, please open an issue on
@@ -24,7 +16,7 @@ repo on your account or perhaps attaching a zip of the project to the associated
 
 ## Pull Requests
 
-We are happy to accept contributions to help improve Morphia.  We will guide user contributions to ensure they meet the standards of the 
+We are happy to accept contributions to help improve Critter.  We will guide user contributions to ensure they meet the standards of the 
 codebase. Please ensure that any pull requests include documentation, tests, and also pass the build checks.
 
 To get started check out the source and work on a branch:

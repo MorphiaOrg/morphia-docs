@@ -7,8 +7,8 @@ all: $(SUBDIRS)
 $(SUBDIRS):
 	@$(MAKE) -s -C $@
 
-publish:
-	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) publish;)
+stage:
+	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) stage;)
 
 clean:
 	@$(foreach var,$(SUBDIRS),$(MAKE) -s -C $(var) clean;)
