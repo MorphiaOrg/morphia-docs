@@ -1,17 +1,17 @@
 MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
-BRANCH=4.0.0-RC1
+BRANCH=master
 
 include $(MAKE_ROOT)/variables.mk
 
 VERSION_GITHUB=git@github.com:MorphiaOrg/critter.git
 
-CRITTER_REPO=$(REPO_ROOT)/critter
+CRITTER_REPO=$(REPO_ROOT)/critter/$(BRANCH)
 POM = $(CRITTER_REPO)/pom.xml
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
 HUGO_CONFIG_FILES=config.toml data/critter.toml
 
 CURRENT = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=project.version | grep -v "^\[" | grep -v "Download" )
-TEXT = Critter 4.0.0-RC1
+TEXT = Critter $(CURRENT)
 
 $(CRITTER_REPO):
 	@[ -d $@ ] || git clone $(VERSION_GITHUB) --branch $(BRANCH) $@

@@ -4,7 +4,7 @@ BRANCH=$(shell basename `pwd`)
 include $(MAKE_ROOT)/variables.mk
 
 VERSION_GITHUB=$(MORPHIA_GITHUB)
-MORPHIA_REPO=$(REPO_ROOT)/$(BRANCH)
+MORPHIA_REPO=$(REPO_ROOT)/morphia/$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
 CORE = $(MORPHIA_REPO)/morphia
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
@@ -14,6 +14,7 @@ CURRENT = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=project.version | gre
 ARTIFACT = $(shell mvn -f $(CORE)/pom.xml $(MAVEN_HELP) -Dexpression=project.artifactId | grep -v "^\[" | grep -v "Download" )
 DRIVER = $(shell mvn -f $(POM) $(MAVEN_HELP) -Dexpression=driver.version | grep -v "^\[" | grep -v "Download" )
 RELEASE_STATUS = $(shell [ "`echo $(BRANCH) | grep '^r'`" ] && echo "current" || echo "development" )
+
 TEXT = Morphia $(CURRENT)
 BUILD_PLUGINS = $(MORPHIA_REPO)/build-plugins
 UTIL = $(MORPHIA_REPO)/util
