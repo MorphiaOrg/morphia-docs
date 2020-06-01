@@ -1,4 +1,4 @@
-baseUrl = "      "
+baseUrl = "/critter"
 homePageUrl = "https://morphia.dev/"
 languageCode = "en-us"
 title = "Critter"
