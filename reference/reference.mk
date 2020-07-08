@@ -22,10 +22,10 @@ JAVADOC = $(CORE)/target/site/apidocs
 
 $(MORPHIA_REPO):
 	@[ -d $@ ] || git clone $(VERSION_GITHUB) --branch $(BRANCH) $@
-	@[ -d overlays ] && rsync -ar overlays/* $(MORPHIA_REPO) || true
 
-$(POM) : $(MORPHIA_REPO)
-	@[ -z "$(shell echo $(BRANCH) | grep '^r')" ] && (cd $(MORPHIA_REPO) ; git pull) || true
+$(POM) : $(MORPHIA_REPO) $(shell [ -d overlays ] && find overlays )
+	@cd $(MORPHIA_REPO) && git reset --hard origin && git checkout $(BRANCH)
+	@[ -d overlays ] && rsync -var overlays/* $(MORPHIA_REPO) || true
 
 data/morphia.toml: $(MAKE_ROOT)/variables.mk Makefile
 	@mkdir -p data
