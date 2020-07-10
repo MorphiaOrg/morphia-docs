@@ -5,9 +5,9 @@ landing/data/releases.toml
 */*/config.toml
 */*/data/morphia.toml
 */*/version.toml
-*/*/layouts
-*/*/public
+**/layouts
+**/public
+**/static
 */*/resources
-*/*/static
 /repos/*
 /themes/*
