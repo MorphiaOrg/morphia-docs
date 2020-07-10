@@ -16,10 +16,10 @@ TEXT = Critter $(CURRENT)
 $(CRITTER_REPO):
 	@[ -d $@ ] || git clone $(VERSION_GITHUB) --branch $(BRANCH) $@
 
-$(POM) : $(CRITTER_REPO)
-	@[ -z "$(shell echo $(BRANCH) | grep '^r')" ] && (cd $(CRITTER_REPO) ; git pull) || true
+$(POM) : $(CRITTER_REPO) Makefile
+	cd $(CRITTER_REPO) && git reset --hard origin && git checkout $(BRANCH)
 
-public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
+public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES) $(POM) Makefile
 	rsync -ra $(MAKE_ROOT)/reference/common/* .
 	sed -e "s|<span id=\"version-tag\">.*|<span id=\"version-tag\">$(TEXT)</span>|" \
 		layouts/partials/logo.html > layouts/partials/logo.html.sed
