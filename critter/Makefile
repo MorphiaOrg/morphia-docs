@@ -1,5 +1,5 @@
 MAKE_ROOT = $(shell while [ ! -d .git ]; do cd ..; done; pwd )
-BRANCH=r4.0.0-RC1
+BRANCH=r4.0.0
 
 include $(MAKE_ROOT)/variables.mk
 
