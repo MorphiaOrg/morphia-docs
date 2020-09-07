@@ -24,8 +24,8 @@ $(MORPHIA_REPO):
 	@[ -d $@ ] || git clone $(VERSION_GITHUB) --branch $(BRANCH) $@
 
 $(POM) : $(MORPHIA_REPO) $(shell [ -d overlays ] && find overlays )
-	@cd $(MORPHIA_REPO) && git reset --hard origin && git checkout $(BRANCH)
-	@[ -d overlays ] && rsync -var overlays/* $(MORPHIA_REPO) || true
+#	@cd $(MORPHIA_REPO) && git reset --hard origin && git checkout $(BRANCH)
+#	@[ -d overlays ] && rsync -var overlays/* $(MORPHIA_REPO) || true
 
 data/morphia.toml: $(MAKE_ROOT)/variables.mk Makefile
 	@mkdir -p data

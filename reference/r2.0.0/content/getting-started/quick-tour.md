@@ -161,11 +161,12 @@ final List<Employee> employees = query.execute().toList();
 
 This is a basic Morphia query.  Here, we're telling the `Datastore` to create a query that's been typed to `Employee`.  In this 
 case, we're fetching every `Employee` in to a `List`.  For very large query results, this could very well be too much to fit in to 
-memory.  For this simple example, using `toList()` is fine but in practice `execute()` is usually the more appropriate choice.  Most
-queries will, of course, want to filter the data in some way. Here's how to do that:
+memory.  For this simple example, using `toList()` is fine but in practice `execute()` is usually the more appropriate choice.  `Query
+` implements `Iterable` so instances can be passed to, say, the enhanced for loop to be iterated with minimul fuss.  Most queries will, of 
+course, want to filter the data in some way. Here's how to do that:
 
 ```java
-underpaid = datastore.createQuery(Employee.class)
+underpaid = datastore.find(Employee.class)
                      .filter(Filters.lte("salary", 30000))
                      .execute()
                      .toList();

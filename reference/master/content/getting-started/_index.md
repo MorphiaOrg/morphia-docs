@@ -11,3 +11,4 @@ To help you get started quickly with Morphia follow:
 
   * [Installation]({{< ref "/getting-started/installation-guide.md" >}})
   * [Quick Tour]({{< ref "/getting-started/quick-tour.md" >}})
+  * [Migrating to 2.0]({{< ref "/getting-started/migration.md" >}})
