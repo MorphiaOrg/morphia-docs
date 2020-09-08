@@ -8,9 +8,6 @@ title = "Migrating to 2.0"
   pre = "<i class='fa'></i>"
 +++
 
-Migrating to 2.0
-===
-
 These are the major goals of the 2.0 release:
 1.  Modernization of the implementation
 1.  Clean up and modernization of the API
