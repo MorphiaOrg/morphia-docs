@@ -156,3 +156,17 @@ There are two things to note about this code sample:
 1.  Since this `Iterator` is backed by a tailable cursor, `hasNext()` and `next()` will block until a new item is found.  In this
 version of the unit test, we tail the cursor waiting to pull out objects until we have 10 of them and then proceed with the rest of the
 application.
+
+## Deleting
+
+Queries are also used to delete documents from the database as well.  Using 
+[`Query#delete()`]({{< apiref "dev/morphia/query/Query#delete()" >}}), we can delete documents matching the query.  The default operation
+ will only delete the first matching document.  However, you can opt to delete all matches by passing in the appropriate options:
+ 
+```java
+datastore
+    .find(Hotel.class)
+    .filter(gt("stars", 100))
+    .delete(new DeleteOptions()
+                     .multi(true));  
+```
