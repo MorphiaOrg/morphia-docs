@@ -17,6 +17,20 @@ This release aims to make the API smaller, lighter, and more fluent.  The pre-2.
 added to further improve the API and the developer experience.  As such there are a few things to note when upgrading.  This document 
 will attempt to document these items as development progresses.  Any early adopters finding missing or unclear items please file a bug.
 
+* **Defaults Changes**
+
+  Default mapping options have been changed for a more modern, configurable feel.  In 1.6, the standard builder for `MapperOptions` was
+   [deprecated](https://morphia.dev/1.6.0/javadoc/dev/morphia/mapping/MapperOptions.html#builder()) in favor of the 
+   [legacy](https://morphia.dev/1.6.0/javadoc/dev/morphia/mapping/MapperOptions.html#legacy()) method instead.  If you made this change
+    nothing should be different when upgrading.  However, if you did not or if you never explicitly configured your `Mapper` then you
+     will run in to some migration issues.
+  * The default discriminator is now `_t` rather than `className` with a value that is the simple name of the class name.  This is 
+  configurable using [MapperOptions.Builder.html#discriminatorKey()](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminatorKey(java.lang.String))
+  and [MapperOptions.Builder.html#discriminator()](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminator(dev.morphia.mapping.DiscriminatorFunction)).
+  The latter allows you pass in an existing [discriminator function](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/DiscriminatorFunction.html) 
+  or to supply your own custom function.
+  * Collection mapping now defaults to the camel case form of the class's simple name. 
+  * `@Entity` now defaults to using discriminator values when saving documents.
 * `@Embedded` is now only allowed on the embedded type and not fields using an embedded type.  If you wish to map a specific name to a
  field  rather than using the field name, use `@Property` on that field.
 * Morphia's geojson objects have been deprecated.  Any use via the API will be transparently converted to the driver's native types but 
