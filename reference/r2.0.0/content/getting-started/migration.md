@@ -14,8 +14,8 @@ These are the major goals of the 2.0 release:
 1.  Attempt to make the API more self-consistent.
 
 This release aims to make the API smaller, lighter, and more fluent.  The pre-2.0 deprecations are being removed and new deprecations 
-added to further improve the API and the developer experience.  As such there are a few things to note when upgrading.  This document 
-will attempt to document these items as development progresses.  Any early adopters finding missing or unclear items please file a bug.
+added to further improve the API and the developer experience.  As such there are a few things to note when upgrading.  If you find any
+ missing or unclear items please file an [issue](https://github.com/MorphiaOrg/morphia/issues).
 
 * **Defaults Changes**
 
