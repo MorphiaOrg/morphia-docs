@@ -25,9 +25,9 @@ added to further improve the API and the developer experience.  As such there ar
     nothing should be different when upgrading.  However, if you did not or if you never explicitly configured your `Mapper` then you
      will run in to some migration issues.
   * The default discriminator is now `_t` rather than `className` with a value that is the simple name of the class name.  This is 
-  configurable using [MapperOptions.Builder.html#discriminatorKey()](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminatorKey(java.lang.String))
-  and [MapperOptions.Builder.html#discriminator()](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminator(dev.morphia.mapping.DiscriminatorFunction)).
-  The latter allows you pass in an existing [discriminator function](https://morphia.dev/2.0.0/javadoc/dev/morphia/mapping/DiscriminatorFunction.html) 
+  configurable using [MapperOptions.Builder.html#discriminatorKey()](https://morphia.dev/2.0.1/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminatorKey(java.lang.String))
+  and [MapperOptions.Builder.html#discriminator()](https://morphia.dev/2.0.1/javadoc/dev/morphia/mapping/MapperOptions.Builder.html#discriminator(dev.morphia.mapping.DiscriminatorFunction)).
+  The latter allows you pass in an existing [discriminator function](https://morphia.dev/2.0.1/javadoc/dev/morphia/mapping/DiscriminatorFunction.html) 
   or to supply your own custom function.
   * Collection mapping now defaults to the camel case form of the class's simple name. 
   * `@Entity` now defaults to using discriminator values when saving documents.
