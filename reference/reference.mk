@@ -6,7 +6,7 @@ include $(MAKE_ROOT)/variables.mk
 VERSION_GITHUB=$(MORPHIA_GITHUB)
 MORPHIA_REPO=$(REPO_ROOT)/morphia/$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
-CORE = $(MORPHIA_REPO)/morphia
+CORE = $(MORPHIA_REPO)/core
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
 HUGO_CONFIG_FILES=config.toml data/morphia.toml version.toml
 
