@@ -47,7 +47,7 @@ To change the name of the hotel, one would use something like this:
 ```java
 datastore
     .find(Hotel.class)
-    .update(UpdateOperations.set("name", "Fairmont Chateau Laurier"))
+    .update(UpdateOperators.set("name", "Fairmont Chateau Laurier"))
     .execute();
 ```
 
@@ -59,7 +59,7 @@ Embedded documents are updated the same way.  To change the name of the city in 
 ```java
 datastore
     .find(Hotel.class)
-    .update(UpdateOperations.set("address.city", "Ottawa"))
+    .update(UpdateOperators.set("address.city", "Ottawa"))
     execute();
 ```
 
@@ -68,7 +68,7 @@ Values can also be removed from documents as shown below:
 ```java
 datastore
     .find(Hotel.class)
-    .update(UpdateOperations.unset("name"))
+    .update(UpdateOperators.unset("name"))
     execute();
 ```
 
@@ -121,7 +121,7 @@ There are times when a document needs to be updated and also fetched from the da
 ```java
 datastore
     .find(Hotel.class)
-    .modify(UpdateOperations.set("address.city", "Ottawa"))
+    .modify(UpdateOperators.set("address.city", "Ottawa"))
     execute(new ModifyOptions()
         .returnDocument(ReturnDocument.BEFORE));
 ```
