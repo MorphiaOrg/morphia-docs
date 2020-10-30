@@ -4,7 +4,7 @@ BRANCH=$(shell basename `pwd`)
 include $(MAKE_ROOT)/variables.mk
 
 VERSION_GITHUB=$(MORPHIA_GITHUB)
-MORPHIA_REPO=$(REPO_ROOT)/morphia/
+MORPHIA_REPO=$(REPO_ROOT)/morphia/$(BRANCH)
 POM = $(MORPHIA_REPO)/pom.xml
 CORE = $(MORPHIA_REPO)/core
 MAVEN_HELP = org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate
@@ -20,12 +20,11 @@ BUILD_PLUGINS = $(MORPHIA_REPO)/build-plugins
 UTIL = $(MORPHIA_REPO)/util
 JAVADOC = $(CORE)/target/site/apidocs
 
-$(MORPHIA_REPO): .PHONY
-	@[ -d $@ ] && \
-		(cd $(MORPHIA_REPO) && git checkout -f $(BRANCH) ) || \
-		git clone $(VERSION_GITHUB) --branch $(BRANCH) $@
+$(MORPHIA_REPO):
+	@[ -d $@ ] || git clone $(VERSION_GITHUB) --branch $(BRANCH) $@
 
 $(POM) : $(MORPHIA_REPO) $(shell [ -d overlays ] && find overlays )
+	@cd $(MORPHIA_REPO) && git reset --hard origin && git checkout $(BRANCH)
 	@[ -d overlays ] && rsync -var overlays/* $(MORPHIA_REPO) || true
 
 data/morphia.toml: $(MAKE_ROOT)/variables.mk Makefile
@@ -45,8 +44,11 @@ version.toml: $(MAKE_ROOT)/reference/version.template.toml $(COMMON_FILES)
 		sed -e "s/STATUS/$(RELEASE_STATUS)/g" | \
 		sed -e "s/VERSION/$(CURRENT)/g" > version.toml
 
-public/javadoc/index.html: $(POM)
+public/javadoc/index.html: $(POM) $(shell [ -d $(CORE)/src/main/java ] && find $(CORE)/src/main/java -name *.java)
+	@[ -d $(BUILD_PLUGINS) ] && mvn -f $(BUILD_PLUGINS) install -DskipTests || true
+	@mvn -f $(UTIL) install -DskipTestsk
 	@mvn -f $(CORE) clean javadoc:javadoc
+	@mkdir -p public/javadoc
 	@rsync -ra --delete $(JAVADOC)/ public/javadoc
 
 public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
@@ -57,7 +59,7 @@ public/index.html: $(shell find content) $(COMMON_FILES) $(HUGO_CONFIG_FILES)
 
 	$(HUGO)
 
-all: public/index.html public/javadoc/index.html
+all: $(POM) public/index.html public/javadoc/index.html
 
 stage: all
 	@rsync -ra --delete public/ $(GH_PAGES)/$(CURRENT)
