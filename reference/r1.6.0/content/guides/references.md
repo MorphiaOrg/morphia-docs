@@ -9,7 +9,7 @@ Morphia supports two styles of defining references:  the `@Reference` annotation
 "dev/morphia/mapping/experimental/MorphiaReference" >}}).  The annotation based approach is discussed 
 [here]({{< ref "guides/annotations" >}}).  This guide will cover the wrapper based approach.
 
-{{% notice warn %}}
+{{% notice warning %}}
 This API is experimental.  Its implementation and API subject to change based on user feedback.  However, users are encouraged to experiment with the API and provide as much feedback as possible both positive and negative as this will likely be the approach used going forward.
 {{% /notice %}}
 

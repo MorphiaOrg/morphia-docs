@@ -179,6 +179,6 @@ A wild card text index declaration would look like this:
     @Indexes(@Index(fields = @Field(value = "$**", type = TEXT)))
 ```
 
-{{% notice warn %}}
+{{% notice warning %}}
 A collection can have at most one text index.
 {{% /notice %}}

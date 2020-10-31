@@ -32,7 +32,7 @@ the most common case as it is the simplest, for various this won't always be pos
 can't mirror the field name, using the [@Name]({{< apiref "dev/morphia/annotations/Name" >}}) annotation, an explict name can be given
 so that the argument can be properly matched to a field.
 
-{{% notice warn %}}
+{{% notice warning %}}
 Changing the mapping configuration can interfere with Morphia's ability to map arguments and fields so be careful when making changes to
 such things as the default field naming strategy or `@Property` definitions.
 {{% /notice %}}

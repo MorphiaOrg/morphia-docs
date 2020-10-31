@@ -93,7 +93,7 @@ As you can see here, we're saving this entity with a first and last name but our
  the returned instance of our type.  It's also worth noting that this project works with both the mapped document field name
  `"first_name"` and the Java field name `"firstName"`.
 
-{{% notice warn %}}
+{{% notice warning %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
  MongoDB.  Any fields in the existing document in the database that are missing from the entity will be removed if this entity is
   saved. For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database

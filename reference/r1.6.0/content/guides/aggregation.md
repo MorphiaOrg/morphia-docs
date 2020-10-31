@@ -67,7 +67,7 @@ But this example doesn't use `aggregate()`, of course, it uses `out()` which giv
 pipeline to be stored in to a named collection.  This collection can not be sharded or a capped collection, however.  This collection,
 if it does not exist, will be created upon execution of the pipeline.
 
-{{% notice warn %}}
+{{% notice warning %}}
 Any existing data in the collection will be replaced by the output of the aggregation.
 {{% /notice %}}
 

@@ -209,7 +209,7 @@ As you can see here, we're saving this entity with a first and last name but our
 
  The boolean value passed in instructs Morphia to either include (`true`) or exclude (`false`) the field.  It is not currently possible to list both inclusions and exclusions in one query.
 
-{{% notice warn %}}
+{{% notice warning %}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to
  MongoDB.  Any fields in the existing document in the database that are missing from the entity will be removed if this entity is
   saved. For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database
