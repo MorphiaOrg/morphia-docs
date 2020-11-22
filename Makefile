@@ -22,7 +22,7 @@ site: package-lock.json dev.javadoc.jar
 publish: $(GH_PAGES) site
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )
 	rsync -Crav --delete build/site/ $(GH_PAGES)/
-	cd $(GH_PAGES) ; ../bin/pushGhPages.sh
+	cd $(GH_PAGES) ; sh ../bin/pushGhPages.sh
 
 dev.javadoc.jar:
 	mvn -U org.apache.maven.plugins:maven-dependency-plugin:get \
