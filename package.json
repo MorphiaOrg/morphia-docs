@@ -1,0 +1,17 @@
+{
+  "description": "Morphia docs",
+  "scripts": {
+    "clean-build": "npm run clean-install;npm run build",
+    "clean-local-build": "npm run clean-install;npm run local-build",
+    "clean-install": "rm -rf node_modules/ .cache/ package-lock.json ;npm i --cache=.cache/npm",
+    "build": "antora --generator @djencks/site-generator-default antora-playbook.yml --stacktrace --fetch",
+    "local-build": "antora --generator @djencks/site-generator-default local-antora-playbook.yml --stacktrace --fetch"
+  },
+  "devDependencies": {
+    "@djencks/antora-javadoc": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-antora-javadoc-v0.0.1.tgz",
+    "@djencks/javadoc-ui": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-javadoc-ui-v0.0.1.tgz",
+    "@djencks/playbook-builder": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-playbook-builder-v2.3.3.tgz",
+    "@djencks/content-aggregator": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-content-aggregator-v2.3.3.tgz",
+    "@djencks/site-generator-default": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-site-generator-default-v2.3.3.tgz"
+  }
+}

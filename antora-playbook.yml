@@ -1,0 +1,34 @@
+site:
+  title: Morphia Docs
+  start_page: landing::index.adoc
+
+content:
+  sources:
+  - url: .
+    branches: HEAD
+    start_path: home
+  - url: https://github.com/MorphiaOrg/morphia
+    branches: [ 2.1.x, 2.0.x, 1.6.x, master ]
+    start_path: docs
+  - url: https://github.com/MorphiaOrg/critter
+    branches: [ 4.0.x ]
+    start_path: docs
+
+ui:
+  bundle:
+    url: node_modules/@djencks/javadoc-ui/build/javadoc-ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+
+output:
+  clean: true
+
+runtime:
+  fetch: true
+
+extensions:
+  - path: "@djencks/antora-javadoc"
+    config:
+      extract: body
+      layout: javadoc
+

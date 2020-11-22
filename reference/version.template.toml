@@ -1,5 +1,0 @@
-[[versions]]
-  version = "VERSION"
-  status = "STATUS"
-  group = "dev.morphia.morphia"
-  artifact = "ARTIFACT"
