@@ -6,42 +6,48 @@
 
 [openblock,"column"]
 ------
+[discrete]
 == Morphia
-MongoDB Object Document Mapping for the JVM
 
-*Bidirectional mapping to and from the database* +
-Transparently map your Java entities to MongoDB documents and back. +
-*Extensible Type Conversion* +
-Easily add support for custom types +
-*Robust Query and Update APIs* +
-*Full Aggregation Support* +
-Use MongoDB's http://docs.mongodb.org/manual/aggregation/[aggregation framework] with your application's Java classes. +
-*Annotation driven indexing* +
-*Geospatial Queries* +
+[discrete]
+=== MongoDB Object Document Mapping for the JVM
+
+Bidirectional mapping to and from the database::
+Transparently map your Java entities to MongoDB documents and back.
+Extensible Type Conversion::
+Easily add support for custom types
+Robust Query and Update APIs::
+Full Aggregation Support::
+Use MongoDB's http://docs.mongodb.org/manual/aggregation/[aggregation framework] with your application's Java classes.
+Annotation driven indexing::
+Geospatial Queries::
 
 [openblock,"card-row"]
 --------
 
 [openblock,"column"]
 ----------
-xref:morphia:index.adoc[Latest documentation]
+xref:morphia:index.adoc[Latest documentation, role=btn-mongo]
 ----------
 
 [openblock,"column"]
 ----------
-https://github.com/MorphiaOrg/morphia/[Source Code]
+https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
 ----------
 --------
 ------
 
 [openblock,"column"]
 ------
+[discrete]
 == Critter
-Type safe criteria-builder for use with Morphia-based projects.
 
-*Build time query generated helpers
+[discrete]
+=== Type safe criteria-builder for use with Morphia-based projects.
+
+Build time query generated helpers::
 Check your query definitions at build time
-*Curated query and update operators
+Curated query and update operators::
 Only operations that make sense for the field's type are exposed
 
 [openblock,"card-row"]
@@ -49,12 +55,12 @@ Only operations that make sense for the field's type are exposed
 
 [openblock,"column"]
 ----------
-<a href="/critter/index.html" class="btn-mongo">Latest documentation</a>
+xref:critter:index.adoc [Latest documentation, role=btn-mongo]
 ----------
 
 [openblock,"column"]
 ----------
-<a href="https://github.com/MorphiaOrg/morphia/" class="btn-mongo">Source Code</a>
+https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
 ----------
 
 --------
