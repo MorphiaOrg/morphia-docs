@@ -21,7 +21,7 @@
 
          <div class="card-row ">
             <div class="column">
-                <a href="/morphia/index.html" class="btn-mongo">Latest documentation</a>
+                <a href="/morphia/2.1.0/index.html" class="btn-mongo">Latest documentation</a>
             </div>
             <div class="column">
                 <a href="https://github.com/MorphiaOrg/morphia/" class="btn-mongo">Source Code</a>
@@ -41,7 +41,7 @@
 
         <div class="card-row ">
             <div class="column">
-                <a href="/critter/index.html" class="btn-mongo">Latest documentation</a>
+                <a href="/critter/4.0.0/index.html" class="btn-mongo">Latest documentation</a>
             </div>
             <div class="column">
                 <a href="https://github.com/MorphiaOrg/morphia/" class="btn-mongo">Source Code</a>

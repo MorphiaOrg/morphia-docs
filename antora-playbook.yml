@@ -7,12 +7,12 @@ content:
   - url: .
     branches: HEAD
     start_path: home
-  - url: https://github.com/MorphiaOrg/morphia
-    branches: [ 2.1.x, 2.0.x, 1.6.x, master ]
-    start_path: docs
-  - url: https://github.com/MorphiaOrg/critter
-    branches: [ 4.0.x ]
-    start_path: docs
+#  - url: https://github.com/MorphiaOrg/morphia
+#    branches: [ 2.1.x, 2.0.x, 1.6.x, master ]
+#    start_path: docs
+#  - url: https://github.com/MorphiaOrg/critter
+#    branches: [ 4.0.x ]
+#    start_path: docs
 
 ui:
   bundle:
@@ -25,6 +25,10 @@ output:
 
 runtime:
   fetch: true
+
+asciidoc:
+  extensions:
+    - "@djencks/asciidoctor-openblock"
 
 extensions:
   - path: "@djencks/antora-javadoc"
