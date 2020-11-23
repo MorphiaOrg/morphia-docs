@@ -21,8 +21,8 @@ site: package-lock.json dev.javadoc.jar
 
 publish: $(GH_PAGES) site
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )
-	rsync -Crav --delete build/site/ $(GH_PAGES)/
-	cd $(GH_PAGES) ; sh ../bin/pushGhPages.sh
+	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
+	cd $(GH_PAGES) ; ( git add . ; git commit -a -m "pushing docs updates" ; git push )
 
 dev.javadoc.jar:
 	mvn -U org.apache.maven.plugins:maven-dependency-plugin:get \
