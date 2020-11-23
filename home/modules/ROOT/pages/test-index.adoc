@@ -1,4 +1,4 @@
-:layout: home-page
+:page-layout: home-page
 :!sectids:
 
 [openblock,"card-row"]
