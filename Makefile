@@ -13,11 +13,11 @@ package-lock.json: package.json
 
 local-site: package-lock.json local-antora-playbook.yml dev.javadoc.jar
 	npm run local-build
-	touch build/site/.nojekyll
+	@touch build/site/.nojekyll
 
 site: package-lock.json dev.javadoc.jar
 	npm run build
-	touch build/site/.nojekyll
+	@touch build/site/.nojekyll
 
 publish: $(GH_PAGES) site
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )

@@ -10,7 +10,7 @@
 == Morphia
 
 [discrete]
-=== MongoDB Object Document Mapping for the JVM
+=== MongoDB Object Document Mapping for the JVM.
 
 Bidirectional mapping to and from the database::
 Transparently map your Java entities to MongoDB documents and back.
