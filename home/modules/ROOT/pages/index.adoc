@@ -1,55 +1,69 @@
 :page-layout: home-page
 :!sectids:
 
-++++
-<div class="card-row ">
-    <div class="content">
-        <div class="column">
-            <h1>Morphia</h1>
-            MongoDB Object Document Mapping for the JVM
+[openblock,"card-row"]
+----
 
-            <dl>
-                <dt>Bidirectional mapping to and from the database</dt>
-                <dd>Transparently map your Java entities to MongoDB documents and back.</dd>
-                <dt>Extensible Type Conversion</dt>
-                <dd>Easily add support for custom types</dd>
-                <dt>Robust Query and Update APIs</dt>
-                <dt>Full Aggregation Support</dt>
-                <dd>Use MongoDB's <a href="http://docs.mongodb.org/manual/aggregation/">aggregation framework</a> with your application's Java
-                    classes.</dd>
-                <dt>Annotation driven indexing</dt>
-                <dt>Geospatial Queries</dt>
-            </dl>
+[openblock,"column"]
+------
+[discrete]
+== Morphia
 
-             <div class="card-row ">
-                <div class="column">
-                    <a href="/morphia/2.1.0/index.html" class="btn-mongo">Latest documentation</a>
-                </div>
-                <div class="column">
-                    <a href="https://github.com/MorphiaOrg/morphia/" class="btn-mongo">Source Code</a>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <h1>Critter</h1>
-            Type safe criteria-builder for use with Morphia-based projects.
+[discrete]
+=== MongoDB Object Document Mapping for the JVM.
 
-            <dl>
-                <dt>Build time query generated helpers</dt>
-                <dd>Check your query definitions at build time</dd>
-                <dt>Curated query and update operators</dt>
-                <dd>Only operations that make sense for the field's type are exposed</dd>
-            </dl>
+Bidirectional mapping to and from the database::
+Transparently map your Java entities to MongoDB documents and back.
+Extensible Type Conversion::
+Easily add support for custom types
+Robust Query and Update APIs::
+Full Aggregation Support::
+Use MongoDB's http://docs.mongodb.org/manual/aggregation/[aggregation framework] with your application's Java classes.
+Annotation driven indexing::
+Geospatial Queries::
 
-            <div class="card-row ">
-                <div class="column">
-                    <a href="/critter/4.0.0/index.html" class="btn-mongo">Latest documentation</a>
-                </div>
-                <div class="column">
-                    <a href="https://github.com/MorphiaOrg/morphia/" class="btn-mongo">Source Code</a>
-                </div>
-            </div>
-         </div>
-    </div>
-</div>
-++++
+[openblock,"card-row"]
+--------
+
+[openblock,"column"]
+----------
+xref:morphia:ROOT:index.adoc[Latest documentation, role=btn-mongo]
+----------
+
+[openblock,"column"]
+----------
+https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
+----------
+--------
+------
+
+[openblock,"column"]
+------
+[discrete]
+== Critter
+
+[discrete]
+=== Type safe criteria-builder for use with Morphia-based projects.
+
+Build time query generated helpers::
+Check your query definitions at build time
+Curated query and update operators::
+Only operations that make sense for the field's type are exposed
+
+[openblock,"card-row"]
+--------
+
+[openblock,"column"]
+----------
+xref:critter:ROOT:index.adoc[Latest documentation, role=btn-mongo]
+----------
+
+[openblock,"column"]
+----------
+https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
+----------
+
+--------
+------
+
+----
