@@ -8,6 +8,7 @@ content:
     branches: HEAD
     start_path: home
   - url: https://github.com/MorphiaOrg/morphia
+#  - url: ./../morphia
     branches: [ 2.1.x, 2.0.x, 1.6.x, master ]
     start_path: docs
   - url: https://github.com/MorphiaOrg/critter
@@ -35,4 +36,25 @@ extensions:
     config:
       extract: body
       layout: javadoc
-
+      components:
+        - name: morphia
+          version: '*,!1.6'
+          sources:
+            - url: https://github.com/MorphiaOrg/morphia/releases/download/r{version}.0/morphia-core-{version}.0-javadoc.jar
+              module: javadoc
+        - name: morphia
+          version: '1.6'
+          sources:
+#            - url: https://github.com/MorphiaOrg/morphia/releases/download/r1.6.1/morphia-core-1.6.1-javadoc.jar
+            - url: https://search.maven.org/remotecontent?filepath=dev/morphia/morphia/core/1.6.1/core-1.6.1-javadoc.jar
+              module: javadoc
+        - name: morphia
+          version: '2.0'
+          sources:
+            - url: https://github.com/MorphiaOrg/morphia/releases/download/r2.0.2/morphia-core-2.0.2-javadoc.jar
+              module: javadoc
+        - name: morphia
+          version: '2.2'
+          sources:
+            - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.2.0-SNAPSHOT&c=javadoc
+              module: javadoc
