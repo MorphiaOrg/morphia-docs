@@ -14,6 +14,11 @@ jobs:
           ref: gh-pages
           path: gh_pages
           token: ${{ secrets.PUSHTOKEN }}
+      - name: User Info
+        run: |
+          cd gh_pages
+          git config user.name evanchooly
+          git config user.email jlee@antwerkz.com
       - name: Run Antora
         env:
           REMOTE_REPO: https://evanchooly:${{ secrets.PUSHTOKEN }}@github.com/MorphiaOrg/morphia.git
