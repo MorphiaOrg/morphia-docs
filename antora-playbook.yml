@@ -8,7 +8,7 @@ content:
     branches: HEAD
     start_path: home
   - url: https://github.com/MorphiaOrg/morphia
-    branches: [ 2.1.x, 2.0.x, 1.6.x, master ]
+    branches: [ 2.1.x, 2.0.x, 1.6.x ]
     start_path: docs
   - url: https://github.com/MorphiaOrg/critter
     branches: [ 4.0.x, master ]
