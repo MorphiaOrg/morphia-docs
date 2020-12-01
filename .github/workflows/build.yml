@@ -13,8 +13,10 @@ jobs:
           repository: MorphiaOrg/morphia
           ref: gh-pages
           path: gh_pages
-      - name: Run antora
+      - name: User Info
         run: |
+          cd gh_pages
           git config user.name evanchooly
           git config user.email jlee@antwerkz.com
-          make publish
+      - name: Run Antora
+        run: make publish
