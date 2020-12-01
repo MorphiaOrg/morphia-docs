@@ -20,5 +20,5 @@ jobs:
           git config user.email jlee@antwerkz.com
       - name: Run Antora
         env:
-          REMOTE_REPO: https://${{ secrets.PUSHTOKEN }}@github.com/MorphiaOrg/morphia.git
+          REMOTE_REPO: https://evanchooly:${{ secrets.PUSHTOKEN }}@github.com/MorphiaOrg/morphia.git
         run: make publish
