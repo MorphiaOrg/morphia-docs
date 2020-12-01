@@ -3,7 +3,7 @@ MORPHIA_DEV=2.2.0-SNAPSHOT
 GH_PAGES=gh_pages
 
 $(GH_PAGES):
-	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES)
+	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1 !' antora-playbook.yml > $@
@@ -19,10 +19,23 @@ site: package-lock.json
 	npm run build
 	@touch build/site/.nojekyll
 
-publish: $(GH_PAGES) site
+build/site/index.html:
+	$(MAKE) site
+
+$(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )
 	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
-	cd $(GH_PAGES) ; ( git add . ; git commit -a -m "pushing docs updates" ; git push )
+
+sync: $(GH_PAGES)/index.html
+
+push:
+#	remote_repo="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
+	cd $(GH_PAGES) ; \
+		git add . ; \
+		git commit -a -m "pushing docs updates" ; \
+		git push ${REMOTE_REPO} ;
+
+publish: site sync push
 
 clean:
 	@rm -rf build dev.javadoc.jar $(GH_PAGES) local-antora-playbook.yml
