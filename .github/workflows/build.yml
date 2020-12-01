@@ -10,8 +10,8 @@ jobs:
       - name: Check out gh_pages
         uses: actions/checkout@v2
         with:
-          repository: 'MorphiaOrg/morphia'
-          ref: 'gh_pages'
-          path: 'gh_pages'
+          repository: MorphiaOrg/morphia
+          ref: gh_pages
+          path: gh_pages
       - name: Run antora
         run: make publish
