@@ -14,4 +14,7 @@ jobs:
           ref: gh-pages
           path: gh_pages
       - name: Run antora
-        run: make publish
+        run: |
+          git config user.name evanchooly
+          git config user.email jlee@antwerkz.com
+          make publish
