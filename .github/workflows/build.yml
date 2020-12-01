@@ -13,6 +13,7 @@ jobs:
           repository: MorphiaOrg/morphia
           ref: gh-pages
           path: gh_pages
+          token: ${{ secrets.PUSHTOKEN }}
       - name: User Info
         run: |
           cd gh_pages
