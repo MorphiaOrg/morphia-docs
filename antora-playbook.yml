@@ -27,6 +27,8 @@ runtime:
   fetch: true
 
 asciidoc:
+  attributes:
+    docsRef: http://docs.mongodb.org/manual
   extensions:
     - "@djencks/asciidoctor-openblock"
 
@@ -39,7 +41,7 @@ extensions:
         - name: morphia
           version: '*'
           sources:
-            - url: https://search.maven.org/remotecontent?filepath=dev/morphia/morphia/core/{version}/morphia-core-{version}-javadoc.jar
+            - url: https://search.maven.org/remotecontent?filepath=dev/morphia/morphia/morphia-core/{version}/morphia-core-{version}-javadoc.jar
               module: javadoc
         - name: morphia
           version: '1.6'
@@ -50,6 +52,11 @@ extensions:
           version: '2.0'
           sources:
             - url: https://github.com/MorphiaOrg/morphia/releases/download/r2.0.2/morphia-core-2.0.2-javadoc.jar
+              module: javadoc
+        - name: morphia
+          version: '2.1'
+          sources:
+            - url: https://search.maven.org/remotecontent?filepath=dev/morphia/morphia/morphia-core/2.1.1/morphia-core-2.1.1-javadoc.jar
               module: javadoc
         - name: morphia
           version: '2.2'
