@@ -14,5 +14,8 @@
     "@djencks/content-aggregator": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-content-aggregator-v2.3.3.tgz",
     "@djencks/site-generator-default": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-site-generator-default-v2.3.3.tgz",
     "@djencks/asciidoctor-openblock": "^0.0.1"
+  },
+  "dependencies": {
+    "@antora/cli": "^2.3.4"
   }
 }

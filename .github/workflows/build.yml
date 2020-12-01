@@ -1,0 +1,11 @@
+name: Docs
+
+on: [ push, pull_request, workflow_dispatch ]
+
+jobs:
+  Docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run antora
+        run: make publish
