@@ -27,6 +27,7 @@ $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	cd $(GH_PAGES) ; touch hi ; git add hi
 	cd $(GH_PAGES) ; git status ; git add .
 	pwd ; ls gh_pages/morphia/2.2
+	pwd ; ls build/site/morphia/2.2
 
 sync: $(GH_PAGES)/index.html
 
@@ -39,4 +40,4 @@ push:
 publish: site sync push
 
 clean:
-	@rm -rf build dev.javadoc.jar $(GH_PAGES) local-antora-playbook.yml
+	@rm -rf build dev.javadoc.jar local-antora-playbook.yml
