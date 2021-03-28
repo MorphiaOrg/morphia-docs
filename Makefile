@@ -29,11 +29,12 @@ $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 sync: $(GH_PAGES)/index.html
 
 push:
-#	remote_repo="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
 	cd $(GH_PAGES) ; \
+		git status ; \
 		git add . ; \
 		git commit -a -m "pushing docs updates" ; \
-		git push ${REMOTE_REPO} ;
+		git push ${REMOTE_REPO} ; \
+		git status ;
 
 publish: site sync push
 
