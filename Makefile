@@ -26,7 +26,7 @@ $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
 	cd $(GH_PAGES) ; touch hi ; git add hi
 	cd $(GH_PAGES) ; git status ; git add .
-	pwd ; ls
+	pwd ; ls gh_pages/morphia/2.2
 
 sync: $(GH_PAGES)/index.html
 
