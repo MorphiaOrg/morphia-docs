@@ -25,16 +25,15 @@ build/site/index.html:
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )
 	rsync -Cvra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
+	cd $(GH_PAGES) ; git status ; git add .
 
 sync: $(GH_PAGES)/index.html
 
 push:
 	cd $(GH_PAGES) ; \
-		git status ; \
-		git add . ; \
 		git commit -a -m "pushing docs updates" ; \
-		git push ${REMOTE_REPO} ; \
-		git status ;
+		git status
+		# git push ${REMOTE_REPO} ; \
 
 publish: site sync push
 
