@@ -26,6 +26,7 @@ $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	cd $(GH_PAGES) ; [ "git status -s -uno" ] && ( git checkout . ; git pull --rebase )
 	rsync -Cvra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
 	cd $(GH_PAGES) ; git status ; git add .
+	pwd ; ls
 
 sync: $(GH_PAGES)/index.html
 
