@@ -31,4 +31,4 @@ jobs:
       - name: Run Antora
         env:
           REMOTE_REPO: https://evanchooly:${{ secrets.PUSHTOKEN }}@github.com/MorphiaOrg/morphia.git
-        run: make clean publish
+        run: make publish
