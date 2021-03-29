@@ -24,19 +24,14 @@ build/site/index.html:
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
-	cd $(GH_PAGES) ; touch hi ; git add hi
 	cd $(GH_PAGES) ; git status ; git add .
-	pwd ; ls gh_pages/morphia/2.2
-	pwd ; ls build/site/morphia/2.2
-	pwd ; ls build/site/morphia/2.2/javadoc
 
 sync: $(GH_PAGES)/index.html
 
 push:
 	cd $(GH_PAGES) ; \
-		git status ; \
 		git commit -a -m "pushing docs updates" ; \
-		# git push ${REMOTE_REPO} ; \
+		git push ${REMOTE_REPO} ; \
 
 publish: site sync push
 
