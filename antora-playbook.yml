@@ -62,5 +62,6 @@ extensions:
           version: '2.2'
           sources:
             - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.2.0-SNAPSHOT&c=javadoc
+#            - url: morphia-javadoc.jar
               module: javadoc
 
