@@ -16,6 +16,7 @@ local-site: package-lock.json local-antora-playbook.yml
 	@touch build/site/.nojekyll
 
 site: package-lock.json
+	curl --head 'https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.2.0-SNAPSHOT&c=javadoc'
 	npm run build
 	@touch build/site/.nojekyll
 
