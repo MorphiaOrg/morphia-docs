@@ -7,10 +7,7 @@
 [openblock,"column"]
 ------
 [discrete]
-== Morphia
-
-[discrete]
-=== MongoDB Object Document Mapping for the JVM.
+== Morphia -- MongoDB Object Document Mapping for the JVM.
 
 Bidirectional mapping to and from the database::
 Transparently map your Java entities to MongoDB documents and back.
@@ -40,10 +37,7 @@ https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
 [openblock,"column"]
 ------
 [discrete]
-== Critter
-
-[discrete]
-=== Type safe criteria-builder for use with Morphia-based projects.
+== Critter -- Type safe criteria-builder for use with Morphia-based projects.
 
 Build time query generated helpers::
 Check your query definitions at build time
