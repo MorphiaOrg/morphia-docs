@@ -6,7 +6,7 @@ $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
 local-antora-playbook.yml: antora-playbook.yml Makefile
-	@sed -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1 !' antora-playbook.yml > $@
+	@sed -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml > $@
 
 package-lock.json: package.json
 	npm run clean-install
@@ -31,7 +31,8 @@ sync: $(GH_PAGES)/index.html
 push:
 	cd $(GH_PAGES) ; \
 		git commit -a -m "pushing docs updates" ; \
-		git push ${REMOTE_REPO} ; \
+		git pull --rebase ; \
+		git push ${REMOTE_REPO}
 
 publish: site sync push
 
