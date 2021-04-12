@@ -56,12 +56,11 @@ extensions:
         - name: morphia
           version: '2.1'
           sources:
-            - url: https://search.maven.org/remotecontent?filepath=dev/morphia/morphia/morphia-core/2.1.4/morphia-core-2.1.4-javadoc.jar
+            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.1.5/morphia-core-2.1.5-javadoc.jar
               module: javadoc
         - name: morphia
           version: '2.2'
           sources:
             - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.2.0-SNAPSHOT&c=javadoc
-#            - url: morphia-javadoc.jar
               module: javadoc
 
