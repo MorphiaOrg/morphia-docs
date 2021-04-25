@@ -23,7 +23,7 @@ build/site/index.html:
 	$(MAKE) site
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
-	rsync -Crav --delete --exclude=CNAME build/site/ $(GH_PAGES)/
+	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
 	cd $(GH_PAGES) ; git status ; git add .
 
 sync: $(GH_PAGES)/index.html
