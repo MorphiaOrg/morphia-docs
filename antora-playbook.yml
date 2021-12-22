@@ -56,7 +56,7 @@ extensions:
         - name: morphia
           version: '2.2'
           sources:
-            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.2.1/morphia-core-2.2.1-javadoc.jar
+            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.2.3/morphia-core-2.2.3-javadoc.jar
               module: javadoc
         - name: morphia
           version: '2.3'
