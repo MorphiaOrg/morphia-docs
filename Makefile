@@ -23,8 +23,10 @@ build/site/index.html:
 	$(MAKE) site
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
-	rsync -Cra --delete --exclude=CNAME build/site/ $(GH_PAGES)/
-	cd $(GH_PAGES) ; git status ; git add .
+	cd $(GH_PAGES) ; \
+		rsync -vCra --delete --exclude=CNAME --exclude=.git ../build/site/ . ; \
+		git add . ; \
+		git status
 
 sync: $(GH_PAGES)/index.html
 
@@ -38,3 +40,6 @@ publish: site sync push
 
 clean:
 	@rm -rf build dev.javadoc.jar local-antora-playbook.yml
+
+mrclean: clean
+	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES)
