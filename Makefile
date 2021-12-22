@@ -2,6 +2,8 @@ MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
 MORPHIA_DEV=2.2.0-SNAPSHOT
 GH_PAGES=gh_pages
 
+default: site sync
+
 $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 

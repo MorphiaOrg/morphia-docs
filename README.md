@@ -1,18 +1,14 @@
 # Morphia Documentation
  
-This repository holds the source for the Morphia documentation.  It is currently broken up in to two main sections:  `landing` and
- `reference`.  `landing` holds the main page which links off to the versioned docs.  `reference` holds the guides specific to each
-  supported version of Morphia.  To build the docs you'll need the following installed:
+This repository holds the source for the Morphia documentation.  It is built using [antora](antora.org) to build and aggregate the documentation for the supported versions of Morphia. To build the docs you'll need the following installed:
 
-1.  Java 11+
-1.  Maven 3.6.3+
-1.  Hugo 0.62+
+1.  npm
 1.  make
 
 ## Building
 
-To build all the docs, simply run `make` from the root directory.  If you're updating a specific version's documentation, running `make
-` in that version's folder will build the subset of the docs for that version.  Whether working on `landing` or a `reference` version you
- can track the live changes using `make watch`.  This is simply a wrapper via the `Makefile` over the `hugo watch` command.
+To build all the docs, simply run `make` from the root directory.  This will build the site locally and synchronize it in to a local 
+checkout of the `gh_pages` branch where you can view the documentation as it would look online.  If you have commit rights, `make 
+publish` will do all that and push those updates online.
  
 
