@@ -54,7 +54,7 @@ xref:critter:ROOT:index.adoc[Latest documentation, role=btn-mongo]
 
 [openblock,"column"]
 ----------
-https://github.com/MorphiaOrg/morphia/[Source Code, role=btn-mongo]
+https://github.com/MorphiaOrg/critter/[Source Code, role=btn-mongo]
 ----------
 
 --------
