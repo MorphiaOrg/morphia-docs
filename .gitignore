@@ -4,6 +4,5 @@
 build
 node_modules
 local-antora-playbook.yml
-/dev.javadoc.jar
 gh_pages/
 package-lock.json

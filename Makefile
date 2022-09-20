@@ -20,10 +20,17 @@ site: package-lock.json
 	npm run build
 	@touch build/site/.nojekyll
 
-build/site/index.html:
+build/site/index.html: Makefile Makefile-javadoc
 	$(MAKE) site
+	$(MAKE) -f Makefile-javadoc alldocs
 
-$(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
+Makefile-javadoc: versions.list Makefile generate-makefile.sh
+	@./generate-makefile.sh
+
+javadocs: Makefile-javadoc
+	@$(MAKE) -f Makefile-javadoc alldocs
+
+$(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html javadocs
 	cd $(GH_PAGES) ; \
 		rsync -vCra --delete --exclude=CNAME --exclude=.git ../build/site/ . ; \
 		git add . ; \
@@ -40,7 +47,8 @@ push:
 publish: site sync push
 
 clean:
-	@rm -rf build dev.javadoc.jar local-antora-playbook.yml
+	@rm -rf build local-antora-playbook.yml Makefile-javadoc
 
 mrclean: clean
-	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES)
+	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES) || true
+	@npm run clean

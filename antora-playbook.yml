@@ -32,35 +32,35 @@ asciidoc:
   extensions:
     - "@djencks/asciidoctor-openblock"
 
-extensions:
-  - path: "@djencks/antora-javadoc"
-    config:
-      extract: body
-      layout: javadoc
-      components:
-        - name: morphia
-          version: '1.6'
-          sources:
-            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/core/1.6.1/core-1.6.1-javadoc.jar
-              module: javadoc
-        - name: morphia
-          version: '2.0'
-          sources:
-            - url: https://github.com/MorphiaOrg/morphia/releases/download/r2.0.2/morphia-core-2.0.2-javadoc.jar
-              module: javadoc
-        - name: morphia
-          version: '2.1'
-          sources:
-            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.1.7/morphia-core-2.1.7-javadoc.jar
-              module: javadoc
-        - name: morphia
-          version: '2.2'
-          sources:
-            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.2.7/morphia-core-2.2.7-javadoc.jar
-              module: javadoc
-        - name: morphia
-          version: '2.3'
-          sources:
-            - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.3.0-SNAPSHOT&c=javadoc
-              module: javadoc
+#extensions:
+#  - path: "@djencks/antora-javadoc"
+#    config:
+#      extract: body
+#      layout: javadoc
+#      components:
+#        - name: morphia
+#          version: '1.6'
+#          sources:
+#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/core/1.6.1/core-1.6.1-javadoc.jar
+#              module: javadoc
+#        - name: morphia
+#          version: '2.0'
+#          sources:
+#            - url: https://github.com/MorphiaOrg/morphia/releases/download/r2.0.2/morphia-core-2.0.2-javadoc.jar
+#              module: javadoc
+#        - name: morphia
+#          version: '2.1'
+#          sources:
+#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.1.7/morphia-core-2.1.7-javadoc.jar
+#              module: javadoc
+#        - name: morphia
+#          version: '2.2'
+#          sources:
+#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.2.7/morphia-core-2.2.7-javadoc.jar
+#              module: javadoc
+#        - name: morphia
+#          version: '2.3'
+#          sources:
+#            - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.3.0-SNAPSHOT&c=javadoc
+#              module: javadoc
 

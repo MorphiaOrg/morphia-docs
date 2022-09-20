@@ -3,11 +3,14 @@
   "scripts": {
     "clean-build": "npm run clean-install;npm run build",
     "clean-local-build": "npm run clean-install;npm run local-build",
-    "clean-install": "rm -rf node_modules/ .cache/ package-lock.json ;npm i --cache=.cache/npm",
+    "clean": "rm -rf node_modules/ .cache/ package-lock.json",
+    "clean-install": "npm run clean;npm i --cache=.cache/npm",
     "build": "antora --generator @djencks/site-generator-default antora-playbook.yml --stacktrace --fetch",
     "local-build": "antora --generator @djencks/site-generator-default local-antora-playbook.yml --stacktrace --fetch"
   },
   "devDependencies": {
+    "@antora/cli": "3.0.3",
+    "@antora/site-generator": "3.0.3",
     "@djencks/antora-javadoc": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-antora-javadoc-v0.0.2.tgz",
     "@djencks/asciidoctor-openblock": "^0.0.1",
     "@djencks/content-aggregator": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-content-aggregator-v2.3.3.tgz",
@@ -16,7 +19,6 @@
     "@djencks/site-generator-default": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-site-generator-default-v2.3.3.tgz"
   },
   "dependencies": {
-    "@antora/cli": "^2.3.4",
     "npm": "^8.3.0"
   }
 }
