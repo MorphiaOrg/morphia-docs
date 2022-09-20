@@ -25,7 +25,7 @@ build/site/index.html: Makefile Makefile-javadoc
 	$(MAKE) -f Makefile-javadoc alldocs
 
 Makefile-javadoc: versions.list Makefile generate-makefile.sh
-	@sh ./generate-makefile.sh
+	@bash ./generate-makefile.sh
 
 javadocs: Makefile-javadoc
 	@$(MAKE) -f Makefile-javadoc alldocs
