@@ -26,8 +26,7 @@ echo "${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar:
 		-Dclassifier=javadoc -DremoteRepositories=${REPO} -Dtransitive=false
 " >> Makefile-javadoc
 
-echo "build/site/morphia/$SHORTVER/javadoc/index-all.html: build/site/morphia/$SHORTVER/javadoc/index.html \\
-	${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
+echo "build/site/morphia/$SHORTVER/javadoc/index-all.html: ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
 	@cd build/site/morphia/$SHORTVER/javadoc/ ; \\
 		jar -xf ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
 " >> Makefile-javadoc
