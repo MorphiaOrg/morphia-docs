@@ -8,20 +8,20 @@ content:
     branches: HEAD
     start_path: home
   - url: https://github.com/MorphiaOrg/morphia
-    branches: [ 2.2.x, 2.1.x, 2.0.x, 1.6.x, master ]
+    branches: [ master, 2.2.x, 2.1.x, 1.6.x ]
     start_path: docs
   - url: https://github.com/MorphiaOrg/critter
     branches: [ 4.1.x, master ]
     start_path: docs
 
-#ui:
-#  bundle:
-#    url: node_modules/@djencks/javadoc-ui/build/javadoc-ui-bundle.zip
-#    snapshot: true
-#  supplemental_files: ./supplemental-ui
+ui:
+  bundle:
+    url: node_modules/@djencks/javadoc-ui/build/javadoc-ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
 
-output:
-  clean: true
+#output:
+#  clean: true
 
 runtime:
   fetch: true
@@ -29,38 +29,3 @@ runtime:
 asciidoc:
   attributes:
     docsRef: http://docs.mongodb.org/manual
-  extensions:
-    - "@djencks/asciidoctor-openblock"
-
-#extensions:
-#  - path: "@djencks/antora-javadoc"
-#    config:
-#      extract: body
-#      layout: javadoc
-#      components:
-#        - name: morphia
-#          version: '1.6'
-#          sources:
-#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/core/1.6.1/core-1.6.1-javadoc.jar
-#              module: javadoc
-#        - name: morphia
-#          version: '2.0'
-#          sources:
-#            - url: https://github.com/MorphiaOrg/morphia/releases/download/r2.0.2/morphia-core-2.0.2-javadoc.jar
-#              module: javadoc
-#        - name: morphia
-#          version: '2.1'
-#          sources:
-#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.1.7/morphia-core-2.1.7-javadoc.jar
-#              module: javadoc
-#        - name: morphia
-#          version: '2.2'
-#          sources:
-#            - url: https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-core/2.2.7/morphia-core-2.2.7-javadoc.jar
-#              module: javadoc
-#        - name: morphia
-#          version: '2.3'
-#          sources:
-#            - url: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=dev.morphia.morphia&a=morphia-core&v=2.3.0-SNAPSHOT&c=javadoc
-#              module: javadoc
-

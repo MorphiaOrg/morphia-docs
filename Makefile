@@ -15,10 +15,12 @@ package-lock.json: package.json
 local-site: local-antora-playbook.yml package-lock.json
 	npm run local-build
 	@touch build/site/.nojekyll
+	@cp home/modules/ROOT/pages/*.html build/site/landing
 
 site: package-lock.json
 	npm run build
 	@touch build/site/.nojekyll
+	@cp home/modules/ROOT/pages/*.html build/site/landing
 
 build/site/index.html: Makefile Makefile-javadoc
 	$(MAKE) site
