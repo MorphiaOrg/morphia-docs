@@ -9,9 +9,6 @@ $(GH_PAGES):
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml > $@
 
-package-lock.json: package.json
-	npm run clean-install
-
 local-site: local-antora-playbook.yml package-lock.json
 	npm run local-build
 	@touch build/site/.nojekyll
@@ -22,14 +19,17 @@ site: package-lock.json
 	@touch build/site/.nojekyll
 	@cp home/modules/ROOT/pages/*.html build/site/landing
 
-build/site/index.html: Makefile Makefile-javadoc
-	$(MAKE) site
-	$(MAKE) -f Makefile-javadoc alldocs
+sync: $(GH_PAGES)/index.html
+
+publish: site sync push
+
+#build/site/index.html: Makefile Makefile-javadoc
+#	$(MAKE) -f Makefile-javadoc alldocs
 
 Makefile-javadoc: versions.list Makefile generate-makefile.sh
 	@bash ./generate-makefile.sh
 
-javadocs: Makefile-javadoc
+javadocs: Makefile Makefile-javadoc
 	@$(MAKE) -f Makefile-javadoc alldocs
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html javadocs
@@ -38,15 +38,14 @@ $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html javadocs
 		git add . ; \
 		git status
 
-sync: $(GH_PAGES)/index.html
-
 push:
 	cd $(GH_PAGES) ; \
 		git commit -a -m "pushing docs updates" ; \
 		git pull --rebase ; \
 		git push ${REMOTE_REPO}
 
-publish: site sync push
+package-lock.json: package.json
+	npm run clean-install
 
 clean:
 	@rm -rf build local-antora-playbook.yml Makefile-javadoc
