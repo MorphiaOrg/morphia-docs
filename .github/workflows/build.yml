@@ -12,9 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2
-      - uses: actions/checkout@v2
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - uses: actions/checkout@v3
       - name: Check out gh_pages
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: MorphiaOrg/morphia
           ref: gh-pages
