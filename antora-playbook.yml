@@ -11,7 +11,7 @@ content:
     branches: [ master, 2.3.x, 2.2.x, 2.1.x, 1.6.x ]
     start_path: docs
   - url: https://github.com/MorphiaOrg/critter
-    branches: [ 4.1.x, master ]
+    branches: [ 4.3.x, 4.1.x, master ]
     start_path: docs
 
 ui:
