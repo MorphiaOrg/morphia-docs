@@ -23,9 +23,6 @@ sync: $(GH_PAGES)/index.html
 
 publish: site sync push
 
-#build/site/index.html: Makefile Makefile-javadoc
-#	$(MAKE) -f Makefile-javadoc alldocs
-
 Makefile-javadoc: versions.list Makefile generate-makefile.sh
 	@bash ./generate-makefile.sh
 
