@@ -9,8 +9,8 @@
     "local-build": "antora local-antora-playbook.yml --stacktrace --fetch"
   },
   "devDependencies": {
-    "@antora/cli": "3.0.3",
-    "@antora/site-generator": "3.0.3",
+    "@antora/cli": "3.1.3",
+    "@antora/site-generator": "3.1.3",
     "@djencks/antora-javadoc": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-antora-javadoc-v0.0.2.tgz",
     "@djencks/javadoc-ui": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-javadoc-ui-v0.0.2.tgz",
     "@djencks/playbook-builder": "https://experimental-repo.s3-us-west-1.amazonaws.com/djencks-playbook-builder-v2.3.3.tgz"
