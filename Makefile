@@ -1,21 +1,45 @@
 MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
+BRANCHES=master, 2.3.x, 2.2.x, 2.1.x, 1.6.x
+PLAYBOOK=antora-playbook.yml
 
 default: site sync
 
 $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
+build/morphia:
+	git clone $(MORPHIA_GITHUB) build/morphia
+
+local: .PHONY
+	@$(eval PLAYBOOK=local-${PLAYBOOK} )
+
+build/majorVersion: build/minorVersion
+	@mvn -f build/morphia/pom.xml \
+	  	build-helper:parse-version \
+	  	help:evaluate -Dexpression=parsedVersion.majorVersion -q -DforceStdout > build/majorVersion
+
+build/minorVersion: build/morphia/pom.xml
+	@mvn -f build/morphia/pom.xml \
+	  	build-helper:parse-version \
+	  	help:evaluate -Dexpression=parsedVersion.minorVersion -q -DforceStdout > build/minorVersion
+
+home/modules/ROOT/pages/index.html : Makefile
+	@make -s build/morphia
+	@cd build/morphia ; git checkout ` echo $(BRANCHES) | cut -d, -f 2`
+	@make -s build/majorVersion
+	@sed -i $@ -e "s|../morphia/.*/index.html|../morphia/`cat build/majorVersion`.`cat build/minorVersion`/index.html|"
+
+antora-playbook.yml: .PHONY
+	@sed antora-playbook-template.yml \
+		-e 's/branches: \[ .* \] ### morphia branches/branches: [ $(BRANCHES) ] ### morphia branches/' > $@
+
 local-antora-playbook.yml: antora-playbook.yml Makefile
-	@sed -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml > $@
+	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
 
-local-site: local-antora-playbook.yml package-lock.json
-	npm run local-build
-	@touch build/site/.nojekyll
-	@cp home/modules/ROOT/pages/*.html build/site/landing
-
-site: package-lock.json
-	npm run build
+site: home/modules/ROOT/pages/index.html package-lock.json
+	@make -s $(PLAYBOOK)
+	@npm run build
 	@touch build/site/.nojekyll
 	@cp home/modules/ROOT/pages/*.html build/site/landing
 
@@ -27,6 +51,7 @@ Makefile-javadoc: versions.list Makefile generate-makefile.sh
 	@bash ./generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc
+	@echo building
 	@$(MAKE) -f Makefile-javadoc alldocs
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html javadocs
@@ -45,8 +70,10 @@ package-lock.json: package.json
 	npm run clean-install
 
 clean:
-	@rm -rf build local-antora-playbook.yml Makefile-javadoc
+	@rm -rf build antora-playbook.yml Makefile-javadoc
 
 mrclean: clean
 	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES) || true
 	@npm run clean
+
+.PHONY:

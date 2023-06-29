@@ -1,12 +1,10 @@
 {
   "description": "Morphia docs",
   "scripts": {
-    "clean-build": "npm run clean-install;npm run build",
-    "clean-local-build": "npm run clean-install;npm run local-build",
-    "clean": "rm -rf node_modules/ .cache/ package-lock.json",
-    "clean-install": "npm run clean;npm i --cache=.cache/npm",
     "build": "antora antora-playbook.yml --stacktrace --fetch",
-    "local-build": "antora local-antora-playbook.yml --stacktrace --fetch"
+    "clean": "rm -rf node_modules/ .cache/ package-lock.json",
+    "clean-build": "npm run clean-install;npm run build",
+    "clean-install": "npm run clean;npm i --cache=.cache/npm"
   },
   "devDependencies": {
     "@antora/cli": "3.1.3",

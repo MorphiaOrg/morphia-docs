@@ -3,7 +3,7 @@
 .cache
 build
 node_modules
-local-antora-playbook.yml
+antora-playbook.yml
 gh_pages/
 package-lock.json
 Makefile-javadoc
