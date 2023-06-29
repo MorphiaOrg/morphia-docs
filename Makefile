@@ -1,6 +1,6 @@
 MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
-BRANCHES=master, 2.3.x, 2.2.x, 2.1.x, 1.6.x
+BRANCHES=master 2.3.x 2.2.x 2.1.x 1.6.x
 PLAYBOOK=antora-playbook.yml
 
 default: site sync
@@ -11,28 +11,32 @@ $(GH_PAGES):
 build/morphia:
 	git clone $(MORPHIA_GITHUB) build/morphia
 
+versions.list: Makefile
+	> versions.list
+	@for BRANCH in $(BRANCHES); \
+	do \
+	  cd build/morphia ; git checkout -q $$BRANCH; cd - ;\
+	  make -s -B build/majorVersion ; \
+      cat build/fullVersion >> $@; \
+	done;
+	cd build/morphia ; git checkout master; cd - ;\
+
+
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
 
-build/majorVersion: build/minorVersion
-	@mvn -f build/morphia/pom.xml \
-	  	build-helper:parse-version \
-	  	help:evaluate -Dexpression=parsedVersion.majorVersion -q -DforceStdout > build/majorVersion
-
-build/minorVersion: build/morphia/pom.xml
-	@mvn -f build/morphia/pom.xml \
-	  	build-helper:parse-version \
-	  	help:evaluate -Dexpression=parsedVersion.minorVersion -q -DforceStdout > build/minorVersion
+build/majorVersion: build/morphia/pom.xml Makefile
+	bin/extractVersions.sh
 
 home/modules/ROOT/pages/index.html : Makefile
 	@make -s build/morphia
-	@cd build/morphia ; git checkout ` echo $(BRANCHES) | cut -d, -f 2`
+	@cd build/morphia ; git checkout ` echo $(BRANCHES) | cut -d' ' -f 2`
 	@make -s build/majorVersion
 	@sed -i $@ -e "s|../morphia/.*/index.html|../morphia/`cat build/majorVersion`.`cat build/minorVersion`/index.html|"
 
-antora-playbook.yml: .PHONY
-	@sed antora-playbook-template.yml \
-		-e 's/branches: \[ .* \] ### morphia branches/branches: [ $(BRANCHES) ] ### morphia branches/' > $@
+antora-playbook.yml: Makefile .PHONY
+	sed antora-playbook-template.yml \
+		-e "s/branches: \[.*\] ### morphia branches/branches: [ `echo $(BRANCHES) | sed -e 's/ /, /g'` ] ### morphia branches/" > $@
 
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
