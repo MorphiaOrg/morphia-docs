@@ -9,7 +9,8 @@ $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
 build/morphia: .PHONY
-	[ ! -d build/morphia ] && git clone $(MORPHIA_GITHUB) build/morphia || true
+	mkdir -p build/
+	git clone $(MORPHIA_GITHUB) build/morphia || true
 	cd build/morphia && git pull --all
 
 versions.list: Makefile
