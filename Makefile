@@ -1,6 +1,6 @@
 MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
-BRANCHES=master 2.3.x 2.2.x 2.1.x 1.6.x
+BRANCHES=master 2.4.x 2.3.x 2.2.x 2.1.x 1.6.x
 PLAYBOOK=antora-playbook.yml
 
 default: site sync
@@ -8,14 +8,15 @@ default: site sync
 $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
-build/morphia:
-	git clone $(MORPHIA_GITHUB) build/morphia
+build/morphia: .PHONY
+	[ ! -d build/morphia ] && git clone $(MORPHIA_GITHUB) build/morphia || true
+	cd build/morphia && git pull --all
 
 versions.list: Makefile
 	> versions.list
 	@for BRANCH in $(BRANCHES); \
 	do \
-	  cd build/morphia ; git checkout -q $$BRANCH; cd - ;\
+	  cd build/morphia ; git checkout $$BRANCH; cd - ;\
 	  make -s -B build/majorVersion ; \
       cat build/fullVersion >> $@; \
 	done;
@@ -25,10 +26,10 @@ versions.list: Makefile
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
 
-build/majorVersion: build/morphia/pom.xml Makefile
+build/majorVersion: build/morphia/pom.xml
 	bin/extractVersions.sh
 
-home/modules/ROOT/pages/index.html : Makefile
+home/modules/ROOT/pages/index.html : Makefile versions.list Makefile-javadoc
 	@make -s build/morphia
 	@cd build/morphia ; git checkout ` echo $(BRANCHES) | cut -d' ' -f 2`
 	@make -s build/majorVersion
