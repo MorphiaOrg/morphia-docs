@@ -13,7 +13,7 @@ do
   else
     REPO=https://repo1.maven.org/maven2
   fi
-  if [[ $VERSION == 2.* ]]
+  if [[ $VERSION != 1.* ]]
   then
     ARTIFACT=morphia-core
   else

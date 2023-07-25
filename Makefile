@@ -42,7 +42,7 @@ antora-playbook.yml: Makefile .PHONY
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
 
-site: home/modules/ROOT/pages/index.html package-lock.json
+site: build/morphia home/modules/ROOT/pages/index.html package-lock.json
 	@make -s $(PLAYBOOK)
 	@npm run build
 	@touch build/site/.nojekyll
@@ -52,8 +52,8 @@ sync: $(GH_PAGES)/index.html
 
 publish: site sync push
 
-Makefile-javadoc: versions.list Makefile generate-makefile.sh
-	@bash ./generate-makefile.sh
+Makefile-javadoc: versions.list Makefile bin/generate-makefile.sh
+	@bash ./bin/generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc
 	@echo building
