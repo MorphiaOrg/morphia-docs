@@ -14,20 +14,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: actions/checkout@v3
-      - name: Check out morphia
-        uses: actions/checkout@v3
-        with:
-          repository: MorphiaOrg/morphia
-          path: build/morphia
-          token: ${{ secrets.PUSH_TOKEN }}
-      - name: Check out gh_pages
-        uses: actions/checkout@v3
-        with:
-          repository: MorphiaOrg/morphia
-          ref: gh-pages
-          path: gh_pages
-          token: ${{ secrets.PUSH_TOKEN }}
       - name: User Info
         run: |
           cd gh_pages
