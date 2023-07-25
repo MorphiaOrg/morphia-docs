@@ -6,29 +6,29 @@ PLAYBOOK=antora-playbook.yml
 default: site sync
 
 $(GH_PAGES): .PHONY
-	[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) || true
-	cd $@ && git pull --all &> /dev/null
+	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) || true
+	@git -C $@ reset --hard --quiet && git -C $@ pull --all --quiet
 
 build/morphia: .PHONY
 	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) build/morphia || true
-	@cd $@ && git pull --all #&> /dev/null
+	@git -C $@ pull --all --quiet
 
 versions.list: Makefile 
-	> versions.list
+	@echo Extracting versions
+	@> versions.list
 	@for BRANCH in $(BRANCHES); \
 	do \
-	  cd build/morphia ; git checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; cd - ; \
+	  git -C build/morphia checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; \
 	  jbang --quiet bin/extractVersions.kt $$BRANCH >> versions.list ; \
 	done;
-	@cd build/morphia ; git checkout master &> /dev/null || echo checkout failed for $$BRANCH ; cd - ;\
+	@git -C build/morphia checkout master &> /dev/null || echo checkout failed for $$BRANCH ; \
 
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
 
 home/modules/ROOT/pages/index.html : Makefile Makefile-javadoc build/morphia
 	@BRANCH=`echo $(BRANCHES) | cut -d' ' -f 2` ; \
-	cd build/morphia ; git checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; cd - ; \
-	echo "Updating index.html" ; \
+	git -C build/morphia checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; \
 	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
 	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
 
@@ -72,7 +72,7 @@ package-lock.json: package.json
 	npm run clean-install
 
 clean:
-	@rm -rf build antora-playbook.yml Makefile-javadoc
+	@rm -rf build antora-playbook.yml
 
 mrclean: clean
 	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES) || true
