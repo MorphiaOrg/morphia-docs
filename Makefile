@@ -34,7 +34,7 @@ antora-playbook.yml: Makefile .PHONY
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
 
-site: build/morphia home/modules/ROOT/pages/index.html package-lock.json
+site: build/morphia versions.list home/modules/ROOT/pages/index.html package-lock.json
 	@make -s $(PLAYBOOK)
 	@npm run build
 	@touch build/site/.nojekyll
