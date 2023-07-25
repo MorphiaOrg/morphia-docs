@@ -1,3 +1,6 @@
+__ORIGINAL_SHELL:=$(SHELL)
+SHELL=$(warning [[ Building $@$(if $<, (from $<))$(if $?, ($? newer)) ]] )$(TIME) $(__ORIGINAL_SHELL)
+
 MORPHIA_GITHUB=https://evanchooly:${{ secrets.PUSH_TOKEN }}@github.com/MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
 BRANCHES=master 2.4.x 2.3.x 2.2.x 2.1.x 1.6.x
