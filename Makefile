@@ -9,32 +9,23 @@ $(GH_PAGES):
 	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
 
 build/morphia: .PHONY
-	mkdir -p build/
-	git clone $(MORPHIA_GITHUB) build/morphia || true
-	cd build/morphia && git pull --all
+	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) build/morphia || true
+	@cd build/morphia && git pull --all &> /dev/null
 
 versions.list: Makefile
 	> versions.list
 	@for BRANCH in $(BRANCHES); \
 	do \
-	  cd build/morphia ; git checkout $$BRANCH; cd - ;\
-	  make -s -B build/majorVersion ; \
-      cat build/fullVersion >> $@; \
+	  bin/extractVersions.sh $$BRANCH >> versions.list ; \
 	done;
 	cd build/morphia ; git checkout master; cd - ;\
-
 
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
 
-build/majorVersion: build/morphia/pom.xml
-	bin/extractVersions.sh
-
-home/modules/ROOT/pages/index.html : Makefile versions.list Makefile-javadoc
-	@make -s build/morphia
-	@cd build/morphia ; git checkout ` echo $(BRANCHES) | cut -d' ' -f 2`
-	@make -s build/majorVersion
-	@sed -i $@ -e "s|../morphia/.*/index.html|../morphia/`cat build/majorVersion`.`cat build/minorVersion`/index.html|"
+home/modules/ROOT/pages/index.html : Makefile Makefile-javadoc build/morphia
+	@BRANCH=`echo $(BRANCHES) | cut -d' ' -f 2` ; \
+	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/`bin/extractVersions.sh $$BRANCH onlyminor`/index.html|"
 
 antora-playbook.yml: Makefile .PHONY
 	sed antora-playbook-template.yml \
@@ -53,7 +44,7 @@ sync: $(GH_PAGES)/index.html
 
 publish: site sync push
 
-Makefile-javadoc: versions.list Makefile bin/generate-makefile.sh
+Makefile-javadoc: bin/generate-makefile.sh
 	@bash ./bin/generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc

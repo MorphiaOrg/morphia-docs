@@ -1,10 +1,14 @@
 #!/bin/bash
 
 function extract() {
-  mvn -f build/morphia/pom.xml \
-    build-helper:parse-version \
+  mvn -q build-helper:parse-version \
     help:evaluate -Dexpression=parsedVersion.$1 -q -DforceStdout
 }
+
+export BRANCH=$1
+export MINOR_ONLY=$2
+cd build/morphia
+git checkout $BRANCH &> /dev/null || echo checkout failed for $BRANCH
 
 MAJOR=`extract majorVersion`
 MINOR=`extract minorVersion`
@@ -17,8 +21,4 @@ else
   QUALIFIER="-SNAPSHOT"
 fi
 
-echo $MAJOR > build/majorVersion
-echo $MINOR > build/minorVersion
-echo $PATCH > build/patchVersion
-
-echo "$MAJOR.$MINOR.$PATCH$QUALIFIER" > build/fullVersion
+[ "$MINOR_ONLY" ] && echo "$MAJOR.$MINOR" || echo "$MAJOR.$MINOR.$PATCH$QUALIFIER" 
