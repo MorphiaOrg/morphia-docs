@@ -1,4 +1,4 @@
-MORPHIA_GITHUB=git@github.com:MorphiaOrg/morphia.git
+MORPHIA_GITHUB=https://evanchooly:${{ secrets.PUSH_TOKEN }}@github.com/MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
 BRANCHES=master 2.4.x 2.3.x 2.2.x 2.1.x 1.6.x
 PLAYBOOK=antora-playbook.yml
@@ -10,7 +10,7 @@ $(GH_PAGES):
 
 build/morphia: .PHONY
 	mkdir -p build/
-	gh repo clone $(MORPHIA_GITHUB) build/morphia || true
+	git clone $(MORPHIA_GITHUB) build/morphia || true
 	cd build/morphia && git pull --all
 
 versions.list: Makefile
