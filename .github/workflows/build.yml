@@ -16,9 +16,8 @@ jobs:
           node-version: 16
       - name: User Info
         run: |
-          cd gh_pages
-          git config user.name evanchooly
-          git config user.email jlee@antwerkz.com
+          git config --global user.name evanchooly
+          git config --global user.email jlee@antwerkz.com
       - name: Run Antora
         env:
           REMOTE_REPO: https://evanchooly:${{ secrets.PUSH_TOKEN }}@github.com/MorphiaOrg/morphia.git
