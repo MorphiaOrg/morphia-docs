@@ -21,17 +21,17 @@ versions.list: Makefile
 	> versions.list
 	for BRANCH in $(BRANCHES); \
 	do \
-	  git -C build/morphia checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; \
+	  git -C build/morphia checkout $$BRANCH --quiet || echo checkout failed for $$BRANCH ; \
 	  jbang --quiet bin/extractVersions.kt $$BRANCH >> versions.list ; \
 	done;
-	git -C build/morphia checkout master &> /dev/null || echo checkout failed for $$BRANCH ; \
+	git -C build/morphia checkout master --quiet || echo checkout failed for $$BRANCH ; \
 
 local: .PHONY
 	$(eval PLAYBOOK=local-${PLAYBOOK} )
 
 home/modules/ROOT/pages/index.html : Makefile Makefile-javadoc build/morphia
 	BRANCH=`echo $(BRANCHES) | cut -d' ' -f 2` ; \
-	git -C build/morphia checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; \
+	git -C build/morphia checkout $$BRANCH --quiet || echo checkout failed for $$BRANCH ; \
 	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
 	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
 
