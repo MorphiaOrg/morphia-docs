@@ -28,7 +28,7 @@ echo "${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar:
 
 echo "build/site/morphia/$SHORTVER/javadoc/index.html: ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
 	@mkdir -p build/site/morphia/$SHORTVER/javadoc/
-	unzip -DD -q -o ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
+	@unzip -DD -q -o ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
 		-d build/site/morphia/$SHORTVER/javadoc/ ;
 " >> Makefile-javadoc
 

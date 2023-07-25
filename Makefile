@@ -5,12 +5,13 @@ PLAYBOOK=antora-playbook.yml
 
 default: site sync
 
-$(GH_PAGES):
-	git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) --depth 1
+$(GH_PAGES): .PHONY
+	[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) -b gh-pages $(GH_PAGES) || true
+	cd $@ && git pull --all &> /dev/null
 
 build/morphia: .PHONY
 	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) build/morphia || true
-	@cd build/morphia && git pull --all &> /dev/null
+	@cd $@ && git pull --all #&> /dev/null
 
 versions.list: Makefile 
 	> versions.list
@@ -48,7 +49,7 @@ sync: $(GH_PAGES)/index.html
 
 publish: site sync push
 
-Makefile-javadoc: bin/generate-makefile.sh
+Makefile-javadoc: versions.list bin/generate-makefile.sh
 	@bash ./bin/generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc
