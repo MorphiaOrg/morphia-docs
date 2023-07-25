@@ -34,6 +34,7 @@ home/modules/ROOT/pages/index.html : Makefile Makefile-javadoc build/morphia
 	git -C build/morphia checkout $$BRANCH --quiet || echo checkout failed for $$BRANCH ; \
 	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
 	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
+	echo "DONE UPDATING INDEX.HTML"
 
 antora-playbook.yml: Makefile .PHONY
 	sed antora-playbook-template.yml \
