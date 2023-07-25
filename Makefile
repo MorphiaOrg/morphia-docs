@@ -12,20 +12,24 @@ build/morphia: .PHONY
 	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) build/morphia || true
 	@cd build/morphia && git pull --all &> /dev/null
 
-versions.list: Makefile
+versions.list: Makefile 
 	> versions.list
 	@for BRANCH in $(BRANCHES); \
 	do \
-	  bin/extractVersions.sh $$BRANCH >> versions.list ; \
+	  cd build/morphia ; git checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; cd - ; \
+	  jbang --quiet bin/extractVersions.kt $$BRANCH >> versions.list ; \
 	done;
-	cd build/morphia ; git checkout master; cd - ;\
+	@cd build/morphia ; git checkout master &> /dev/null || echo checkout failed for $$BRANCH ; cd - ;\
 
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
 
 home/modules/ROOT/pages/index.html : Makefile Makefile-javadoc build/morphia
 	@BRANCH=`echo $(BRANCHES) | cut -d' ' -f 2` ; \
-	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/`bin/extractVersions.sh $$BRANCH onlyminor`/index.html|"
+	cd build/morphia ; git checkout $$BRANCH &> /dev/null || echo checkout failed for $$BRANCH ; cd - ; \
+	echo "Updating index.html" ; \
+	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
+	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
 
 antora-playbook.yml: Makefile .PHONY
 	sed antora-playbook-template.yml \
