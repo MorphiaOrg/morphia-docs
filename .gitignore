@@ -6,3 +6,5 @@ node_modules
 antora-playbook.yml
 gh_pages/
 package-lock.json
+/Makefile-javadoc
+/versions.list
