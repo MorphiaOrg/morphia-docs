@@ -22,7 +22,7 @@ do
   SHORTVER=` echo $VERSION | cut -d. -f-2 `
 
 echo "${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar:
-	@mvn dependency:get -DgroupId=dev.morphia.morphia -DartifactId=${ARTIFACT} -Dversion=${VERSION} \\
+	@mvn -U dependency:get -DgroupId=dev.morphia.morphia -DartifactId=${ARTIFACT} -Dversion=${VERSION} \\
 		-Dclassifier=javadoc -DremoteRepositories=${REPO} -Dtransitive=false
 " >> Makefile-javadoc
 

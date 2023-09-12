@@ -1,3 +1,4 @@
+# Uncomment for verbose debug output
 #__ORIGINAL_SHELL:=$(SHELL)
 #SHELL=$(warning [[ Building $@$(if $<, (from $<))$(if $?, ($? newer)) ]] )$(TIME) $(__ORIGINAL_SHELL)
 
@@ -53,7 +54,7 @@ sync: $(GH_PAGES)/index.html
 
 publish: site sync push
 
-Makefile-javadoc: versions.list bin/generate-makefile.sh
+Makefile-javadoc: versions.list bin/generate-makefile.sh Makefile
 	@bash ./bin/generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc
@@ -75,7 +76,7 @@ package-lock.json: package.json
 	@npm run clean-install
 
 clean:
-	@rm -rf build antora-playbook.yml
+	@rm -rf build antora-playbook.yml versions.list Makefile-javadoc
 
 mrclean: clean
 	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES) || true
