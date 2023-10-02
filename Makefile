@@ -76,10 +76,10 @@ package-lock.json: package.json
 	@npm run clean-install
 
 clean:
-	@rm -rf build antora-playbook.yml versions.list Makefile-javadoc
+	@rm -rf antora-playbook.yml versions.list Makefile-javadoc
 
 mrclean: clean
-	@[ -e $(GH_PAGES) ] && rm -rf $(GH_PAGES) || true
+	@rm -rf build $(GH_PAGES)
 	@npm run clean
 
 .PHONY:
