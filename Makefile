@@ -17,6 +17,9 @@ build/morphia: .PHONY
 	@[ ! -d $@ ] && git clone $(MORPHIA_GITHUB) build/morphia || true
 	@git -C $@ pull --all --quiet
 
+package-lock.json: package.json
+	@npm run clean-install
+
 versions.list: Makefile 
 	@echo Extracting versions
 	@make -s build/morphia
@@ -44,23 +47,13 @@ antora-playbook.yml: Makefile .PHONY
 local-antora-playbook.yml: antora-playbook.yml Makefile
 	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
 
-site: versions.list package-lock.json
-	@make -s $(PLAYBOOK)
-	@npm run build
-	@touch build/site/.nojekyll
-	@cp home/modules/ROOT/pages/*.html build/site/landing
-
-sync: $(GH_PAGES)/index.html
-
-publish: site sync push
-
 Makefile-javadoc: versions.list bin/generate-makefile.sh Makefile
 	@bash ./bin/generate-makefile.sh
 
 javadocs: Makefile Makefile-javadoc
 	@$(MAKE) -f Makefile-javadoc alldocs
 
-$(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html javadocs
+$(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	@cd $(GH_PAGES) ; \
 		rsync -vCra --delete --exclude=CNAME --exclude=.git ../build/site/ . ; \
 		git add . ; \
@@ -72,8 +65,15 @@ push:
 		git pull --rebase ; \
 		git push ${REMOTE_REPO}
 
-package-lock.json: package.json
-	@npm run clean-install
+site: versions.list package-lock.json javadocs
+	@make -s $(PLAYBOOK)
+	@npm run build
+	@touch build/site/.nojekyll
+	@cp home/modules/ROOT/pages/*.html build/site/landing
+
+sync: $(GH_PAGES)/index.html
+
+publish: site sync push
 
 clean:
 	@rm -rf antora-playbook.yml versions.list Makefile-javadoc
