@@ -16,8 +16,9 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: 11
-          distribution: 'temurin'
+          java-version: 21
+          distribution: 'zulu'
+          cache: maven
       - name: Setup JBang
         uses: jbangdev/setup-jbang@main
       - name: Set up node
