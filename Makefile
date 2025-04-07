@@ -4,7 +4,7 @@
 
 MORPHIA_GITHUB=https://evanchooly:${{ secrets.PUSH_TOKEN }}@github.com/MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
-BRANCHES=master 2.4.x 2.3.x 2.2.x 2.1.x 1.6.x
+BRANCHES=master 2.5.x 2.4.x 2.3.x 1.6.x
 PLAYBOOK=antora-playbook.yml
 
 default: site sync
@@ -20,13 +20,14 @@ build/morphia: .PHONY
 package-lock.json: package.json
 	@npm run clean-install
 
-versions.list: Makefile 
+versions.list: Makefile bin/extractVersions.kt
 	@echo Extracting versions
 	@make -s build/morphia
 	@> versions.list
 	@for BRANCH in $(BRANCHES); \
 	do \
 	  git -C build/morphia checkout $$BRANCH --quiet || echo checkout failed for $$BRANCH ; \
+	  git -C build/morphia pull --rebase --quiet || echo update failed for $$BRANCH ; \
 	  jbang --quiet bin/extractVersions.kt $$BRANCH >> versions.list ; \
 	done;
 	@git -C build/morphia checkout master --quiet || echo checkout failed for $$BRANCH
@@ -35,7 +36,6 @@ versions.list: Makefile
 	git -C build/morphia checkout $$BRANCH --quiet || echo checkout failed for $$BRANCH ; \
 	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
 	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
-
 
 local: .PHONY
 	@$(eval PLAYBOOK=local-${PLAYBOOK} )
