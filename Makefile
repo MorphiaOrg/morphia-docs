@@ -20,7 +20,7 @@ build/morphia: .PHONY
 package-lock.json: package.json
 	@npm run clean-install
 
-versions.list: Makefile bin/extractVersions.kt
+versions.list: Makefile bin/extractVersions.kt .PHONY
 	@echo Extracting versions
 	@make -s build/morphia
 	@> versions.list
