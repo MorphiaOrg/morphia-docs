@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-> Makefile-javadoc
+cat << EOF > Makefile-javadoc
+M2_PATH=~/.m2/repository/dev/morphia/morphia
 
-M2_PATH="~/.m2/repository/dev/morphia/morphia/"
+EOF
 
 DOCS=""
 while read -r VERSION
@@ -13,39 +14,29 @@ do
   else
     ARTIFACT=core
   fi
-  SHORTVER=` echo $VERSION | cut -d. -f-2 `
+  SHORTVER=$( echo $VERSION | cut -d. -f-2 )
 
   if [ "${VERSION/-SNAPSHOT/}" != "${VERSION}" ]
   then
     REPO="https://oss.sonatype.org/content/repositories/snapshots/"
-    echo "build/site/morphia/$SHORTVER/javadoc/index.html: .PHONY
-	@mkdir -p build/site/morphia/$SHORTVER/javadoc/
-	@echo Checking for a new snapshot for $SHORTVER
-	@mvn -q -U dependency:get -DgroupId=dev.morphia.morphia -DartifactId=${ARTIFACT} -Dversion=${VERSION} \\
-		-Dclassifier=javadoc -DremoteRepositories=${REPO} -Dtransitive=false
-	@echo Extracting javadoc for $SHORTVER
-	@unzip -DD -q -o ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
-		-d build/site/morphia/$SHORTVER/javadoc/ ;
-" >> Makefile-javadoc
-
+    PHONY=".PHONY"
   else
-
     REPO=https://repo1.maven.org/maven2
-
-    echo "${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar:
-	@echo Fetching artifacts for ${SHORTVER}
-	@mvn -q -U dependency:get -DgroupId=dev.morphia.morphia -DartifactId=${ARTIFACT} -Dversion=${VERSION} \\
-		-Dclassifier=javadoc -DremoteRepositories=${REPO} -Dtransitive=false
-" >> Makefile-javadoc
-
-    echo "build/site/morphia/$SHORTVER/javadoc/index.html: ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
-	@echo Extracting javadoc for $SHORTVER
-	@mkdir -p build/site/morphia/$SHORTVER/javadoc/
-	@unzip -DD -q -o ${M2_PATH}${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
-		-d build/site/morphia/$SHORTVER/javadoc/ ;
-" >> Makefile-javadoc
-
+    PHONY=""
   fi
+
+  echo "\$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar: ${PHONY}
+	@echo Fetching artifacts for ${VERSION}
+	@mvn -q -U dependency:get -Dartifact=dev.morphia.morphia:${ARTIFACT}:${VERSION}:jar:javadoc \\
+	  -DremoteRepositories=${REPO} -Dtransitive=false
+
+build/site/morphia/$SHORTVER/javadoc/index.html: \$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
+	@echo Extracting javadoc for ${VERSION}
+	@mkdir -p build/site/morphia/$SHORTVER/javadoc/
+	@unzip -DD -q -o \$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
+		-d build/site/morphia/$SHORTVER/javadoc/
+" >> Makefile-javadoc
+
 
 
 DOCS="$DOCS build/site/morphia/$SHORTVER/javadoc/index.html"
@@ -53,5 +44,6 @@ done < versions.list
 
 cat << EOF >> Makefile-javadoc
 alldocs: ${DOCS}
+
 .PHONY:
 EOF
