@@ -37,14 +37,11 @@ versions.list: Makefile bin/extractVersions.kt
 	VERSION=`jbang --quiet bin/extractVersions.kt $$BRANCH onlyminor` ; \
 	sed -i $@ -e "s|../morphia/.*/index.html|../morphia/$$VERSION/index.html|"
 
-local: .PHONY
-	@$(eval PLAYBOOK=local-${PLAYBOOK} )
-
 antora-playbook.yml: Makefile .PHONY
 	@sed antora-playbook-template.yml \
 		-e "s/branches: \[.*\] ### morphia branches/branches: [ `echo $(BRANCHES) | sed -e 's/ /, /g'` ] ### morphia branches/" > $@
 
-local-antora-playbook.yml: antora-playbook.yml Makefile
+local: antora-playbook.yml
 	@sed -i -e 's!^  - url: https://github.com/MorphiaOrg/\(.*\)!  - url: ../\1!' antora-playbook.yml
 
 Makefile-javadoc: versions.list bin/generate-makefile.sh Makefile
@@ -55,9 +52,8 @@ javadocs: Makefile Makefile-javadoc
 
 $(GH_PAGES)/index.html: $(GH_PAGES) build/site/index.html
 	@cd $(GH_PAGES) ; \
-		rsync -vCra --delete --exclude=CNAME --exclude=.git ../build/site/ . ; \
-		git add . ; \
-		git status
+		rsync -Cra --delete --exclude=CNAME --exclude=.git ../build/site/ . ; \
+		git add .
 
 push:
 	@cd $(GH_PAGES) ; \
