@@ -18,7 +18,7 @@ do
 
   if [ "${VERSION/-SNAPSHOT/}" != "${VERSION}" ]
   then
-    REPO="https://oss.sonatype.org/content/repositories/snapshots/"
+    REPO="https://central.sonatype.com/repository/maven-snapshots/"
     PHONY=".PHONY"
   else
     REPO=https://repo1.maven.org/maven2
