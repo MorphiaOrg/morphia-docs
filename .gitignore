@@ -8,3 +8,4 @@ gh_pages/
 package-lock.json
 /Makefile-javadoc
 /versions.list
+/public
