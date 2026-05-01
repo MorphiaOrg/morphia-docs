@@ -4,7 +4,7 @@
 
 MORPHIA_GITHUB=https://evanchooly:${{ secrets.PUSH_TOKEN }}@github.com/MorphiaOrg/morphia.git
 GH_PAGES=gh_pages
-BRANCHES=master 2.5.x 2.4.x 2.3.x 1.6.x
+BRANCHES=master 2.5.x 2.4.x 1.6.x
 PLAYBOOK=antora-playbook.yml
 
 default: site sync

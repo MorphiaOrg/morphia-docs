@@ -1,16 +1,16 @@
 import java.io.File
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader
+import org.apache.maven.model.v4.MavenStaxReader
 import org.semver4j.Semver
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //KOTLIN 2.1.20
-//DEPS org.apache.maven:maven-model:3.9.2
+//DEPS org.apache.maven:maven-model:4.0.0-rc-5
 //DEPS org.semver4j:semver4j:5.6.0
 
 fun main(vararg args: String) {
     val master = "master" == args[0]
     val onlyMinor = args.size != 1 && args[1].isNotBlank()
-    val pom = MavenXpp3Reader().read(File("build/morphia/pom.xml").inputStream())
+    val pom = MavenStaxReader().read(File("build/morphia/pom.xml").inputStream())
     val version = Semver.parse(pom.version)
 
     if (version == null) {
