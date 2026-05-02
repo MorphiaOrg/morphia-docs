@@ -9,11 +9,11 @@ PLAYBOOK=antora-playbook.yml
 default: site sync
 
 $(GH_PAGES): .PHONY
-	@[ ! -d $@ ] && gh repo clone MorphiaOrg/morphia $(GH_PAGES) -- -b gh-pages || true
+	@[ ! -d $@ ] && gh repo clone MorphiaOrg/morphia $(GH_PAGES) -- -b gh-pages --depth 1 --no-single-branch || true
 	@git -C $@ reset --hard --quiet && git -C $@ pull --all --quiet
 
 build/morphia: .PHONY
-	@[ ! -d $@ ] && gh repo clone MorphiaOrg/morphia build/morphia || true
+	@[ ! -d $@ ] && gh repo clone MorphiaOrg/morphia build/morphia -- --depth 1 --no-single-branch || true
 	@git -C $@ pull --all --quiet
 
 package-lock.json: package.json
