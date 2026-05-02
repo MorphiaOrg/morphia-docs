@@ -9,11 +9,11 @@ PLAYBOOK=antora-playbook.yml
 default: site sync
 
 $(GH_PAGES): .PHONY
-	@[ ! -d $@ ] && gh repo clone git@github.com:MorphiaOrg/morphia.git $(GH_PAGES) -- -b gh-pages --depth 1 --no-single-branch || true
+	@[ ! -d $@ ] && git clone ${REMOTE_REPO} -b gh-pages --depth 1 --no-single-branch $(GH_PAGES) || true
 	@git -C $@ reset --hard --quiet && git -C $@ pull --all --quiet
 
 build/morphia: .PHONY
-	@[ ! -d $@ ] && gh repo clone git@github.com:MorphiaOrg/morphia.git build/morphia -- --depth 1 --no-single-branch || true
+	@[ ! -d $@ ] && git clone ${REMOTE_REPO} --depth 1 --no-single-branch build/morphia || true
 	@git -C $@ pull --all --quiet
 
 package-lock.json: package.json
@@ -58,7 +58,7 @@ push:
 	@cd $(GH_PAGES) ; \
 		git commit -a -m "pushing docs updates" ; \
 		git pull --rebase ; \
-		git push
+		git push ${REMOTE_REPO}
 
 site: versions.list package-lock.json javadocs
 	@make -s $(PLAYBOOK)
