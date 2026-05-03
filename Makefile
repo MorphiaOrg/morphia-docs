@@ -14,21 +14,16 @@ JAVADOC_BASE_URL ?= https://repo1.maven.org/maven2/dev/morphia/morphia/morphia-c
 default: site
 
 # ── Content staging ───────────────────────────────────────────────────────────
-# Create symlinks from content/morphia/<version> → branches/<branch>
-# so Hugo serves each version at /morphia/<version>/.
-# The master (snapshot) branch gets an additional symlink at content/morphia/master
-# so that it is accessible by name in templates; its URL is set by .version.
+# Symlink content/morphia/<version> → branches/<branch> for every branch.
+# The master (snapshot) branch uses its version number as the URL segment
+# (e.g. "3.0"), so the URL won't change when the snapshot is released.
 
 stage-content:
 	@mkdir -p content/morphia
 	@for BRANCH in $(BRANCHES); do \
 	  [ -f "branches/$$BRANCH/.version" ] || continue ; \
 	  VER=$$(cat "branches/$$BRANCH/.version" | tr -d '[:space:]') ; \
-	  if [ "$$BRANCH" = "master" ]; then \
-	    TARGET="content/morphia/master" ; \
-	  else \
-	    TARGET="content/morphia/$$VER" ; \
-	  fi ; \
+	  TARGET="content/morphia/$$VER" ; \
 	  [ -e "$$TARGET" ] || ln -sf "../../branches/$$BRANCH" "$$TARGET" ; \
 	done
 	@echo "Content staged."

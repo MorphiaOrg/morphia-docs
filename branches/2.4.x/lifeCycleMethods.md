@@ -1,0 +1,81 @@
+---
+title: "Lifecyclemethods"
+weight: 200
+---
+
+## Life Cycle Methods
+
+There are various annotations which can be used to register callbacks on certain life cycle events.
+These include Pre/Post-Persist (Save), and Pre/Post-Load.  Methods annotated with these annotations can have any or all of the following
+arguments:
+
+1. The entity itself
+2. The `Datastore`
+3. The `Document` to be used for writing to the database.
+
+{{< admonition type="note" title="Note" >}}
+Any fields added to the `document` in a pre persist event will be overwritten by the entity serialization.  If you need to modify a
+serialized value, e.g., encrypting a value, use a post persist event instead.
+{{< /admonition >}}
+
+The lifecycle event annotations are:
+
+1. `@PrePersist` - Called before the entity is encoded in to a document.
+2. `@PostPersist` - Called after the entity is encoded in to a document but before data is written to the database.
+3. `@PreLoad` - Called after the document has been fetched from the database but before mapping the document in to the entity.
+4. `@PostLoad` - Called after populating the entity with the values from the document before return the entity reference back to user code.
+
+### Examples
+
+[Here](https://github.com/MorphiaOrg/morphia/blob/master/morphia/src/test/java/dev/morphia/TestQuery.java) is a one of the test classes.
+
+All parameters and return values are options in your implemented methods.
+
+#### Example
+
+Here is a simple example of an entity that always saves the Date it was last updated.
+Alternatively, the resulting serialized form can be passed back in just prior to sending the document to the database.
+
+```java
+class BankAccount {
+  @Id
+  String id;
+  Date lastUpdated = new Date();
+
+  @PrePersist
+  public void trackUpdate() {
+    lastUpdated = new Date();
+  }
+
+  @PrePersist
+  public void prePersist(Document document) {
+    // perform operations on serialized form of the entity
+  }
+}
+```
+
+### EntityListeners
+
+If your application has more generalized life cycle events, these methods can be stored on classes external to your model.
+For example's sake, let's assume there's a need to digitally sign all documents before storing it in the database.
+
+```java
+@EntityListeners(DigitalSigner.class)
+public class BankAccount {
+  @Id
+  String id;
+  Date lastUpdated = new Date();
+}
+
+class DigitalSigner {
+  @PrePersist
+  void prePersist( Object entity, Document document) {
+     document.put("signature", sign(document));
+  }
+
+}
+```
+
+{{< admonition type="note" title="Note" >}}
+**No Delete Support** Because deletes are usually done with queries there is no way to support a Delete lifecycle event.
+{{< /admonition >}}

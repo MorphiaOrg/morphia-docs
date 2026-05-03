@@ -1,35 +1,70 @@
-{{- /* Includes a source file from the page bundle's examples/ folder.
-       Usage: {{< include-code file="MyEntity.java" lang="java" >}}
+{{- /* Includes a source file (optionally a tagged region) from examples/.
+       Usage:
+         {{< include-code file="MyClass.java" >}}
+         {{< include-code file="TestDocs.java" tag="basic" >}}
+         {{< include-code file="config.properties" lang="properties" >}}
 
-       The file is read from a page resource named examples/<file>.
-       Falls back to a static path under /examples/ if not a page resource.
+       Files are resolved from a page-bundle resource "examples/<file>" or
+       from the site's /static/examples/<file> path.
+
+       Tag extraction follows Antora's convention:
+           // tag::name[]
+           … code …
+           // end::name[]
 -*/}}
 {{ $file := .Get "file" }}
-{{ $lang := .Get "lang" | default "java" }}
-{{ $highlight := .Get "highlight" }}
+{{ $lang := .Get "lang" }}
+{{ $tag  := .Get "tag" }}
+
+{{/* Infer language from extension when not specified */}}
+{{ if not $lang }}
+  {{ $ext := index (split $file ".") (sub (len (split $file ".")) 1) }}
+  {{ $langMap := dict "java" "java" "kt" "kotlin" "groovy" "groovy"
+                      "xml" "xml" "json" "json" "yaml" "yaml" "yml" "yaml"
+                      "properties" "properties" "js" "javascript" "ts" "typescript"
+                      "sh" "bash" "md" "markdown" }}
+  {{ $lang = index $langMap $ext | default $ext }}
+{{ end }}
 
 {{ $src := "" }}
 
-{{/* Try page bundle resource first */}}
-{{ with .Page.Resources.GetMatch (printf "examples/%s" $file) }}
+{{/* Try page bundle resource */}}
+{{ $resPath := printf "examples/%s" $file }}
+{{ with .Page.Resources.GetMatch $resPath }}
   {{ $src = .Content }}
 {{ else }}
-  {{/* Fall back to site static files */}}
-  {{ $staticPath := printf "/examples/%s" $file }}
+  {{/* Fall back to site-wide static resource */}}
+  {{ $staticPath := printf "examples/%s" $file }}
   {{ with resources.Get $staticPath }}
     {{ $src = .Content }}
   {{ end }}
 {{ end }}
 
 {{ if $src }}
-  {{ if $highlight }}
-    {{ highlight $src $lang $highlight }}
-  {{ else }}
-    {{ highlight $src $lang "" }}
+  {{/* Extract tagged region if requested */}}
+  {{ if $tag }}
+    {{ $openTag  := printf "// tag::%s[]" $tag }}
+    {{ $closeTag := printf "// end::%s[]" $tag }}
+    {{ $lines := split $src "\n" }}
+    {{ $inside := false }}
+    {{ $extracted := slice }}
+    {{ range $lines }}
+      {{ if eq (trim . " \t\r") $openTag }}
+        {{ $inside = true }}
+      {{ else if eq (trim . " \t\r") $closeTag }}
+        {{ $inside = false }}
+      {{ else if $inside }}
+        {{ $extracted = $extracted | append . }}
+      {{ end }}
+    {{ end }}
+    {{ if $extracted }}
+      {{ $src = delimit $extracted "\n" }}
+    {{ end }}
   {{ end }}
+  {{ highlight $src $lang "" }}
 {{ else }}
   <div class="admonition admonition--warning">
-    <p class="admonition-title">Missing example file</p>
-    <p>Could not locate <code>examples/{{ $file }}</code>.</p>
+    <p class="admonition-title">Missing example</p>
+    <p>Could not locate <code>examples/{{ $file }}</code>{{ with $tag }} (tag: <code>{{ . }}</code>){{ end }}.</p>
   </div>
 {{ end }}

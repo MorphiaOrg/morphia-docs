@@ -12,8 +12,8 @@ gh_pages/
 /build/morphia-src/
 
 # Staged content symlinks created by 'make stage-content'
-/content/morphia/2*/
-/content/morphia/master/
+# (these are symlinks into branches/, not real directories)
+/content/morphia/[0-9]*/
 
 # Legacy Antora artefacts
 antora-playbook.yml

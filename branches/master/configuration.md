@@ -1,0 +1,172 @@
+---
+title: "Configuration"
+weight: 50
+---
+
+Starting in Morphia 3.0, configuration will be driven via a configuration file.  However programmatic configuration is still supported for those who prefer, or need, a more flexible approach. The file should live in your build's resources folder and be named `META-INF/morphia-config.properties`. Reference documentation for the configuration file can be found in the [javadoc](++javadoc/dev/morphia/config/MorphiaConfig.html++) but
+we'll go in depth on a few items here. An example configuration file is included below. All possible configuration elements are listed. However, if the default values are acceptable that element can be safely omitted from your file.
+
+`Morphia.createDatastore()` can be called [with](++javadoc/dev/morphia/Morphia.html#createDatastore(com.mongodb.client.MongoClient,dev.morphia.config.MorphiaConfig)++)
+and [without](++javadoc/dev/morphia/Morphia.html#createDatastore(com.mongodb.client.MongoClient)++) an explicit `MorphiaConfig`
+argument.  When not explicitly given a `MorphiaConfig`, Morphia will attempt to load the configuration file at the location shown above.
+Failing to find a configuration file, it will create a new configuration using the default values which can be found in the javadoc.
+These values are unlikely to be suitable long term but should be sufficient for newcomers looking to test things out a little before
+committing to adopt Morphia.
+
+## Manually loading configurations
+In some cases, you might find the need for multiple configuration files.  Such scenarios include varying test
+environments/configurations, multiple dataset configurations, or externally supplied configurations.  In such cases, you can manually
+load those configurations using [MorphiaConfig.load()](++javadoc/dev/morphia/config/MorphiaConfig.html#load(java.lang.String)++).  You
+can then pass this instance to `createDatastore()`.
+
+## Dynamic configuration creation
+For many, the ability to dynamically create `MorphiaConfig` instances is not just a nicety but a hard requirement.  In this case, there
+are methods on `MorphiaConfig` to return a new version of the configuration with the updated value.  `MorphiaConfig` is immutable,
+however, so be sure to use the returned reference and not the original.  It should also be noted that once a `Datastore` is created using
+a `MorphiaConfig`, that configuration is fixed and can not be changed.  A new `Datastore` would need to be created with the updated version.
+
+## Collection and property naming
+
+- `morphia.collection-naming`
+- `morphia.property-naming`
+
+Traditionally Morphia has used the class's "simple name" for the collection name if you chose to not manually map the name of an
+entity's collection. Similarly, an entity's properties were named after the Java field name unless mapped otherwise with the `@Property`
+annotation. In 2.0, however, we defined some naming strategies. The naming strategies supported out of the box are:
+
+1. `identity` This is the legacy behavior Morphia has always used.
+2. `lower` This is simply the lower case form of the `identity` strategy.
+3. `snake` This transforms element names in to their [snake case](https://en.wikipedia.org/wiki/Snake_case) versions.
+For those coming from a Python background or who work with Python developers regularly, this should look familiar.
+4. `camel` This transforms element names in to their [camel case](https://en.wikipedia.org/wiki/Camel_case) versions.
+This is the form most java developers will be familiar with.
+5. `kebab` This transforms element names in to their [kebab case](https://en.wikipedia.org/wiki/Kebab_case) versions.
+This looks exactly like the `snake case` but with `-` instead of `_` so that it looks like it's on a kebab skewer.
+
+These strategies can all be accessed via the [NamingStrategy](++javadoc/dev/morphia/mapping/NamingStrategy.html++) class using their
+named methods. If you need a custom naming strategy, perhaps some hashing function to obscure
+element names, e.g., you can simply extend `NamingStrategy` yourself and implement whatever logic you might need.
+
+{{< admonition type="note" title="Note" >}}
+For the provided strategies, you can simply use the shortened version as shown in the sample below. If you define your own strategy, you
+can enable it by giving the fully qualified classname (fqcn) instead. The same applies everywhere you see `fqcn` in the sample file.
+{{< /admonition >}}
+
+## Discriminator keys and values
+
+- `morphia.discriminator`
+- `morphia.discriminator-key`
+
+Morphia has long hard coded the choice of how to encode an entity's type in to the resulting documents in the database using the
+`className` key and the simple name of the class.
+The default is to use `_t` as the discriminator property key. This was chosen in part because of its use in other systems and also for its brevity.
+By default, Morphia 2.0 stores the entity type unless you configure your types otherwise.
+
+Similar to how collections and fields have a naming strategy, we can apply a global function to determine the discriminator values should we choose.
+The choices here are simpler:
+
+1. `className()`/`lowerClassName()`
+2. `simpleName()`/`lowerSimpleName()`
+
+Simple name is the class name without the package name. These can all be accessed via their named methods on
+[DiscriminatorFunction](++javadoc/dev/morphia/mapping/DiscriminatorFunction.html++) and just like the `NamingStrategy` cases, if the
+provided options are not sufficient, you can implement your own by subclassing `DiscriminatorFunction` and implementing your own function.
+
+## Mapper selection
+
+- `morphia.mapper`
+
+Morphia supports two mapper implementations, selectable via configuration:
+
+1. `reflection` **(default)** — the traditional reflection-based mapper. No additional dependencies required.
+2. `critter` — a bytecode-generation mapper that produces bytecode to handle serialization rather than using reflection.
+This option should give you better performance overall. Pre-generated models from the `critter-maven` plugin are used when available (AOT path), otherwise models are generated at JVM startup.
+
+To enable the critter mapper, add the following to your `META-INF/morphia-config.properties`:
+
+```
+morphia.mapper=critter
+```
+
+Or pass `-Dmorphia.mapper=critter` on the Maven command line when running tests.
+
+For production deployments, consider using the [critter-maven plugin](../maven-plugin/) to generate models at build time and eliminate the startup cost entirely.
+
+## User-defined Codecs
+
+- `morphia.codec-provider`
+
+Morphia makes heavy use of the Java driver's `Codec` infrastructure.
+All the persistence of your entities is handled by Morphia-defined and -configured codecs.
+Morphia also makes use of driver-defined codecs with a select number of replacements more attuned to Morphia's needs.
+This is typically sufficient for users' needs. However, there are invariably times when more control is needed.
+
+Starting with 2.3, you can provide your own `CodecProvider` to customize how Morphia handles the types you're interested in. It's not
+advised to write custom codecs for your entities (why mark them as entities at that point?) but if you're comfortable taking that on,
+then it is, of course, your prerogative. You can register your custom `CodecProvider` implementation using the property listed above.
+
+For details on how to write a `Codec` and a `CodecProvider`, please consult
+[the driver's documentation](https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/data-formats/codecs/).
+Using your custom `CodecProvider`, you can supply as many `Codec` implementations as you need.
+
+{{< admonition type="note" title="Note" >}}
+In future versions, this will be updated to use [the SPI mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html). This
+will not only make it consistent with other configurable elements but will make it possible to supply more than one `CodecProvider`. See
+the note below about using the ServiceLoader with Java 9 modules.
+{{< /admonition >}}
+
+## Property Codecs
+As unusual as is the need for a custom codec to handle types, there are rare cases where how Morphia processes a property on entity needs
+to be customized.  This processing is handled via the
+[MorphiaPropertyCodecProvider](++javadoc/dev/morphia/mapping/codec/MorphiaPropertyCodecProvider.html++).  Morphia discovers these
+custom implementations via SPI the details of which won't be covered here.
+
+## Legacy Configuration
+
+Morphia can be configured in one of two ways: the legacy mode and the modern mode. The defaults in the configuration code will give you
+the modern configuration and is the recommended way to configure Morphia. However, if you're upgrading an older project, you very likely
+have more data than can be easily updated within any reasonable limits. For those, cases using the legacy configuration is rather
+straightforward.
+
+Using the legacy configuration is a matter of defining a few entries in your configuration file.  An example of that is listed below.  If
+you already have a `MorphiaConfig` in hand but would like to update it to reflect the legacy style configuration, you can call `.legacy()`
+on that reference and use the resulting `MorphiaConfig` instance.
+
+## Sample config files
+
+**Complete with defaults**
+```
+```
+{{< include-code file="complete-morphia-config.properties" >}}
+
+**Minimal config file**
+```
+```
+{{< include-code file="minimal-morphia-config.properties" >}}
+
+{{< admonition type="note" title="Note" >}}
+The minimum config is, indeed, an empty (or even nonexistent) file as there are defaults for each value.  This is intended to "pave the
+on ramp" for those new to Morphia.  It is expected that some of those values, notably the database and packages fields, will eventually
+be updated with more suitable values.
+{{< /admonition >}}
+
+**Legacy config file**
+```
+```
+{{< include-code file="legacy-morphia-config.properties" >}}
+
+{{< admonition type="warning" title="Warning" >}}
+The legacy query factory has been removed in 3.0. Switch to the newer query filters based API.
+{{< /admonition >}}
+
+## Some notes on ServiceLoader
+
+Morphia provides a number of extensibility points using [the SPI mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html)
+available in the JVM.  This allows for seamless, config-free inclusion of different functionality.  In general, this works without notice
+because most users will not need to implement such features and so needn't be bothered with such details.  However, if you are one of the
+lucky ones that **does** need to know **and** you use Java modules, please be aware that the usual services file in `META-INF/services` won't
+work.  In order to export your service for Morphia to find you need an entry in your `module-info.java` file as shown below:
+
+```java
+provides dev.morphia.mapping.codec.MorphiaPropertyCodecProvider with com.foo.MyCodecProvider;
+```
