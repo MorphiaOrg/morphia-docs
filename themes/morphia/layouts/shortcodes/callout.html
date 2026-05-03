@@ -1,0 +1,14 @@
+{{- /* Wraps a code block + its callout-item annotations.
+       Usage:
+         {{< callout >}}
+         ```java
+         foo(); // <1>
+         bar(); // <2>
+         ```
+         {{< callout-item 1 >}}Description of foo{{< /callout-item >}}
+         {{< callout-item 2 >}}Description of bar{{< /callout-item >}}
+         {{< /callout >}}
+-*/}}
+<div class="callout-block">
+  {{- .Inner -}}
+</div>

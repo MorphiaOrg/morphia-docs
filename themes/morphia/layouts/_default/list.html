@@ -1,0 +1,20 @@
+{{ define "body-class" }}doc{{ end }}
+
+{{ define "main" }}
+<div class="doc-layout">
+  {{ partial "sidebar.html" . }}
+  <main class="doc-main" id="doc-main">
+    <article class="doc-content">
+      <h1 class="doc-title">{{ .Title }}</h1>
+      {{ .Content }}
+      {{ if .Pages }}
+      <ul class="doc-index">
+        {{ range .Pages }}
+        <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a>{{ with .Description }} — {{ . }}{{ end }}</li>
+        {{ end }}
+      </ul>
+      {{ end }}
+    </article>
+  </main>
+</div>
+{{ end }}

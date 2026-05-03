@@ -3,9 +3,20 @@
 .cache
 build
 node_modules
-antora-playbook.yml
 gh_pages/
+/public
+
+# Hugo generated output
+/build/site/
+/build/javadoc-jars/
+/build/morphia-src/
+
+# Staged content symlinks created by 'make stage-content'
+# (these are symlinks into branches/, not real directories)
+/content/morphia/[0-9]*/
+
+# Legacy Antora artefacts
+antora-playbook.yml
 package-lock.json
 /Makefile-javadoc
 /versions.list
-/public

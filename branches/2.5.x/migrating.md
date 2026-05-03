@@ -1,0 +1,137 @@
+---
+title: "Migration"
+weight: 20
+---
+
+## Migrating to 2.5
+Morphia 2.5 is primarily a driver upgrade.  Changes in the driver are incompatible with the 2.4 driver and so Morphia 2.5 requires a
+driver version of 5.x or greater.  If you need a 4.x driver for some reason, you can use Morphia 2.4.x.  The 2.5.x series can only
+support 5.x and greater.  In preparation for 3.0, deprecations will be incrementally made in the 2.5.x line with replacements where
+feasible.  Updating away from these deprecations will make the transition to 3.0 much smoother.  In the cases where the replacements can
+not feasibly be provided, migration scripts will be available as part of the 3.0 release to help reduce the impact of such changes.  Bug
+fixes will continue to be made on the 2.4.x series and 2 .5.x as necessary but the primary focus remains on 3.x.
+
+## Migrating to 2.4
+
+### Configuration
+Morphia 2.4 introduces file-based configuration instead of the programmatic configuration currently in use.  The file
+should live in your build's resources folder and be named `META-INF/morphia-config.properties`.  More information can be found in
+[configuration section](../configuration/).  This new approach is optional but in order to aid in your migration to the new
+configuration file, you can manually generate that content by calling
+`MapperOptions#toConfigFormat(String database, boolean showComplete)` on your instance.  This will return a `String` which can be copied
+in to your configuration file.
+
+`MorphiaConfig` is the programmatic option that replaces the `MapperOptions` class.  This class is a builder for the configuration and
+works the same way as the `MapperOptions.Builder` class.  This class is immutable which allows for safe sharing between `Datastore`
+instances should you need to do so.  If you create a `META-INF/morphia-config.properties` file, you can load that configuration using
+`MorphiaConfig#load()` which will return a `MorphiaConfig` instance configured according to the contents of that file.
+
+### Deprecations
+    "Man Plans and God Laughs."
+        -- old Yiddish adage
+
+The 2.4.0 release, and any subsequent patch releases, will be the last of the 2.x releases as attention is turned toward a major 3.0
+release.  Consequently, now is the time to replace any uses of deprecated elements with their recommended replacements.  Should you find
+a deprecated element without a documented replacement, please file [an issue](https://github.com/MorphiaOrg/morphia/issues).  There are a
+handful of deprecations that currently have no replacement but are deprecated to serve as a bit of heads up that, e.g., the return type is
+shifting and that it will need attention after the upgrade to 3.0.
+
+## Migrating to 2.3
+
+### Experimental packages
+
+To address various issues in older APIs, some new packages were introduced under an `experimental` subpackage.  These packages have had
+sufficient time to bake and are being promoted out of experimental status in 2.3.  Unfortunately, there isn't a feasible, non-breaking
+way to do this so upgrading to 2.3 is a mild breaking change.  The good news is that these breaks can be fixed by doing a global
+removal of `.experimental`.  This should fix all the cases where Morphia has promoted these packages.
+
+There are, however, two options being provided that might help with this process.  As always, make sure to commit any of your changes before using an external tool to mass update your code.  And, of course, examine the changes afterward to ensure no breakages.
+
+#### OpenRewrite
+
+The first tool is [openrewrite](https://github.com/openrewrite).  This is a powerful, general purpose tool for updates and migrations of
+all sorts.  In our case, it's primarily just removing the `experimental` segment out of a few packages.  To use this script, download the
+[script](https://github.com/MorphiaOrg/morphia/blob/master/upgrading/UpgradeFrom22to23.yml) and save it as `rewrite.yml` in the root of
+your project.  Once that is done, run the following command:
+
+```shell
+mvn org.openrewrite.maven:rewrite-maven-plugin:4.37.0:runNoFork -DactiveRecipes=dev.morphia.UpgradeFrom22to23
+```
+
+This script will update the packages to reflect their new names.  It will also update your pom to the latest Morphia version for you
+if that has not been updated yet.
+
+#### jbang
+
+Alternately, if you have [jbang](https://www.jbang.dev/) installed, you can run a script to do this work for you.  It's a little more brute
+force than the openrewrite approach (it's literally just doing string replacements) but might be necessary in some cases.  If you're a
+kotlin user, you'll want to use this approach as openrewrite does not currently support kotlin source files.  To run this script, use the
+following command:
+
+```shell
+jbang https://github.com/MorphiaOrg/morphia/blob/master/upgrading/UpgradeFrom22to23.kt
+```
+
+You will likely be asked to specify the level of trust you have for this script and the MorphiaOrg github organization.  Choose whichever
+level you're comfortable with.
+
+Whichever path you choose, even if that's manually doing the updates yourself, make sure to examine the diffs and run your tests to make
+sure nothing was broken.  Though these approaches have both been tested on a number of projects, user code and project structures can be
+wildly different and some unhandled corner cases might arise.
+
+{{< admonition type="note" title="Note" >}}
+In the future such "experimental" items, the ones that need a little time to "bake" and get real world usage and feedback, will be marked
+with `@MorphiaExperimental` and javadoc'd as experimental.  When you see these items, they are intended to be used and any usability
+issues should be reported so that things can get massaged into, or replaced with, better forms.
+{{< /admonition >}}
+
+### Legacy Configuration
+
+As part of the modernization of mapping configuration introduced in 2.0, a `legacy()` option was added to `MapperOptions` to preconfigure
+the mapping options to reflect the pre-2.0 configuration style.  Part of the modernization of 2.0 also included how querying is done.
+The `legacy()` method mentioned above also configured this legacy querying style.  As of 3.0, this `legacy()` option, and the querying
+API associated with it, will go away.
+
+However, it will still be possible to configure your application with the old settings, you will just have to be explicit about it.  To
+update to this new configuration approach, rather than using `MappingOptions.legacy().build()` as you have perhaps been doing, simply
+replace it with something like the following:
+
+```java
+    MapperOptions.builder()
+        .discriminatorKey("className")
+        .discriminator(DiscriminatorFunction.className())
+        .collectionNaming(NamingStrategy.identity())
+        .propertyNaming(NamingStrategy.identity())
+```
+
+This will preserve the older mappings used by your data while enabling the modern query API implementation.  Some users will have
+date/time data stored under an older storage scheme.  Those users will also want to include the following option:
+
+```java
+    .dateStorage(DateStorage.SYSTEM_DEFAULT)
+```
+
+## Migrating to 2.0
+
+### Versioning
+
+Versioned updates now throw `VersionMismatchException` instead of `ConcurrentModification` exception.
+This allows for more targeted catches.
+For historical reasons, this new exception extends `ConcurrentModification` so that any existing catch clauses will continue to work.
+However, applications should be updated to catch the new exception.
+A future release will change the parent type of
+`VersionMismatchException` to `RuntimeException` instead.
+See [this discussion](https://github.com/MorphiaOrg/morphia/issues/982) for more details.
+
+### Kotlin Support
+
+Kotlin classes have worked with Morphia for years now but certain Kotlin features have started to cause problems as folks have started trying to use them in their applications.
+To this end a new module has been introduced, `morphia-kotlin`, to specifically focus on these cases.
+Chances are good that you won't need this module but in some cases this new module can help.
+See the
+[reference guide](../kotlin/) for more details.
+
+### Nullability
+
+The API is now explicitly decorated with `@NonNull` and `@Nullable` annotations to indicate which parameters and return values support null references.
+Your IDE should give you in place hints when you run afoul of these annotations and guide you to properly handling null values.

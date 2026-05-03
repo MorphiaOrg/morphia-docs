@@ -1,0 +1,30 @@
+{{ define "body-class" }}page page--404{{ end }}
+
+{{ define "main" }}
+<main class="not-found-layout">
+  <div class="not-found-inner">
+    <h1 class="not-found-title">Page Not Found</h1>
+    <p class="not-found-text">
+      This page doesn't exist in the current version of the documentation.
+      You'll be redirected to the version index shortly.
+    </p>
+    <a class="btn-primary" href="{{ "/" | relURL }}" id="not-found-home">Go to Docs Home</a>
+  </div>
+</main>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+(function () {
+  var path = window.location.pathname;
+  var m = path.match(/\/morphia\/([^\/]+)\//);
+  if (m) {
+    var versionIndex = '/morphia/' + m[1] + '/';
+    setTimeout(function () {
+      window.location.href = versionIndex;
+    }, 3000);
+    document.getElementById('not-found-home').href = versionIndex;
+  }
+})();
+</script>
+{{ end }}

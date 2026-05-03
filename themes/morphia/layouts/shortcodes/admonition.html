@@ -1,0 +1,10 @@
+{{- /* General admonition box.
+       Usage: {{< admonition type="note" title="Optional Title" >}}Body text.{{< /admonition >}}
+       type: note | tip | warning | danger
+-*/}}
+{{ $type  := .Get "type"  | default "note" }}
+{{ $title := .Get "title" | default (title $type) }}
+<div class="admonition admonition--{{ $type }}">
+  <p class="admonition-title">{{ $title }}</p>
+  <div class="admonition-body">{{ .Inner | markdownify }}</div>
+</div>

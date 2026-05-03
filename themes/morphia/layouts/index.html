@@ -1,0 +1,192 @@
+{{ define "body-class" }}home{{ end }}
+
+{{ define "head-extra" }}
+<style>
+  .site-nav { --nav-bg: transparent; }
+  .site-nav.scrolled { --nav-bg: rgba(246,243,236,0.85); }
+</style>
+{{ end }}
+
+{{ define "main" }}
+
+{{/* ── Hero ── */}}
+<section class="hero" aria-label="Introduction">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-eyebrow">MongoDB ODM for the JVM</p>
+      <h1 class="hero-title">
+        <em>Map Java objects</em><br>to MongoDB documents.
+      </h1>
+      <p class="hero-subtitle">
+        Morphia wraps the MongoDB Java driver to give you a clean, annotation-driven
+        way to persist and query your domain model — no boilerplate required.
+      </p>
+      <div class="hero-cta">
+        {{ with .Site.Data.versions }}
+          {{ range .versions }}{{ if .latest }}
+          <a class="btn-primary" href="{{ printf "/morphia/%s/" .version | relURL }}">Get Started</a>
+          {{ end }}{{ end }}
+        {{ end }}
+        <a class="btn-secondary" href="{{ .Site.Params.github }}">View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-figure" aria-hidden="true">
+      <div class="morph-panel morph-panel--java">
+        <div class="morph-label">Java</div>
+        <pre class="morph-code"><code><span class="mc-ann">@Entity</span>
+<span class="mc-kw">public class</span> <span class="mc-type">Book</span> {
+  <span class="mc-ann">@Id</span>
+  <span class="mc-kw">private</span> ObjectId id;
+  <span class="mc-kw">private</span> String title;
+  <span class="mc-kw">private</span> String author;
+  <span class="mc-kw">private</span> <span class="mc-type">List</span>&lt;String&gt; tags;
+}</code></pre>
+      </div>
+      <div class="morph-arrow" aria-hidden="true">
+        <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+          <path d="M0 12h36M28 4l8 8-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="morph-panel morph-panel--bson">
+        <div class="morph-label">BSON</div>
+        <pre class="morph-code"><code>{
+  <span class="mc-key">"_id"</span>: ObjectId(<span class="mc-str">"..."</span>),
+  <span class="mc-key">"title"</span>: <span class="mc-str">"Effective Java"</span>,
+  <span class="mc-key">"author"</span>: <span class="mc-str">"J. Bloch"</span>,
+  <span class="mc-key">"tags"</span>: [
+    <span class="mc-str">"java"</span>, <span class="mc-str">"best-practices"</span>
+  ]
+}</code></pre>
+      </div>
+    </div>
+  </div>
+  <div class="hero-texture" aria-hidden="true"></div>
+</section>
+
+{{/* ── Pull-quote ── */}}
+<section class="concept-block" aria-label="Core concept">
+  <div class="concept-inner">
+    <blockquote class="concept-quote">
+      <em>Morphia bridges the gap between rich Java domain objects and MongoDB's
+      flexible document model — keeping your code idiomatic and your data portable.</em>
+    </blockquote>
+  </div>
+</section>
+
+{{/* ── Feature grid ── */}}
+<section class="features" aria-label="Features">
+  <div class="features-inner">
+    <h2 class="features-heading">Why Morphia?</h2>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--map"></div>
+        <h3>Bidirectional Mapping</h3>
+        <p>Transparently serialize Java entities to MongoDB documents and back.
+           Annotate once, persist anywhere.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--query"></div>
+        <h3>Type-Safe Queries</h3>
+        <p>Build queries with a fluent Java API that mirrors MongoDB's query operators,
+           with full type safety and IDE completion.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--aggregation"></div>
+        <h3>Full Aggregation Support</h3>
+        <p>Use MongoDB's aggregation framework directly from your Java classes — no
+           raw BSON wrangling required.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--index"></div>
+        <h3>Annotation-Driven Indexing</h3>
+        <p>Declare compound, text, and geospatial indexes alongside your model
+           with <code>@Indexes</code> and <code>@Index</code>.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--conversion"></div>
+        <h3>Extensible Type Conversion</h3>
+        <p>Register custom codecs for any type. Morphia's codec pipeline slots
+           cleanly into the MongoDB Java driver.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--geo"></div>
+        <h3>Geospatial Queries</h3>
+        <p>Query by proximity, within polygons, or along routes with first-class
+           support for GeoJSON and legacy coordinate pairs.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{{/* ── Code snippet pair ── */}}
+<section class="code-showcase" aria-label="Code examples">
+  <div class="code-showcase-inner">
+    <div class="code-showcase-text">
+      <h2>Less plumbing, more domain logic</h2>
+      <p>Map a POJO with a single annotation, then save, query, and update using
+         a high-level API that stays out of your way.</p>
+    </div>
+    <div class="code-showcase-panels">
+      <div class="code-panel">
+        <div class="code-panel-label">Mapping</div>
+        <pre><code class="language-java">@Entity("books")
+@Indexes(@Index(fields = @Field("author")))
+public class Book {
+    @Id private ObjectId id;
+    private String title;
+    private String author;
+}</code></pre>
+      </div>
+      <div class="code-panel">
+        <div class="code-panel-label">Querying</div>
+        <pre><code class="language-java">Datastore ds = Morphia.createDatastore(client, "library");
+
+List&lt;Book&gt; results = ds.find(Book.class)
+    .filter(eq("author", "J. Bloch"))
+    .iterator()
+    .toList();</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{/* ── Quickstart CTA ── */}}
+<section class="quickstart" aria-label="Quickstart">
+  <div class="quickstart-inner">
+    <h2 class="quickstart-title">Ready to get started?</h2>
+    <p class="quickstart-text">
+      Add Morphia to your project and have your first entity persisted in minutes.
+    </p>
+    <div class="quickstart-actions">
+      {{ with .Site.Data.versions }}
+        {{ range .versions }}{{ if .latest }}
+        <a class="btn-primary btn-large" href="{{ printf "/morphia/%s/" .version | relURL }}">
+          Read the Docs
+        </a>
+        {{ end }}{{ end }}
+      {{ end }}
+      <a class="btn-secondary btn-large" href="{{ .Site.Params.github }}/releases">
+        Release Notes
+      </a>
+    </div>
+    <div class="quickstart-versions">
+      {{ with .Site.Data.versions }}
+        {{ range .versions }}
+        <a class="quickstart-version-link" href="{{ printf "/morphia/%s/" .version | relURL }}">
+          {{ if .snapshot }}master{{ else }}{{ .display }}{{ end }}
+          {{ if .latest }} <span class="version-latest-pill">latest</span>{{ end }}
+        </a>
+        {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+{{ end }}

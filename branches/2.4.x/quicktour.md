@@ -1,0 +1,225 @@
+---
+title: "Quick Tour"
+weight: 30
+---
+
+Morphia wraps the MongoDB Java driver so some level of familiarity with using the driver can be helpful.
+Morphia does its best to abstract much of that away but if something is confusing, please consult the Java driver [documentation](http://mongodb.github.io/mongo-java-driver/) as well.
+
+The following code snippets come from the [QuickTourTest.java](https://github.com/MorphiaOrg/morphia/tree/2.4.x/examples/src/test/java/dev/morphia/example/QuickTourTest.java)
+example code that can be found with the [Morphia source](http://morphia.dev/morphia).
+
+## Setting up Morphia
+
+The following example shows how to create the initial Morphia instance.
+Using this instance, you can configure various aspects of how Morphia maps your entities and validates your queries.
+
+```java
+final Datastore datastore = Morphia.createDatastore(MongoClients.create());
+// tell Morphia where to find your classes
+// can be called multiple times with different packages or classes
+datastore.getMapper().mapPackage("dev.morphia.example");
+
+datastore.ensureIndexes();
+```
+
+This snippet creates the Morphia instance we'll be using in our simple application.
+The `Morphia` class is a factory for `Datastore` instances, if you will. For a more complete discussion on configuring Morphia, please
+see the xref:configuration.adoc for more details.
+
+This will create a `Datastore` that connects to the configured database on the local machine using the default port of `27017`.
+
+With the second line we're telling Morphia to look at every class in the package we've given and find every class annotated with [@Entity](javadoc/dev/morphia/annotations/Entity.html) (which we'll cover shortly) or [@Embedded](javadoc/dev/morphia/annotations/Embedded.html) and register the mapping metadata we've put on our classes.
+This method can be called multiple times to cover all your entities wherever they might live in your application.
+
+## Mapping Options
+
+You can configure various mapping options via the `MorphiaConfig` class.
+There are a number of items to configure here but for now we 'll just cover two.
+For a discussion of the remainder, please see the [configuration guide](../configuration/).
+The two most common elements to configure are probably `storeEmpties` and `storeNulls`.
+By default Morphia will not store empty `List` or
+`Map` values nor will it store null values in to MongoDB.
+If your application needs empty or null values to be present for whatever reason, setting these values to true will tell Morphia to save them for you.
+There are a few other options to configure on
+`MorphiaConfig`, but we'll not be covering them here.
+
+## Mapping Classes
+
+There are two ways that Morphia can handle your classes: as top level entities or embedded in others.
+Any class annotated with
+[@Entity](javadoc/dev/morphia/annotations/Entity.html) is treated as a top level document stored directly in a collection.
+Any class with [@Entity](javadoc/dev/morphia/annotations/Entity.html) must have a field annotated with
+[@Id](javadoc/dev/morphia/annotations/Id.html) to define which field to use as the `_id` value in the document written to MongoDB.
+[@Embedded](javadoc/dev/morphia/annotations/Embedded.html) indicates that the class will result in a subdocument inside another document.  [@Embedded](javadoc/dev/morphia/annotations/Embedded.html) classes do not require the presence of an
+[@Id](javadoc/dev/morphia/annotations/Id.html) field.
+
+{{< admonition type="note" title="Note" >}}
+In order to be considered for persistence by Morphia, classes **must** be annotated with either `@Entity` or `@Embedded`.
+Classes lacking either of these annotations will effectively be ignored by Morphia.
+{{< /admonition >}}
+
+Let's examine a more complete example:
+
+```java
+@Entity("employees")
+@Indexes(
+    @Index(value = "salary", fields = @Field("salary"))
+)
+class Employee {
+    @Id
+    private ObjectId id;
+    private String name;
+    @Reference
+    private Employee manager;
+    @Reference
+    private List<Employee> directReports;
+    @Property("wage")
+    private Double salary;
+}
+```
+
+There are a few things here to discuss and others we'll defer to later sections.
+This class is annotated with the
+[@Entity](javadoc/dev/morphia/annotations/Entity.html) annotation so we know that it will be a top level document.
+In the annotation, you'll see `"employees"`.
+By default, Morphia will use the camel case class name as the collection name.
+If you pass a String instead, it will use that value for the collection name.
+In this case, all `Containers` instances will be saved in to the `employees`
+collection instead.
+There is a little more to this annotation but the [@Entity](javadoc/dev/morphia/annotations/Entity.html) javadoc covers those details .  [@Entity](javadoc/dev/morphia/annotations/Entity.html) should be used on any type you want Morphia to map including embedded types.
+Embedded types are not required to have an [@Id](javadoc/dev/morphia/annotations/Id.html) annotated field.
+
+The [@Indexes](javadoc/dev/morphia/annotations/Indexes.html) annotation lists which indexes Morphia should create.
+In this instance, we're defining an index named `salary` on the field salary with the default ordering of ascending.
+More information on indexing can found [here](../indexing/).
+
+We've marked the `id` field to be used as our primary key (the `_id` field in the document).
+In this instance we're using the Java driver type of `ObjectId` as the ID type.
+The ID can be any type you'd like but is generally something like `ObjectId` or `long`.
+There are two other annotations to cover but it should be pointed out now that other than transient and static fields, Morphia will attempt to copy every field to a document bound for the database.
+
+The simplest of the two remaining annotations is [@Property](javadoc/dev/morphia/annotations/Property.html).
+This annotation is entirely optional.
+If you leave this annotation off, Morphia will use the Java field name as the document field name.
+Often times this is fine.
+However, some times you'll want to change the document field name.
+In those cases, you can use
+[@Property](javadoc/dev/morphia/annotations/Property.html) and pass it the name to be used when this class is serialized out to the database.
+
+This just leaves [@Reference](javadoc/dev/morphia/annotations/Reference.html).
+This annotation is telling Morphia that this field refers to other Morphia mapped entities.
+In this case Morphia will store what MongoDB calls a
+[DBRef](https://docs.mongodb.com/manual/reference/database-references/#dbrefs) which is just a collection name and key value.
+These referenced entities must already be saved or at least have an ID assigned or Morphia will throw an exception.
+
+{{< admonition type="note" title="Note" >}}
+There is a newer approach for defining references that is explained more fully [here](../indexing/).
+{{< /admonition >}}
+
+## Saving Data
+
+For the most part, you treat your Java objects just like you normally would.
+When you're ready to write an object to the database, it's as simple as this:
+
+```java
+final Employee elmer = new Employee("Elmer Fudd", 50000.0);
+datastore.save(elmer);
+```
+
+Taking it one step further, lets define some relationships and save those, too.
+
+```java
+final Employee daffy = new Employee("Daffy Duck", 40000.0);
+datastore.save(daffy);
+
+final Employee pepe = new Employee("Pepé Le Pew", 25000.0);
+datastore.save(pepe);
+
+elmer.getDirectReports().add(daffy);
+elmer.getDirectReports().add(pepe);
+
+datastore.save(elmer);
+```
+
+As you can see, we just need to create and save the other Employees then we can add them to the direct reports list and save.
+Morphia takes care of saving the keys in Elmer's document that refer to Daffy and Pepé.
+Updating data in MongoDB is as simple as updating your Java objects and then calling `datastore.save()` with them again.
+For bulk updates (e.g., everyone gets a raise!) this is not the most efficient way of doing updates.
+It is possible to update directly in the database without having to pull in every document, convert to Java objects, update, convert back to a document, and write back to MongoDB.But in order to show you that piece, first we need to see how to query.
+
+## Querying
+
+Morphia attempts to make your queries as type safe as possible.
+All of the details of converting your data are handled by Morphia directly and only rarely do you need to take additional action.
+As with everything else, `Datastore` is where we start:
+
+```java
+final Query<Employee> query = datastore.find(Employee.class);
+final List<Employee> employees = query.iterator().toList();
+```
+
+This is a basic Morphia query.
+Here, we're telling the `Datastore` to create a query that's been typed to `Employee`.
+In this case, we're fetching every `Employee` in to a `List`.
+For very large query results, this could very well be too much to fit in to memory.
+For this simple example, using `toList()` is fine but in practice `iterator()` is usually the more appropriate choice.
+In those cases, rather than calling `iterator()` directly, it's sufficient to simply iterate a `Query` using a for loop and let the magic of `Iterable`
+do its thing.
+Most queries will, of course, want to filter the data in some way.
+Here's how to do that:
+
+```java
+underpaid = datastore.createQuery(Employee.class)
+                     .filter(Filters.lte("salary", 30000))
+                     .iterator()
+                     .toList();
+```
+
+Morphia supports all the query filters defined in the Mongodb query language.
+You can find helper methods for all these filers on the
+[Filters class](javadoc/dev/morphia/query/filters/Filters.html).
+The `filter()` method can take as many `Filter`
+references as you need to define your query.
+It can also be called multiple times as any subsequent calls are cumulative with the rest of the filters already defined.
+
+## Updates
+
+Now that we can query, however simply, we can turn to in-database updates.
+These updates take two components: a query, and a set of update operations.
+In this example, we'll find all the underpaid employees and give them a raise of 10000. The first step is to create the query to find all the underpaid employees.
+This is one we've already seen:
+
+```java
+final Query<Employee> underPaidQuery = datastore.find(Employee.class)
+                                                .filter(Filters.lte("salary", 30000));
+```
+
+To define how we want to update the documents matched by this query, we can call `update()` on our query:
+
+```java
+final UpdateResult results = underPaidQuery.update()
+                                           .inc("salary", 10000)
+                                           .execute();
+```
+
+There are many operations on this class but, in this case, we're only updating the `salary` field by `10000`.
+This corresponds to the
+[$inc](https://docs.mongodb.com/manual/reference/operator/update/inc/) operator.
+The `UpdateResult` instance returned will contain various statistics about the update operation.
+
+## Removes
+
+After everything else, removes are really quite simple.
+Removing just needs a query to find and delete the documents in question and then call `delete()` the remove them from the database:
+
+```java
+datastore.find(Employee.class)
+         .filter(Filters.gt("salary", 100000))
+         .delete(new DeleteOptions()
+                .multi(true));
+```
+
+Take note of the `DeleteOptions` being passed in here.
+By default, mongodb will only delete the first matching document.
+If you want to delete all of them, you need to pass the `multi(true)` option as well.

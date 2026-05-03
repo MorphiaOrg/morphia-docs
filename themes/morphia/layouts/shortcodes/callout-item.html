@@ -1,0 +1,8 @@
+{{- /* Single callout annotation.
+       Usage: {{< callout-item 1 >}}Explanation text.{{< /callout-item >}}
+       The positional arg is the callout number shown as a badge.
+-*/}}
+<div class="callout-item">
+  <span class="callout-number">{{ .Get 0 }}</span>
+  <span class="callout-text">{{ .Inner | markdownify }}</span>
+</div>

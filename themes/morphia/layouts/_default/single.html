@@ -1,0 +1,27 @@
+{{ define "body-class" }}doc{{ end }}
+
+{{ define "main" }}
+<div class="doc-layout">
+  {{ partial "sidebar.html" . }}
+  <main class="doc-main" id="doc-main">
+    <article class="doc-content">
+      <h1 class="doc-title">{{ .Title }}</h1>
+      {{ .Content }}
+    </article>
+    <nav class="doc-pagination" aria-label="Page navigation">
+      {{ with .PrevInSection }}
+        <a class="doc-pagination__prev" href="{{ .Permalink }}">
+          <span class="doc-pagination__label">Previous</span>
+          <span class="doc-pagination__title">{{ .LinkTitle }}</span>
+        </a>
+      {{ end }}
+      {{ with .NextInSection }}
+        <a class="doc-pagination__next" href="{{ .Permalink }}">
+          <span class="doc-pagination__label">Next</span>
+          <span class="doc-pagination__title">{{ .LinkTitle }}</span>
+        </a>
+      {{ end }}
+    </nav>
+  </main>
+</div>
+{{ end }}
