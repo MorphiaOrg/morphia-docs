@@ -1,0 +1,24 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      {{ partial "logo.html" . }}
+      <span class="footer-brand-text">Morphia</span>
+    </div>
+    <div class="footer-links">
+      <a href="{{ .Site.Params.github }}">GitHub</a>
+      <a href="{{ .Site.Params.issues }}">Issues</a>
+      <a href="{{ .Site.Params.community }}">Community</a>
+    </div>
+    <div class="footer-legal">
+      <img src="https://raw.githubusercontent.com/commonhaus/artwork/main/foundation/brand/svg/CF_logo_horizontal_single_default.svg"
+           height="24" alt="Commonhaus Foundation" loading="lazy">
+      <p>
+        Copyright &copy; <a href="{{ .Site.Params.commonhaus }}">Morphia</a>. All rights reserved.
+        For details on our trademarks, please visit our
+        <a href="{{ .Site.Params.commonhausTrademarkPolicy }}">Trademark Policy</a> and
+        <a href="{{ .Site.Params.commonhausTrademarks }}">Trademark List</a>.
+        Trademarks of third parties are owned by their respective holders.
+      </p>
+    </div>
+  </div>
+</footer>

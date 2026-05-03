@@ -1,0 +1,33 @@
+{{ $currentPage := . }}
+{{ $version := "" }}
+{{ $urlParts := split .RelPermalink "/" }}
+{{ range $i, $part := $urlParts }}
+  {{ if and (gt $i 0) (eq (index $urlParts (sub $i 1)) "morphia") }}
+    {{ $version = $part }}
+  {{ end }}
+{{ end }}
+
+<aside class="doc-sidebar" id="doc-sidebar">
+  <nav class="sidebar-nav" aria-label="Documentation navigation">
+    {{ $sectionPath := printf "morphia/%s" $version }}
+    {{ $section := .Site.GetPage $sectionPath }}
+    {{ if $section }}
+      {{ template "sidebar-tree" (dict "pages" $section.Pages "current" $currentPage "depth" 0) }}
+    {{ end }}
+  </nav>
+</aside>
+
+{{ define "sidebar-tree" }}
+{{ range .pages }}
+  {{ $isActive := eq .Permalink $.current.Permalink }}
+  {{ $isAncestor := $.current.IsDescendant . }}
+  <div class="sidebar-item{{ if $isActive }} sidebar-item--active{{ end }}{{ if $isAncestor }} sidebar-item--ancestor{{ end }}">
+    <a class="sidebar-link" href="{{ .Permalink }}">{{ .LinkTitle }}</a>
+    {{ if and $isAncestor .Pages }}
+      <div class="sidebar-children">
+        {{ template "sidebar-tree" (dict "pages" .Pages "current" $.current "depth" (add $.depth 1)) }}
+      </div>
+    {{ end }}
+  </div>
+{{ end }}
+{{ end }}

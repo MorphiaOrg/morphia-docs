@@ -1,0 +1,6 @@
+name = "Morphia"
+license = "Apache-2.0"
+licenselink = "https://www.apache.org/licenses/LICENSE-2.0"
+description = "Morphia documentation theme"
+homepage = "https://morphia.dev"
+min_version = "0.120.0"

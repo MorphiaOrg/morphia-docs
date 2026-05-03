@@ -1,0 +1,35 @@
+{{- /* Includes a source file from the page bundle's examples/ folder.
+       Usage: {{< include-code file="MyEntity.java" lang="java" >}}
+
+       The file is read from a page resource named examples/<file>.
+       Falls back to a static path under /examples/ if not a page resource.
+-*/}}
+{{ $file := .Get "file" }}
+{{ $lang := .Get "lang" | default "java" }}
+{{ $highlight := .Get "highlight" }}
+
+{{ $src := "" }}
+
+{{/* Try page bundle resource first */}}
+{{ with .Page.Resources.GetMatch (printf "examples/%s" $file) }}
+  {{ $src = .Content }}
+{{ else }}
+  {{/* Fall back to site static files */}}
+  {{ $staticPath := printf "/examples/%s" $file }}
+  {{ with resources.Get $staticPath }}
+    {{ $src = .Content }}
+  {{ end }}
+{{ end }}
+
+{{ if $src }}
+  {{ if $highlight }}
+    {{ highlight $src $lang $highlight }}
+  {{ else }}
+    {{ highlight $src $lang "" }}
+  {{ end }}
+{{ else }}
+  <div class="admonition admonition--warning">
+    <p class="admonition-title">Missing example file</p>
+    <p>Could not locate <code>examples/{{ $file }}</code>.</p>
+  </div>
+{{ end }}
