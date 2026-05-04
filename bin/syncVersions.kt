@@ -13,9 +13,15 @@ const val RELEASE_BASE  = "https://repo1.maven.org/maven2/dev/morphia/morphia"
 const val SNAPSHOT_BASE = "https://central.sonatype.com/repository/maven-snapshots/dev/morphia/morphia"
 
 fun main(vararg args: String) {
-    require(args.isNotEmpty()) { "Usage: syncVersions.kt <branch>" }
+    require(args.isNotEmpty()) { "Usage: syncVersions.kt <branch> | --latest" }
+
+    if (args[0] == "--latest") {
+        println(latestRelease() ?: "")
+        return
+    }
+
     val branch = args[0]
-    val minorVersion = File("content/$branch/.version").readText().trim()
+    val minorVersion = File("content/morphia/$branch/.version").readText().trim()
     val (major, minor) = minorVersion.split(".").map { it.toInt() }
     val artifact = if (major == 1) "core" else "morphia-core"
 
@@ -24,6 +30,15 @@ fun main(vararg args: String) {
         ?: "$minorVersion.0-SNAPSHOT"
     println(version)
 }
+
+fun latestRelease(): String? = try {
+    val doc = XmlMapper().readTree(URI("$RELEASE_BASE/morphia-core/maven-metadata.xml").toURL())
+    doc["versioning"]["versions"]["version"].elements().asSequence()
+        .mapNotNull { Semver.parse(it.asText()) }
+        .filter { it.preRelease.isEmpty() }
+        .maxWithOrNull(compareBy({ it.major }, { it.minor }, { it.patch }))
+        ?.toString()
+} catch (_: Exception) { null }
 
 fun latestRelease(artifact: String, major: Int, minor: Int): String? = try {
     val doc = XmlMapper().readTree(URI("$RELEASE_BASE/$artifact/maven-metadata.xml").toURL())

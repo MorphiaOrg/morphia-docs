@@ -1,7 +1,7 @@
 <footer class="bot">
   <div class="wrap row">
     <div>
-      <a class="logo" href="{{ "/" | relURL }}" style="font-size:15px">
+      <a class="logo" href="/" style="font-size:15px">
         <svg width="22" height="22" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 16 C 18 16 18 22 18 26 C 18 30 14 32 14 32 C 14 32 18 34 18 38 C 18 42 18 48 22 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
           <path d="M42 16 C 46 16 46 22 46 26 C 46 30 50 32 50 32 C 50 32 46 34 46 38 C 46 42 46 48 42 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
@@ -16,9 +16,9 @@
     <div class="links">
       <a href="{{ .Site.Params.github }}">GitHub</a>
       <a href="{{ .Site.Params.issues }}">Issues</a>
-      <a href="{{ .Site.Params.community }}">Community</a>
+      <a href="{{ .Site.Params.community }}">Discord</a>
       {{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}
-      <a href="{{ printf "/morphia/%s/" .version | relURL }}">Docs</a>
+      <a href="{{ printf "/morphia/%s/" .display}}">Docs</a>
       {{ end }}{{ end }}{{ end }}
     </div>
   </div>

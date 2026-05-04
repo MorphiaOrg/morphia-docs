@@ -1,6 +1,8 @@
 {{ $versions := .Site.Data.versions }}
 {{ $currentVersion := "" }}
-{{ with $versions }}{{ $currentVersion = .latestVersion }}{{ end }}
+{{ with $versions }}
+  {{ range .versions }}{{ if .latest }}{{ $currentVersion = .display }}{{ end }}{{ end }}
+{{ end }}
 
 {{/* Detect current version from URL path */}}
 {{ $urlParts := split .RelPermalink "/" }}
@@ -12,7 +14,7 @@
 
 <nav class="top">
   <div class="wrap row">
-    <a class="logo" href="{{ "/" | relURL }}">
+    <a class="logo" href="/">
       <svg width="28" height="28" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M22 16 C 18 16 18 22 18 26 C 18 30 14 32 14 32 C 14 32 18 34 18 38 C 18 42 18 48 22 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
         <path d="M42 16 C 46 16 46 22 46 26 C 46 30 50 32 50 32 C 50 32 46 34 46 38 C 46 42 46 48 42 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
@@ -25,11 +27,10 @@
     <div class="links">
       {{ with .Site.Data.versions }}
         {{ range .versions }}{{ if .latest }}
-        <a class="link" href="{{ printf "morphia/%s/" .version  }}">Docs</a>
+        <a class="link" href="{{ printf "morphia/%s/" .display}}">Docs</a>
         {{ end }}{{ end }}
       {{ end }}
-      <a class="link" href="{{ .Site.Params.github }}">GitHub</a>
-      <a class="link" href="{{ .Site.Params.community }}">Community</a>
+      <a class="link" href="{{ .Site.Params.community }}">Discord</a>
     </div>
     <div class="actions">
       {{ with .Site.Data.versions }}
@@ -38,8 +39,8 @@
           <span class="dot"></span>
           <span id="ver-label">
             {{- range .versions -}}
-              {{- if eq .version $currentVersion -}}
-                {{- if .snapshot -}}master{{- else -}}{{ .display }}{{- end -}}
+              {{- if eq .display $currentVersion -}}
+                {{- .display -}}
               {{- end -}}
             {{- end -}}
           </span>
@@ -47,11 +48,11 @@
         </button>
         <div class="ver-menu" id="ver-menu" role="listbox" aria-label="Documentation version">
           {{ range .versions }}
-          <a href="{{ printf "/morphia/%s/" .version | relURL }}"
+          <a href="{{ printf "/morphia/%s/" .display}}"
              role="option"
-             class="{{ if eq .version $currentVersion }}ver-option--active{{ end }}">
+             class="{{ if eq .display $currentVersion }}ver-option--active{{ end }}">
             <span class="dot{{ if .snapshot }} dot--snapshot{{ end }}"></span>
-            <span>{{ if .snapshot }}master{{ else }}{{ .display }}{{ end }}</span>
+            <span>{{ .display }}</span>
             {{ if .latest }}<span class="pill">latest</span>{{ end }}
           </a>
           {{ end }}

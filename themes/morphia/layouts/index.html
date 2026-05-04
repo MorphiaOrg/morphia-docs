@@ -18,7 +18,7 @@
       <div class="actions">
         {{ with .Site.Data.versions }}
           {{ range .versions }}{{ if .latest }}
-          <a class="btn primary" href="{{ printf "/morphia/%s/" .version | relURL }}">Read the docs →</a>
+          <a class="btn primary" href="{{ printf "/morphia/%s/" .display}}">Read the docs →</a>
           {{ end }}{{ end }}
         {{ end }}
         <button class="cmd" data-copy>
@@ -220,7 +220,7 @@
         {{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}
         <button class="cmd" data-copy><span class="prompt">maven</span><span class="text">&lt;dependency&gt;&lt;groupId&gt;dev.morphia.morphia&lt;/groupId&gt;&lt;artifactId&gt;morphia-core&lt;/artifactId&gt;&lt;version&gt;{{ .version }}&lt;/version&gt;&lt;/dependency&gt;</span><span class="copy">⧉</span></button>
         <button class="cmd" data-copy><span class="prompt">gradle</span><span class="text">implementation 'dev.morphia.morphia:morphia-core:{{ .version }}'</span><span class="copy">⧉</span></button>
-        <a class="cmd" href="{{ printf "/morphia/%s/" .version | relURL }}"><span class="prompt">docs</span><span class="text">morphia.dev/morphia/{{ .version }}/</span></a>
+        <a class="cmd" href="{{ printf "/morphia/%s/" .display}}"><span class="prompt">docs</span><span class="text">morphia.dev/morphia/{{ .display }}/</span></a>
         {{ end }}{{ end }}{{ end }}
       </div>
     </div>
