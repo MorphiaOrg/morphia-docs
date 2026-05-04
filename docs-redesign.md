@@ -4,28 +4,21 @@
 * All implementation work will be done in the branch.
 * The 1.6.x branch will not be carried forward into the new site.
 
-## Content Migration
+## Content
 
-* The initial seed will copy the `docs/` folder from the `master`, `2.5.x`, and `2.4.x` branches into a new Hugo subfolder.
-  * These folders become the permanent source of truth for each version. Docs will be removed from their source branches and maintained here going forward.
-  * In the event of URL changes, redirects will be put in place to ensure existing links continue to work.
-* Content will be converted from the Antora/AsciiDoc format to Hugo/Markdown.
-  * Any partials will be converted to Hugo shortcodes. Version-specific variants may be necessary but should be minimized and eliminated where possible.
-  * Included files (e.g., config snippets referenced via `include::example$file[]`) will remain as separate files and be dynamically included from their source locations via a Hugo shortcode.
-  * Code block callout annotations (`// <1>`) will be converted to Hugo shortcodes. Markers inside code blocks remain as plain comments (e.g., `// <1>`); the corresponding annotations below the block use a `callout-item` shortcode.
-  * Assets will be moved to a Hugo-appropriate location and referenced from the Markdown files as needed.
-* Critter will no longer be referenced as a separate project since it has been integrated into Morphia proper. Any references to Critter in the older docs should be updated to reflect this.
-* The language and tone of the docs should be normalized across versions, with the `master` docs serving as the model for earlier 
-  versions. The goal is a consistent voice and style across all versions.  You will perform this normalization as part of the content migration, ensuring that all versions reflect the same level of clarity and professionalism.
-* For the snapshot version (only supported from master.  all other branches should render as major.minor), the version should display as 
-  'master' and the url should still be major.minor so that when master is released, the url will not change.  The version selector should also reflect this by showing 'master' as the label for the snapshot version.
+* Versioned content lives permanently in this repo under `content/` — `master`, `2.5.x`, and `2.4.x`. It is no longer sourced from the morphia source branches.
+* URL redirects are in place where paths changed from the old Antora site.
+* Shared/included files are referenced dynamically via a Hugo shortcode rather than inlined.
+* Code block callout markers stay as plain comments (e.g., `// <1>`); the annotations below use a `callout-item` shortcode.
+* Critter is integrated into Morphia proper — it is not referenced as a separate project.
+* The `master` branch represents the snapshot version. Its version label in the selector is `master`; its URL uses the major.minor form so the URL does not change on release. All other versions render as major.minor only.
 
 ## Hugo Structure & Configuration
 
 * A Hugo configuration will be generated to support the new structure and design.
 * The navigation structure will be recreated in Hugo to match the current structure as closely as possible.
 * The Hugo theme will match the new home/landing page design to ensure a consistent look and feel across the entire site.
-* Branch content will be driven by the presence of folders in the `branches/` directory. Each folder will be named for the branch it represents and contain the content for that branch.
+* All versioned content lives under a single source tree and is included in a single Hugo build. Content for each version resides in its own folder under `content/` (named for the branch it represents), and Hugo produces the full multi-version site in one pass.
 
 ## Build System
 

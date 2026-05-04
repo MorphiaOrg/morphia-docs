@@ -1,190 +1,228 @@
 {{ define "body-class" }}home{{ end }}
 
-{{ define "head-extra" }}
-<style>
-  .site-nav { --nav-bg: transparent; }
-  .site-nav.scrolled { --nav-bg: rgba(246,243,236,0.85); }
-</style>
-{{ end }}
-
 {{ define "main" }}
 
 {{/* ── Hero ── */}}
-<section class="hero" aria-label="Introduction">
-  <div class="hero-inner">
-    <div class="hero-text">
-      <p class="hero-eyebrow">MongoDB ODM for the JVM</p>
-      <h1 class="hero-title">
-        <em>Map Java objects</em><br>to MongoDB documents.
+<section class="hero">
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow"><span class="sq"></span>MongoDB ODM for the JVM</div>
+      <h1 class="lead">
+        Java entities. <span class="ital">MongoDB documents.</span><br/>
+        <span class="teal">One mapping.</span>
       </h1>
-      <p class="hero-subtitle">
-        Morphia wraps the MongoDB Java driver to give you a clean, annotation-driven
-        way to persist and query your domain model — no boilerplate required.
+      <p class="sub">
+        Morphia is the object-document mapper for the JVM. Annotate your entities, write
+        type-safe queries, run aggregations — and let the BSON disappear.
       </p>
-      <div class="hero-cta">
+      <div class="actions">
         {{ with .Site.Data.versions }}
           {{ range .versions }}{{ if .latest }}
-          <a class="btn-primary" href="{{ printf "/morphia/%s/" .version | relURL }}">Get Started</a>
+          <a class="btn primary" href="{{ printf "/morphia/%s/" .version | relURL }}">Read the docs →</a>
           {{ end }}{{ end }}
         {{ end }}
-        <a class="btn-secondary" href="{{ .Site.Params.github }}">View on GitHub</a>
+        <button class="cmd" data-copy>
+          <span class="prompt">maven</span>
+          <span class="text">{{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}
+              &lt;dependency&gt;
+            <br>&nbsp;&nbsp;&lt;groupId&gt;dev.morphia.morphia&lt;/groupId&gt;
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;artifactId&gt;morphia-core&lt;/artifactId&gt;
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;version&gt;{{ .version }}&lt;/version&gt;
+              <br>&lt;/dependency&gt;{{ end }}{{ end }}{{ end }}</span>
+          <span class="copy">⧉</span>
+        </button>
       </div>
     </div>
-    <div class="hero-figure" aria-hidden="true">
-      <div class="morph-panel morph-panel--java">
-        <div class="morph-label">Java</div>
-        <pre class="morph-code"><code><span class="mc-ann">@Entity</span>
-<span class="mc-kw">public class</span> <span class="mc-type">Book</span> {
-  <span class="mc-ann">@Id</span>
-  <span class="mc-kw">private</span> ObjectId id;
-  <span class="mc-kw">private</span> String title;
-  <span class="mc-kw">private</span> String author;
-  <span class="mc-kw">private</span> <span class="mc-type">List</span>&lt;String&gt; tags;
-}</code></pre>
-      </div>
-      <div class="morph-arrow" aria-hidden="true">
-        <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-          <path d="M0 12h36M28 4l8 8-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="morph-panel morph-panel--bson">
-        <div class="morph-label">BSON</div>
-        <pre class="morph-code"><code>{
-  <span class="mc-key">"_id"</span>: ObjectId(<span class="mc-str">"..."</span>),
-  <span class="mc-key">"title"</span>: <span class="mc-str">"Effective Java"</span>,
-  <span class="mc-key">"author"</span>: <span class="mc-str">"J. Bloch"</span>,
-  <span class="mc-key">"tags"</span>: [
-    <span class="mc-str">"java"</span>, <span class="mc-str">"best-practices"</span>
-  ]
-}</code></pre>
-      </div>
-    </div>
-  </div>
-  <div class="hero-texture" aria-hidden="true"></div>
-</section>
 
-{{/* ── Pull-quote ── */}}
-<section class="concept-block" aria-label="Core concept">
-  <div class="concept-inner">
-    <blockquote class="concept-quote">
-      <em>Morphia bridges the gap between rich Java domain objects and MongoDB's
-      flexible document model — keeping your code idiomatic and your data portable.</em>
-    </blockquote>
-  </div>
-</section>
-
-{{/* ── Feature grid ── */}}
-<section class="features" aria-label="Features">
-  <div class="features-inner">
-    <h2 class="features-heading">Why Morphia?</h2>
-    <div class="features-grid">
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--map"></div>
-        <h3>Bidirectional Mapping</h3>
-        <p>Transparently serialize Java entities to MongoDB documents and back.
-           Annotate once, persist anywhere.</p>
+    <div class="figure">
+      <div class="caption">
+        <span><span class="num">Fig. 01</span> &nbsp; <em>round-trip from POJO to BSON, and back.</em></span>
+        <span>annotation-driven · zero glue</span>
       </div>
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--query"></div>
-        <h3>Type-Safe Queries</h3>
-        <p>Build queries with a fluent Java API that mirrors MongoDB's query operators,
-           with full type safety and IDE completion.</p>
+      <div class="morph" id="morph">
+        <div class="side left">
+          <h4><span class="swatch"></span><span class="label">User.java</span> · entity</h4>
+          <pre id="java-pre"><span class="tok-ann">@Entity</span>
+<span class="tok-kw">public class</span> <span class="tok-cls">User</span> {
+  <span class="row left" data-i="0"><span class="tok-ann">@Id</span> <span class="tok-cls">ObjectId</span> id;</span>
+  <span class="row left" data-i="1"><span class="tok-cls">String</span> name;</span>
+  <span class="row left" data-i="2"><span class="tok-ann">@Indexed</span> <span class="tok-cls">String</span> email;</span>
+  <span class="row left" data-i="3"><span class="tok-cls">List</span>&lt;<span class="tok-cls">String</span>&gt; tags;</span>
+  <span class="row left" data-i="4"><span class="tok-ann">@GeoIndex</span> <span class="tok-cls">Point</span> location;</span>
+  <span class="row left" data-i="5"><span class="tok-kw">double</span> score;</span>
+}</pre>
+        </div>
+        <div class="bridge" id="bridge">
+          <svg viewBox="0 0 84 360" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="bg-grad" x1="0" y1="0" x2="84" y2="0">
+                <stop offset="0" stop-color="var(--accent-2)"/>
+                <stop offset="1" stop-color="var(--accent-1)"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 70 C 30 70, 54 76, 84 76" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0s linear infinite"/>
+            <path d="M0 120 C 30 120, 54 126, 84 126" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.18s linear infinite"/>
+            <path d="M0 170 C 30 170, 54 176, 84 176" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.36s linear infinite"/>
+            <path d="M0 220 C 30 220, 54 226, 84 226" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.54s linear infinite"/>
+            <path d="M0 270 C 30 270, 54 276, 84 276" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.72s linear infinite"/>
+            <path d="M0 320 C 30 320, 54 326, 84 326" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.90s linear infinite"/>
+          </svg>
+          <div class="badge" id="bridge-badge">morph →</div>
+        </div>
+        <div class="side right">
+          <h4><span class="label">users</span> · document<span class="swatch"></span></h4>
+          <pre id="bson-pre">{
+  <span class="row right" data-i="0"><span class="tok-key">"_id"</span>: ObjectId(<span class="tok-str">"662f9a..."</span>),</span>
+  <span class="row right" data-i="1"><span class="tok-key">"name"</span>: <span class="tok-str">"Ada Lovelace"</span>,</span>
+  <span class="row right" data-i="2"><span class="tok-key">"email"</span>: <span class="tok-str">"ada@analytical.engine"</span>,</span>
+  <span class="row right" data-i="3"><span class="tok-key">"tags"</span>: [<span class="tok-str">"math"</span>, <span class="tok-str">"poet"</span>, <span class="tok-str">"first"</span>],</span>
+  <span class="row right" data-i="4"><span class="tok-key">"location"</span>: { <span class="tok-key">type</span>: <span class="tok-str">"Point"</span>, <span class="tok-key">coords</span>: [...] },</span>
+  <span class="row right" data-i="5"><span class="tok-key">"score"</span>: <span class="tok-num">0.987</span></span>
+}</pre>
+        </div>
       </div>
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--aggregation"></div>
-        <h3>Full Aggregation Support</h3>
-        <p>Use MongoDB's aggregation framework directly from your Java classes — no
-           raw BSON wrangling required.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--index"></div>
-        <h3>Annotation-Driven Indexing</h3>
-        <p>Declare compound, text, and geospatial indexes alongside your model
-           with <code>@Indexes</code> and <code>@Index</code>.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--conversion"></div>
-        <h3>Extensible Type Conversion</h3>
-        <p>Register custom codecs for any type. Morphia's codec pipeline slots
-           cleanly into the MongoDB Java driver.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon feature-icon--geo"></div>
-        <h3>Geospatial Queries</h3>
-        <p>Query by proximity, within polygons, or along routes with first-class
-           support for GeoJSON and legacy coordinate pairs.</p>
-      </div>
-
     </div>
   </div>
 </section>
 
-{{/* ── Code snippet pair ── */}}
-<section class="code-showcase" aria-label="Code examples">
-  <div class="code-showcase-inner">
-    <div class="code-showcase-text">
-      <h2>Less plumbing, more domain logic</h2>
-      <p>Map a POJO with a single annotation, then save, query, and update using
-         a high-level API that stays out of your way.</p>
-    </div>
-    <div class="code-showcase-panels">
-      <div class="code-panel">
-        <div class="code-panel-label">Mapping</div>
-        <pre><code class="language-java">@Entity("books")
-@Indexes(@Index(fields = @Field("author")))
-public class Book {
-    @Id private ObjectId id;
-    private String title;
-    private String author;
-}</code></pre>
+{{/* ── Concept / Pull-quote ── */}}
+<section class="concept">
+  <div class="wrap">
+    <div class="concept-grid">
+      <div class="pullquote">
+        Treat your data the way <span class="teal">MongoDB</span> does — as documents.<br/>
+        Treat your code the way <span style="color:var(--accent-2)">Java</span> does — with types.
       </div>
-      <div class="code-panel">
-        <div class="code-panel-label">Querying</div>
-        <pre><code class="language-java">Datastore ds = Morphia.createDatastore(client, "library");
+      <ol class="concept-list">
+        <li><span class="n">i.</span><p><strong>Bidirectional.</strong> Round-trip every entity. Whatever goes into the collection comes back as the same shape, the same types, the same indexes.</p></li>
+        <li><span class="n">ii.</span><p><strong>Type-safe.</strong> Operators only appear where they make sense. Compile-time checks for queries that used to break at 3 a.m.</p></li>
+        <li><span class="n">iii.</span><p><strong>Native.</strong> Aggregation, geospatial, change streams, transactions — all of MongoDB, none of the boilerplate.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
 
-List&lt;Book&gt; results = ds.find(Book.class)
-    .filter(eq("author", "J. Bloch"))
-    .iterator()
-    .toList();</code></pre>
+{{/* ── Features ── */}}
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="sq"></span>features</div>
+      <h2>Everything you need to ship <em>document-first</em> Java — <em class="teal">without the glue</em>.</h2>
+    </div>
+
+    <div class="fgrid">
+      <article class="fcell">
+        <span class="num">01</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="16" r="5"/><circle cx="23" cy="16" r="5"/><path d="M14 16h4"/></svg></div>
+        <h3>Bidirectional <em>mapping</em></h3>
+        <p>Annotate POJOs, persist them. Round-trip to BSON and back without writing a single converter.</p>
+        <div class="tag">@Entity · @Id · @Property</div>
+      </article>
+
+      <article class="fcell">
+        <span class="num">02</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="14" r="7"/><path d="M19.5 19.5l5 5"/></svg></div>
+        <h3>Type-safe <em>queries</em></h3>
+        <p>Build queries with operators that only show up where they make sense. No more typo-driven outages.</p>
+        <div class="tag">find(Post.class).filter(eq(...))</div>
+      </article>
+
+      <article class="fcell">
+        <span class="num">03</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h22M9 16h14M13 23h6"/></svg></div>
+        <h3>Aggregation <em>framework</em></h3>
+        <p>Full pipeline support — match, group, lookup, project, unwind — typed against your entities.</p>
+        <div class="tag">$match · $group · $lookup</div>
+      </article>
+
+      <article class="fcell">
+        <span class="num">04</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h20M6 13h20M6 19h12M6 25h8"/><circle cx="24" cy="22" r="3"/></svg></div>
+        <h3>Annotation-driven <em>indexing</em></h3>
+        <p>Declare indexes alongside the fields they cover. Compound, sparse, unique — all in source.</p>
+        <div class="tag">@Indexed · @CompoundIndex</div>
+      </article>
+
+      <article class="fcell">
+        <span class="num">05</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 28c5-7 8-11 8-15a8 8 0 10-16 0c0 4 3 8 8 15z"/><circle cx="16" cy="13" r="3"/></svg></div>
+        <h3>Geospatial <em>queries</em></h3>
+        <p>2dsphere indexes, $geoNear, $geoWithin — first-class support for Point, Polygon, and friends.</p>
+        <div class="tag">@GeoIndex · Point · Polygon</div>
+      </article>
+
+      <article class="fcell">
+        <span class="num">06</span>
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l4-4 4 4M11 7v18M25 21l-4 4-4-4M21 25V7"/></svg></div>
+        <h3>Custom <em>type converters</em></h3>
+        <p>Bring your own Money, Email, JSR-310 types. Implement Codec once and forget about it.</p>
+        <div class="tag">Codec&lt;MyType&gt;</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+{{/* ── Snippets ── */}}
+<section class="snippets">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="sq" style="background:var(--accent-1)"></span>in practice</div>
+      <h2>Read like Java. <em class="teal">Run like Mongo.</em></h2>
+    </div>
+    <div class="snip-grid">
+      <div class="code-card">
+        <header>
+          <span class="file">QueryExample.java</span>
+          <span class="caption">type-safe queries</span>
+        </header>
+<pre><span class="tok-kw">var</span> ds = Morphia.createDatastore(client, <span class="tok-str">"blog"</span>);
+
+<span class="tok-cls">Query</span>&lt;<span class="tok-cls">Post</span>&gt; q = ds.find(<span class="tok-cls">Post</span>.class)
+  .filter(<span class="tok-fn">eq</span>(<span class="tok-str">"author"</span>, ada))
+  .filter(<span class="tok-fn">gte</span>(<span class="tok-str">"score"</span>, <span class="tok-num">0.8</span>))
+  .filter(<span class="tok-fn">in</span>(<span class="tok-str">"tags"</span>, <span class="tok-str">"java"</span>, <span class="tok-str">"mongo"</span>));
+
+<span class="tok-cls">List</span>&lt;<span class="tok-cls">Post</span>&gt; top = q
+  .iterator(<span class="tok-kw">new</span> <span class="tok-cls">FindOptions</span>()
+    .sort(<span class="tok-fn">descending</span>(<span class="tok-str">"score"</span>))
+    .limit(<span class="tok-num">10</span>))
+  .toList();</pre>
+      </div>
+
+      <div class="code-card">
+        <header>
+          <span class="file">Aggregation.java</span>
+          <span class="caption">native pipelines</span>
+        </header>
+<pre>ds.aggregate(<span class="tok-cls">Post</span>.class)
+  .match(<span class="tok-fn">eq</span>(<span class="tok-str">"published"</span>, <span class="tok-kw">true</span>))
+  .group(<span class="tok-fn">id</span>(<span class="tok-str">"$author"</span>),
+    <span class="tok-fn">sum</span>(<span class="tok-str">"posts"</span>, <span class="tok-num">1</span>),
+    <span class="tok-fn">avg</span>(<span class="tok-str">"score"</span>, <span class="tok-str">"$score"</span>))
+  .sort(<span class="tok-fn">descending</span>(<span class="tok-str">"posts"</span>))
+  .limit(<span class="tok-num">5</span>)
+  .execute(<span class="tok-cls">AuthorStats</span>.class)
+  .toList();</pre>
       </div>
     </div>
   </div>
 </section>
 
 {{/* ── Quickstart CTA ── */}}
-<section class="quickstart" aria-label="Quickstart">
-  <div class="quickstart-inner">
-    <h2 class="quickstart-title">Ready to get started?</h2>
-    <p class="quickstart-text">
-      Add Morphia to your project and have your first entity persisted in minutes.
-    </p>
-    <div class="quickstart-actions">
-      {{ with .Site.Data.versions }}
-        {{ range .versions }}{{ if .latest }}
-        <a class="btn-primary btn-large" href="{{ printf "/morphia/%s/" .version | relURL }}">
-          Read the Docs
-        </a>
-        {{ end }}{{ end }}
-      {{ end }}
-      <a class="btn-secondary btn-large" href="{{ .Site.Params.github }}/releases">
-        Release Notes
-      </a>
-    </div>
-    <div class="quickstart-versions">
-      {{ with .Site.Data.versions }}
-        {{ range .versions }}
-        <a class="quickstart-version-link" href="{{ printf "/morphia/%s/" .version | relURL }}">
-          {{ if .snapshot }}master{{ else }}{{ .display }}{{ end }}
-          {{ if .latest }} <span class="version-latest-pill">latest</span>{{ end }}
-        </a>
-        {{ end }}
-      {{ end }}
+<section class="cta" id="quickstart">
+  <div class="wrap">
+    <div class="cta-grid">
+      <div>
+        <div class="eyebrow"><span class="sq"></span>get started</div>
+        <h2>Five lines from <em class="teal">annotation</em> to <em class="amber">collection</em>.</h2>
+      </div>
+      <div class="cmds">
+        {{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}
+        <button class="cmd" data-copy><span class="prompt">maven</span><span class="text">&lt;dependency&gt;&lt;groupId&gt;dev.morphia.morphia&lt;/groupId&gt;&lt;artifactId&gt;morphia-core&lt;/artifactId&gt;&lt;version&gt;{{ .version }}&lt;/version&gt;&lt;/dependency&gt;</span><span class="copy">⧉</span></button>
+        <button class="cmd" data-copy><span class="prompt">gradle</span><span class="text">implementation 'dev.morphia.morphia:morphia-core:{{ .version }}'</span><span class="copy">⧉</span></button>
+        <a class="cmd" href="{{ printf "/morphia/%s/" .version | relURL }}"><span class="prompt">docs</span><span class="text">morphia.dev/morphia/{{ .version }}/</span></a>
+        {{ end }}{{ end }}{{ end }}
+      </div>
     </div>
   </div>
 </section>

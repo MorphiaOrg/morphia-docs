@@ -1,24 +1,25 @@
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      {{ partial "logo.html" . }}
-      <span class="footer-brand-text">Morphia</span>
+<footer class="bot">
+  <div class="wrap row">
+    <div>
+      <a class="logo" href="{{ "/" | relURL }}" style="font-size:15px">
+        <svg width="22" height="22" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16 C 18 16 18 22 18 26 C 18 30 14 32 14 32 C 14 32 18 34 18 38 C 18 42 18 48 22 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
+          <path d="M42 16 C 46 16 46 22 46 26 C 46 30 50 32 50 32 C 50 32 46 34 46 38 C 46 42 46 48 42 48" stroke="var(--accent-1)" stroke-width="4" fill="none"/>
+          <circle cx="32" cy="24" r="2.8" fill="var(--accent-2)"/>
+          <circle cx="32" cy="32" r="2.8" fill="var(--accent-2)"/>
+          <circle cx="32" cy="40" r="2.8" fill="var(--accent-2)"/>
+        </svg>
+        <span>morphia</span>
+      </a>
+      <div class="meta">// Apache-2.0 · <a href="{{ .Site.Params.commonhaus }}">Commonhaus Foundation</a> project</div>
     </div>
-    <div class="footer-links">
+    <div class="links">
       <a href="{{ .Site.Params.github }}">GitHub</a>
       <a href="{{ .Site.Params.issues }}">Issues</a>
       <a href="{{ .Site.Params.community }}">Community</a>
-    </div>
-    <div class="footer-legal">
-      <img src="https://raw.githubusercontent.com/commonhaus/artwork/main/foundation/brand/svg/CF_logo_horizontal_single_default.svg"
-           height="24" alt="Commonhaus Foundation" loading="lazy">
-      <p>
-        Copyright &copy; <a href="{{ .Site.Params.commonhaus }}">Morphia</a>. All rights reserved.
-        For details on our trademarks, please visit our
-        <a href="{{ .Site.Params.commonhausTrademarkPolicy }}">Trademark Policy</a> and
-        <a href="{{ .Site.Params.commonhausTrademarks }}">Trademark List</a>.
-        Trademarks of third parties are owned by their respective holders.
-      </p>
+      {{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}
+      <a href="{{ printf "/morphia/%s/" .version | relURL }}">Docs</a>
+      {{ end }}{{ end }}{{ end }}
     </div>
   </div>
 </footer>

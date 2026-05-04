@@ -1,12 +1,12 @@
-baseURL = "https://morphia.dev/morphia/"
+baseURL = "https://morphia.dev/"
 languageCode = "en-us"
-title = "Morphia Docs"
+title = "Morphia Documentation"
 theme = "morphia"
 disableHugoGeneratorInject = true
 enableRobotsTXT = true
 
 [params]
-  description = "Morphia — MongoDB Object Document Mapping for the JVM"
+  description = "Morphia — MongoDB Object-Document Mapping for the JVM"
   github = "https://github.com/MorphiaOrg/morphia"
   issues = "https://github.com/MorphiaOrg/morphia/issues"
   community = "https://developer.mongodb.com/community/forums/c/drivers-odms/"
