@@ -42,7 +42,7 @@ are methods on `MorphiaConfig` to return a new version of the configuration with
 however, so be sure to use the returned reference and not the original.  It should also be noted that once a `Datastore` is created using
 a `MorphiaConfig`, that configuration is fixed and can not be changed.  A new `Datastore` would need to be created with the updated version.
 
-### Collection and property naming
+## Collection and Property Naming
 
 - `morphia.collection-naming`
 - `morphia.property-naming`
