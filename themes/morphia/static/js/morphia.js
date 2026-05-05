@@ -5,18 +5,17 @@
   /* ── Version switcher ── */
   var ver = document.getElementById('ver');
   var verBtn = document.getElementById('ver-btn');
-  var verMenu = document.getElementById('ver-menu');
   if (ver && verBtn) {
-    verBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
+    verBtn.addEventListener('click', function () {
       var open = ver.classList.toggle('open');
       verBtn.setAttribute('aria-expanded', String(open));
     });
-    document.addEventListener('click', function () {
-      ver.classList.remove('open');
-      verBtn.setAttribute('aria-expanded', 'false');
+    document.addEventListener('click', function (e) {
+      if (!ver.contains(e.target)) {
+        ver.classList.remove('open');
+        verBtn.setAttribute('aria-expanded', 'false');
+      }
     });
-    if (verMenu) verMenu.addEventListener('click', function (e) { e.stopPropagation(); });
     verBtn.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         ver.classList.remove('open');
@@ -27,12 +26,28 @@
   }
 
   /* ── Copy buttons ── */
+  function copyText(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(function () { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+  }
   document.querySelectorAll('[data-copy]').forEach(function (el) {
     el.addEventListener('click', function () {
       var textEl = el.querySelector('.text');
       var copyEl = el.querySelector('.copy');
       if (!textEl || !copyEl) return;
-      navigator.clipboard && navigator.clipboard.writeText(textEl.textContent);
+      copyText(textEl.textContent.trim());
       var prev = copyEl.textContent;
       copyEl.textContent = '✓';
       setTimeout(function () { copyEl.textContent = prev; }, 1400);

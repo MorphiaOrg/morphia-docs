@@ -4,6 +4,7 @@ title = "Morphia Documentation"
 theme = "morphia"
 disableHugoGeneratorInject = true
 enableRobotsTXT = true
+relativeURLs = true
 
 [params]
   description = "Morphia — MongoDB Object-Document Mapping for the JVM"
@@ -19,7 +20,7 @@ enableRobotsTXT = true
     codeFences = true
     guessSyntax = false
     lineNos = false
-    style = "monokailight"
+    noClasses = false
     tabWidth = 4
   [markup.goldmark]
     [markup.goldmark.renderer]

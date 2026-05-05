@@ -138,6 +138,7 @@ nav.top .actions { display: flex; gap: 10px; align-items: center; }
   font-size: 13px; cursor: pointer; text-align: left; text-decoration: none;
 }
 .ver-menu a:hover { background: rgba(20,17,13,0.05); text-decoration: none; }
+.ver-menu a.ver-option--active { color: var(--accent-1); font-weight: 500; }
 .ver-menu .pill {
   margin-left: auto; font-size: 10px; padding: 2px 6px; border-radius: 4px;
   background: var(--accent-2-soft); color: var(--accent-2);
@@ -421,6 +422,78 @@ footer.bot .meta a:hover { color: var(--ink-2); }
 .not-found-text { color: var(--ink-3); margin-bottom: 24px; }
 
 @keyframes flowFade { 0%{opacity:.15} 50%{opacity:.7} 100%{opacity:.15} }
+
+/* ── SYNTAX HIGHLIGHTING (Chroma, noClasses=false) ── */
+/* Applied inside dark .doc-content pre blocks */
+.doc-content .chroma { color: #d4d0c8; }
+
+/* XML/HTML tag names: <dependency>, <groupId> etc. */
+.doc-content .chroma .nt { color: oklch(0.68 0.08 192); }
+
+/* Attribute names */
+.doc-content .chroma .na { color: oklch(0.74 0.10 58); }
+
+/* Strings and attribute values */
+.doc-content .chroma .s,
+.doc-content .chroma .s1,
+.doc-content .chroma .s2,
+.doc-content .chroma .sb,
+.doc-content .chroma .sc,
+.doc-content .chroma .sd,
+.doc-content .chroma .se,
+.doc-content .chroma .si,
+.doc-content .chroma .sx { color: oklch(0.72 0.07 158); }
+
+/* Keywords (Java: class, public, void, import…) */
+.doc-content .chroma .k,
+.doc-content .chroma .kd,
+.doc-content .chroma .kn,
+.doc-content .chroma .kp,
+.doc-content .chroma .kr,
+.doc-content .chroma .kt { color: oklch(0.74 0.10 58); }
+
+/* Class / type names */
+.doc-content .chroma .nc { color: #e8e0d4; font-weight: 500; }
+
+/* Function / method names */
+.doc-content .chroma .nf,
+.doc-content .chroma .nv { color: oklch(0.68 0.08 192); }
+
+/* Numbers */
+.doc-content .chroma .m,
+.doc-content .chroma .mb,
+.doc-content .chroma .mf,
+.doc-content .chroma .mh,
+.doc-content .chroma .mi,
+.doc-content .chroma .il,
+.doc-content .chroma .mo { color: oklch(0.74 0.10 58); }
+
+/* Comments */
+.doc-content .chroma .c,
+.doc-content .chroma .c1,
+.doc-content .chroma .cm,
+.doc-content .chroma .cs,
+.doc-content .chroma .cp,
+.doc-content .chroma .cpf { color: #6b6560; font-style: italic; }
+
+/* Operators */
+.doc-content .chroma .o,
+.doc-content .chroma .ow { color: oklch(0.74 0.10 58); }
+
+/* Punctuation */
+.doc-content .chroma .p { color: #8a8276; }
+
+/* Annotations (Java: @Entity, @Id…) */
+.doc-content .chroma .nd { color: oklch(0.74 0.10 58); font-weight: 500; }
+
+/* Built-ins */
+.doc-content .chroma .nb { color: #c8c0b8; }
+
+/* Namespace / package */
+.doc-content .chroma .nn { color: #c8c0b8; }
+
+/* Errors */
+.doc-content .chroma .err { color: #c84040; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
