@@ -2,6 +2,9 @@
 title: "Queries"
 weight: 110
 ---
+
+# Queries
+
 Morphia provides [Query<T>](javadoc/dev/morphia/query/Query.html) class to build a query and map the results back to instances of your entity classes and attempts to provide as much type safety and validation as possible.
 To create the `Query`, we invoke the following code:
 
@@ -13,7 +16,7 @@ Query<Product> query = datastore.find(Product.class);
 
 ### `filter()`
 
-The most significant method `filter(Filter...)`.
+The most significant method is `filter(Filter...)`.
 This method takes a number of filters to apply to the query being built.
 The filters are added to any existing, previously defined filters so you needn't add them all at once.
 There are dozens of filters predefined in Morphia and can be found in the `dev.morphia.query.filters` package.
@@ -84,7 +87,7 @@ It's also worth noting that this projection works with both the mapped document 
 `"first_name"` and the Java field name `"firstName"`.
 
 {{< admonition type="warning" title="Warning" >}}
-While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to MongoDB.Any fields in the existing document in the database that are missing from the entity will be removed if this entity is saved.
+While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to MongoDB. Any fields in the existing document in the database that are missing from the entity will be removed if this entity is saved.
 For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database for this entity will be removed.
 To save such instances back consider using
 [Datastore#merge(T)](++javadoc/dev/morphia/Datastore.html#merge(T)++)

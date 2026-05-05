@@ -2,6 +2,9 @@
 title: "Aggregations"
 weight: 160
 ---
+
+# Aggregations
+
 The [aggregation framework](https://docs.mongodb.com/manual/aggregation) in MongoDB allows you to define a series (called a pipeline) of operations (called stages) against the data in a collection.
 These pipelines can be used for analytics or they can be used to convert your data from one form to another.
 This guide will not go in to the details of how aggregation works, however.
@@ -26,7 +29,7 @@ Because of the transformational operations available in the aggregation [pipelin
 
 ### The Pipeline
 
-Aggregation pipelines are comprised of a series stages.
+Aggregation pipelines are comprised of a series of stages.
 Our example here has only one stage: `group()`.
 This method is the Morphia equivalent of the [$group](https://docs.mongodb.com/manual/reference/operator/aggregation/group/) operator.
 This stage, as the name suggests, groups together documents based on various criteria.
@@ -55,7 +58,7 @@ We can use the various options on the
 
 #### $out
 
-Depending your use case, you might not watch to return the results of your aggregation but simply output them to another collection.
+Depending your use case, you might not want to return the results of your aggregation but simply output them to another collection.
 That's where `$out` comes in.  [$out](https://docs.mongodb.com/manual/reference/operator/aggregation/out/) is an operator that allows the results of a pipeline to be stored in to a named collection.
 This collection can not be sharded or a capped collection, however.
 This collection, if it does not exist, will be created upon execution of the pipeline.
@@ -89,7 +92,7 @@ This should, hopefully, make both APIs easier to digest and evolve.
 
 #### $merge
 
-[$merge](https://docs.mongodb.com/manual/reference/operator/aggregation/merge/) is a very similar option with a some major differences.
+[$merge](https://docs.mongodb.com/manual/reference/operator/aggregation/merge/) is a very similar option with some major differences.
 The biggest difference is that `$merge` can write to existing collections without destroying the existing documents.  `$out` would obliterate any existing documents and replace them with the results of the pipeline.  `$merge`, however, can deposit these new results alongside existing data and update existing data.
 
 Using `$merge` might look something like this:

@@ -2,6 +2,9 @@
 title: "Transactions"
 weight: 190
 ---
+
+# Transactions
+
 Starting with MongoDB version 4.0, multi-document transactions are now supported on replica sets.
 Morphia 2.0 introduced a simple mechanism to access this functionality.
 Morphia 2.0 added the methods `withTransaction(MorphiaTransaction<T> transaction)` and

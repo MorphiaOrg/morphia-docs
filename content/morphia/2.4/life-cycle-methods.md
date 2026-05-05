@@ -1,12 +1,12 @@
 ---
-title: "Lifecyclemethods"
+title: "Life Cycle Methods"
 weight: 200
 ---
 
-## Life Cycle Methods
+# Life Cycle Methods
 
 There are various annotations which can be used to register callbacks on certain life cycle events.
-These include Pre/Post-Persist (Save), and Pre/Post-Load.  Methods annotated with these annotations can have any or all of the following
+These include Pre/Post-Persist (Save), and Pre/Post-Load. Methods annotated with these annotations can have any or all of the following
 arguments:
 
 1. The entity itself
@@ -14,7 +14,7 @@ arguments:
 3. The `Document` to be used for writing to the database.
 
 {{< admonition type="note" title="Note" >}}
-Any fields added to the `document` in a pre persist event will be overwritten by the entity serialization.  If you need to modify a
+Any fields added to the `document` in a pre persist event will be overwritten by the entity serialization. If you need to modify a
 serialized value, e.g., encrypting a value, use a post persist event instead.
 {{< /admonition >}}
 
@@ -23,15 +23,15 @@ The lifecycle event annotations are:
 1. `@PrePersist` - Called before the entity is encoded in to a document.
 2. `@PostPersist` - Called after the entity is encoded in to a document but before data is written to the database.
 3. `@PreLoad` - Called after the document has been fetched from the database but before mapping the document in to the entity.
-4. `@PostLoad` - Called after populating the entity with the values from the document before return the entity reference back to user code.
+4. `@PostLoad` - Called after populating the entity with the values from the document before returning the entity reference back to user code.
 
-### Examples
+## Examples
 
-[Here](https://github.com/MorphiaOrg/morphia/blob/master/morphia/src/test/java/dev/morphia/TestQuery.java) is a one of the test classes.
+[Here](https://github.com/MorphiaOrg/morphia/blob/master/morphia/src/test/java/dev/morphia/TestQuery.java) is one of the test classes.
 
-All parameters and return values are options in your implemented methods.
+All parameters and return values are optional in your implemented methods.
 
-#### Example
+### Example
 
 Here is a simple example of an entity that always saves the Date it was last updated.
 Alternatively, the resulting serialized form can be passed back in just prior to sending the document to the database.
@@ -54,10 +54,10 @@ class BankAccount {
 }
 ```
 
-### EntityListeners
+## EntityListeners
 
 If your application has more generalized life cycle events, these methods can be stored on classes external to your model.
-For example's sake, let's assume there's a need to digitally sign all documents before storing it in the database.
+For example's sake, let's assume there's a need to digitally sign all documents before storing them in the database.
 
 ```java
 @EntityListeners(DigitalSigner.class)
@@ -69,10 +69,9 @@ public class BankAccount {
 
 class DigitalSigner {
   @PrePersist
-  void prePersist( Object entity, Document document) {
+  void prePersist(Object entity, Document document) {
      document.put("signature", sign(document));
   }
-
 }
 ```
 

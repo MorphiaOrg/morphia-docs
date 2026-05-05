@@ -16,7 +16,7 @@ To use Morphia using either build tool, you will need to update your build confi
 </dependencies>
 ```
 
-If you want to use a `-SNAPSHOT` build you will need to add the appropriate repository information to you pom:
+If you want to use a `-SNAPSHOT` build you will need to add the appropriate repository information to your pom:
 
 ```xml
 <repositories>

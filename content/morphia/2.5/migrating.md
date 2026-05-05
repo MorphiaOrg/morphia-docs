@@ -9,7 +9,7 @@ driver version of 5.x or greater.  If you need a 4.x driver for some reason, you
 support 5.x and greater.  In preparation for 3.0, deprecations will be incrementally made in the 2.5.x line with replacements where
 feasible.  Updating away from these deprecations will make the transition to 3.0 much smoother.  In the cases where the replacements can
 not feasibly be provided, migration scripts will be available as part of the 3.0 release to help reduce the impact of such changes.  Bug
-fixes will continue to be made on the 2.4.x series and 2 .5.x as necessary but the primary focus remains on 3.x.
+fixes will continue to be made on the 2.4.x series and 2.5.x as necessary but the primary focus remains on 3.x.
 
 ## Migrating to 2.4
 

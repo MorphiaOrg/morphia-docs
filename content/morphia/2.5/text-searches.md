@@ -1,9 +1,9 @@
 ---
-title: "Textsearches"
+title: "Text Searches"
 weight: 170
 ---
 
-## Text Searches
+# Text Searches
 
 Morphia also supports MongoDB's text search capabilities.
 In order to execute a text search against a collection, the collection must have a [text index](https://docs.mongodb.com/manual/core/index-text/) defined first.
@@ -23,7 +23,7 @@ public static class Greeting {
 The `$**` value tells MongoDB to create a text index on all the text fields in a document.
 A more targeted index can be created, if desired, by explicitly listing which fields to index.
 Once the index is defined, we can start querying against it like this
-[test](https://github.com/MorphiaOrg/morphia/tree/2.4.x/legacy-tests/src/test/java/dev/morphia/query/TestTextSearching.java) does:
+[test](https://github.com/MorphiaOrg/morphia/tree/2.5.x/legacy-tests/src/test/java/dev/morphia/query/TestTextSearching.java) does:
 
 ```java
 mapper.map(Greeting.class);

@@ -2,6 +2,9 @@
 title: "Indexing"
 weight: 90
 ---
+
+# Indexing
+
 Morphia provides annotations that allow developers to define indexes for a collection to be defined alongside the other mapping data on an entity's source.
 In addition to the familiar ascending/descending index types, Morphia and MongoDB support
 [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [text](https://docs.mongodb.com/manual/core/index-text/), and [geospatial](https://docs.mongodb.com/manual/applications/geospatial-indexes/)
@@ -52,13 +55,13 @@ An exception is made for [text indexing](#_text_indexing) as discussed below.
 ### Index Options
 
 Options for an index are defined on the [@IndexOptions](javadoc/dev/morphia/annotations/IndexOptions.html).
-More complete documenation can be found in the [manual](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#options).
+More complete documentation can be found in the [manual](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#options).
 Using the options allows you to run indexing in the background, e.g. By default, creating an index blocks all other operations on a database.
 When building an index on a collection, the database that holds the collection is unavailable for read or write operations until the index build completes.
 For potentially long running index building operations, consider the **background** operation so that the MongoDB database remains available during the index building operation.
 The MongoDB [manual](https://docs.mongodb.com/manual/core/index-creation/#background-construction) has more detail.
 
-By default Morphia will attempt to validate the fields specified but in some cases that isn't desirable so you can turn it off via the options refernce.  `IndexOptions` lets you define [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [sparse](https://docs.mongodb.com/manual/core/index-sparse/), and [partial](https://docs.mongodb.com/manual/core/index-partial/) indexes as well.  `IndexOptions` can also be used to give an index a more human friendly name.
+By default Morphia will attempt to validate the fields specified but in some cases that isn't desirable so you can turn it off via the options reference.  `IndexOptions` lets you define [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [sparse](https://docs.mongodb.com/manual/core/index-sparse/), and [partial](https://docs.mongodb.com/manual/core/index-partial/) indexes as well.  `IndexOptions` can also be used to give an index a more human friendly name.
 
 {{< admonition type="note" title="Note" >}}
 Whether user specified or MongoDB generated, index names including their full namespace (i.e. database.collection) cannot be longer than the [Index Name Limit](https://docs.mongodb.com/manual/reference/limits/#Index-Name-Length).
@@ -99,7 +102,7 @@ private class FieldIndex {
 }
 ```
 
-## [#text-indexing]#Text Indexing#
+## Text Indexing
 
 Morphia's indexing supports MongoDB's text indexing and search functionality as we've briefly seen above.
 Full details can be found in the [manual](https://docs.mongodb.com/manual/core/index-text/) but there are a few Morphia specific details to cover.

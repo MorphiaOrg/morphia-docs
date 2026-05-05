@@ -2,6 +2,9 @@
 title: "Deletes"
 weight: 150
 ---
+
+# Deletes
+
 Queries are used to delete documents from the database as well.
 Using
 [Query#delete()](++javadoc/dev/morphia/query/Query.html#delete()++), we can delete documents matching the query.

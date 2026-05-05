@@ -1,9 +1,11 @@
 ---
-title: "Configuration Old"
+title: "Configuration (Legacy)"
 weight: 60
 ---
 
-## Configuration
+> **Deprecated:** This page documents the legacy `MapperOptions`-based configuration superseded in Morphia 2.4. See [Configuration](../configuration/) for the current approach.
+
+# Configuration
 
 Morphia 2.0 introduced a number of new ways to configure its behavior.
 These values are listed below:

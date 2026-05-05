@@ -2,15 +2,18 @@
 title: "References"
 weight: 180
 ---
+
+# References
+
 MongoDB tries to encourage self-contained documents so that data can be fetched much more efficiently via single reads from the database.
-However not every data model or application can adhere to this philosophy in its entirety.
+However, not every data model or application can adhere to this philosophy in its entirety.
 As such, MongoDB supports
-[database references](https://docs.mongodb.com/manual/reference/database-references/).Morphia supports two styles of defining references:
+[database references](https://docs.mongodb.com/manual/reference/database-references/). Morphia supports two styles of defining references:
 
 1. the [@Reference](javadoc/dev/morphia/annotations/Reference.html) annotation
 2. an experimental wrapper type [MorphiaReference](javadoc/dev/morphia/mapping/experimental/MorphiaReference.html).
 
-### Using the annotation
+## Using the Annotation
 
 The annotation based approach is the traditional approach.
 The [@Reference](javadoc/dev/morphia/annotations/Reference.html) can be applied to any property whose type is a mappable Entity type.

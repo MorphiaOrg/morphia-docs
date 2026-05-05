@@ -25,7 +25,7 @@ datastore.ensureIndexes();
 
 This snippet creates the Morphia instance we'll be using in our simple application.
 The `Morphia` class is a factory for `Datastore` instances, if you will. For a more complete discussion on configuring Morphia, please
-see the xref:configuration.adoc for more details.
+see the [configuration guide](../configuration/) for more details.
 
 This will create a `Datastore` that connects to the configured database on the local machine using the default port of `27017`.
 
@@ -42,7 +42,7 @@ By default Morphia will not store empty `List` or
 `Map` values nor will it store null values in to MongoDB.
 If your application needs empty or null values to be present for whatever reason, setting these values to true will tell Morphia to save them for you.
 There are a few other options to configure on
-`MorphiaConfig`, but we'll not be covering them here.
+`MorphiaConfig`, but they will not be covered here.
 
 ## Mapping Classes
 
@@ -146,7 +146,7 @@ As you can see, we just need to create and save the other Employees then we can 
 Morphia takes care of saving the keys in Elmer's document that refer to Daffy and Pepé.
 Updating data in MongoDB is as simple as updating your Java objects and then calling `datastore.save()` with them again.
 For bulk updates (e.g., everyone gets a raise!) this is not the most efficient way of doing updates.
-It is possible to update directly in the database without having to pull in every document, convert to Java objects, update, convert back to a document, and write back to MongoDB.But in order to show you that piece, first we need to see how to query.
+It is possible to update directly in the database without having to pull in every document, convert to Java objects, update, convert back to a document, and write back to MongoDB. But in order to show you that piece, first we need to see how to query.
 
 ## Querying
 
@@ -177,7 +177,7 @@ underpaid = datastore.createQuery(Employee.class)
 ```
 
 Morphia supports all the query filters defined in the Mongodb query language.
-You can find helper methods for all these filers on the
+You can find helper methods for all these filters on the
 [Filters class](javadoc/dev/morphia/query/filters/Filters.html).
 The `filter()` method can take as many `Filter`
 references as you need to define your query.

@@ -3,6 +3,8 @@ title: "Querying (Legacy)"
 weight: 120
 ---
 
+> **Deprecated:** This page documents the legacy query API that was removed in Morphia 3.0. See [Queries](../queries/) for the current API.
+
 {{< admonition type="warning" title="Warning" >}}
 This page describes the older approach to querying.
 While this older API is still supported, efforts should be made to update to the new API as outlined in the other [querying](../queries/) guide.

@@ -85,7 +85,7 @@ The `legacy()` method mentioned above also configured this legacy querying style
 API associated with it, will go away.
 
 However, it will still be possible to configure your application with the old settings, you will just have to be explicit about it.  To
-update to this new configuration approach, rather than using `MappingOptions.legacy().build()` as you have perhaps been doing, simply
+update to this new configuration approach, rather than using `MapperOptions.legacy().build()` as you have perhaps been doing, simply
 replace it with something like the following:
 
 ```java

@@ -2,6 +2,9 @@
 title: "Kotlin"
 weight: 70
 ---
+
+# Kotlin
+
 In general, your Kotlin types should work out of the box with Morphia.
 There are, however, a few interesting cases where they need a little extra help.
 Morphia 2.2 introduces a new module dependency for those who need that extra support.
@@ -35,4 +38,4 @@ This module should support any
 `ReadWriteProperty` type but is only currently tested against the `notNull()` case.
 
 All that is needed to enable this more targeted support is to simply add the new dependency to your project as shown above and it should magically "Just Work&#8482;".
-If you find something that doesn't work in your Kotlin project, please file an [issue](..//issues-help/).
+If you find something that doesn't work in your Kotlin project, please file an [issue](../issues-help/).

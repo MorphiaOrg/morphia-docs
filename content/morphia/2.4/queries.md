@@ -2,7 +2,8 @@
 title: "Queries"
 weight: 110
 ---
-Morphia provides [Query<T>](javadoc/dev/morphia/query/Query.html) class to build a query and map the results back to instances of your entity classes and attempts to provide as much type safety and validation as possible.
+
+Morphia provides the [Query<T>](javadoc/dev/morphia/query/Query.html) class to build a query and map the results back to instances of your entity classes and attempts to provide as much type safety and validation as possible.
 To create the `Query`, we invoke the following code:
 
 ```java
@@ -85,7 +86,7 @@ It's also worth noting that this projection works with both the mapped document 
 `"first_name"` and the Java field name `"firstName"`.
 
 {{< admonition type="warning" title="Warning" >}}
-While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to MongoDB.Any fields in the existing document in the database that are missing from the entity will be removed if this entity is saved.
+While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to MongoDB. Any fields in the existing document in the database that are missing from the entity will be removed if this entity is saved.
 For example, in the example above if `found` is saved back to MongoDB, the `last_name` field that currently exists in the database for this entity will be removed.
 To save such instances back consider using
 [Datastore#merge(T)](++javadoc/dev/morphia/Datastore.html#merge(T)++)

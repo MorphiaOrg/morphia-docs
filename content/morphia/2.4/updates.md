@@ -2,7 +2,8 @@
 title: "Updates"
 weight: 130
 ---
-Updates in 2.0, are issued using a `Query` instance . These update operations are executed on the server without fetching any documents across the wire.
+
+Updates in 2.0 are issued using a `Query` instance. These update operations are executed on the server without fetching any documents across the wire.
 Update operations are defined using a set of functions as defined on
 [UpdateOperators](javadoc/dev/morphia/query/updates/UpdateOperators.html).
 In our examples, we'll be using the following model:
@@ -57,7 +58,7 @@ To change the name of the city in the address, one would use something like this
 datastore
     .find(Hotel.class)
     .update(UpdateOperators.set("address.city", "Ottawa"))
-    execute();
+    .execute();
 ```
 
 Values can also be removed from documents as shown below:
@@ -66,7 +67,7 @@ Values can also be removed from documents as shown below:
 datastore
     .find(Hotel.class)
     .update(UpdateOperators.unset("name"))
-    execute();
+    .execute();
 ```
 
 After this update, the name of the hotel would be `null` when the entity is loaded.
@@ -80,7 +81,7 @@ This behavior can be modified via the optional
 ```java
 datastore
     .find(Hotel.class)
-    .inc("stars")
+    .update(UpdateOperators.inc("stars"))
     .execute(new UpdateOptions()
         .multi(true));
 ```
@@ -124,7 +125,7 @@ This can be changed by passing in a `ModifyOptions` reference to the operation:
 datastore
     .find(Hotel.class)
     .modify(UpdateOperators.set("address.city", "Ottawa"))
-    execute(new ModifyOptions()
+    .execute(new ModifyOptions()
         .returnDocument(ReturnDocument.AFTER));
 ```
 

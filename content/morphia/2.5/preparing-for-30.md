@@ -1,5 +1,5 @@
 ---
-title: "Preparingfor30"
+title: "Preparing for 3.0"
 weight: 40
 ---
 
@@ -48,7 +48,7 @@ still exist and continue to clutter the API.  Morphia 3.0 will see the removal o
 {{< admonition type="note" title="Note" >}}
 One thing to note on a handful of deprecations is that the method isn't going away as such as the usage of it will change in a breaking
 manner.  e.g.,
-[Query#update(UpdateOperator first, UpdateOperator... updates)](https://github.com/MorphiaOrg/morphia/tree/2.4.x/core/src/main/java/dev/morphia/query/Query.java).  This method
+[Query#update(UpdateOperator first, UpdateOperator... updates)](https://github.com/MorphiaOrg/morphia/tree/2.5.x/core/src/main/java/dev/morphia/query/Query.java).  This method
 will, in 3.0, return an `UpdateResult` like the `execute()` method you have to call today does.  Migrating to this new form when 3.0
 arrives should be as simple as removing that last method call in the chain.
 

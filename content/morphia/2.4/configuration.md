@@ -2,10 +2,11 @@
 title: "Configuration"
 weight: 50
 ---
-Starting in Morphia 3.0, configuration will use a newer configuration mechanism, `MorphiaConfig`.  This class will replace
-`MapperOptions` in 3.0 and `MapperOptions` will be removed completely then.  `MapperOptions` is deprecated as of now and users are
-encouraged to change before 3.0.  There will be an automated refactoring provided for users to migrate with the 3.0 release for those
-that would rather wait.
+
+Starting in Morphia 2.4, configuration uses a newer configuration mechanism, `MorphiaConfig`.  This class will replace
+`MapperOptions` in 3.0 and `MapperOptions` will be removed completely then.  `MapperOptions` is deprecated as of 2.4 and users are
+encouraged to migrate before 3.0. There will be an automated refactoring provided for users to migrate with the 3.0 release for those
+who would rather wait.
 
 `MorphiaConfig` can be programmatically created like `MapperOptions` are today but it can also be configured via a configuration file. The file
 should live in your build's resources folder and be named `META-INF/morphia-config.properties`. This is being done for a number of reasons:
@@ -129,22 +130,19 @@ on that reference and use the resulting `MorphiaConfig` instance.
 ### Sample config files
 
 **Complete with defaults**
-```
-```
+
 {{< include-code file="complete-morphia-config.properties" >}}
 
 ---
 
 **Minimal config file**
-```
-```
+
 {{< include-code file="minimal-morphia-config.properties" >}}
 
 ---
 
 **Legacy config file**
-```
-```
+
 {{< include-code file="legacy-morphia-config.properties" >}}
 
 The legacy query factory is deprecated and will be removed in 3.0. It is advisable to switch to the newer query filters based API now to
