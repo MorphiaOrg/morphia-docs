@@ -25,18 +25,18 @@ However, if the default values are acceptable that element can be safely omitted
 
 `Morphia.createDatastore()` can be called [with](++javadoc/dev/morphia/Morphia.html#createDatastore(com.mongodb.client.MongoClient,dev.morphia.config.MorphiaConfig)++)
 and [without](++javadoc/dev/morphia/Morphia.html#createDatastore(com.mongodb.client.MongoClient)++) an explicit `MorphiaConfig`
-argument.  When not explicitly given a `MorphiaConfig`, Morphia will attempt to load the configuration file at the location show above.
+argument. When not explicitly given a `MorphiaConfig`, Morphia will attempt to load the configuration file at the location shown above.
 Failing to find a configuration file, it will create a new configuration using the default values which can be found in the javadoc.
 These values are unlikely to be suitable long term but should be sufficient for newcomers looking to test things out a little before
 committing to adopt Morphia.
 
-### Manually loading configurations
+## Manually Loading Configurations
 In some cases, you might find the need for multiple configuration files.  Such scenarios include varying test
 environments/configurations, multiple dataset configurations, or externally supplied configurations.  In such cases, you can manually
 load those configurations using [MorphiaConfig.load()](++javadoc/dev/morphia/config/MorphiaConfig.html#load(java.lang.String)++).  You
 can then pass this instance to `createDatastore()`.
 
-### Dynamic configuration creation
+## Dynamic Configuration Creation
 For many, the ability to dynamically create `MorphiaConfig` instances is not just a nicety but a hard requirement.  In this case, there
 are methods on `MorphiaConfig` to return a new version of the configuration with the updated value.  `MorphiaConfig` is immutable,
 however, so be sure to use the returned reference and not the original.  It should also be noted that once a `Datastore` is created using
