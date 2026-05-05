@@ -69,7 +69,7 @@ For the provided strategies, you can simply use the shortened version as shown i
 can enable it by giving the fully qualified classname (fqcn) instead. The same applies everywhere you see `fqcn` in the sample file.
 {{< /admonition >}}
 
-### Discriminator keys and values
+## Discriminator Keys and Values
 
 - `morphia.discriminator`
 - `morphia.discriminator-key`
@@ -89,7 +89,7 @@ Simple name is the fully qualified classname without the package name. These can
 [DiscriminatorFunction](++javadoc/dev/morphia/mapping/DiscriminatorFunction.html++) and just like the `NamingStrategy` cases, if the
 provided options are not sufficient, you can implement your own by subclassing `DiscriminatorFunction` and implementing your own function.
 
-### User-defined Codecs
+## User-Defined Codecs
 
 - `morphia.codec-provider`
 
