@@ -23,17 +23,17 @@ that can map the data to and from MongoDB. When mapping an entity, one can also 
 
 {{< admonition type="note" title="Note" >}}
 As of 2.2, [@Embedded](javadoc/dev/morphia/annotations/Embedded.html) has been deprecated in favor of
-[@Entity](javadoc/dev/morphia/annotations/Entity.html).  The distinction between the two annotations has been, historically, much
-more significant than it is at present.  Due to the confusion about when to use which annotation and the meaning of "embedded" in
-general, it is being decommissioned.  The two annotations have grown to mean essentially the same thing and so have become increasingly
+[@Entity](javadoc/dev/morphia/annotations/Entity.html). The distinction between the two annotations has been, historically, much
+more significant than it is at present. Due to the confusion about when to use which annotation and the meaning of "embedded" in
+general, it is being decommissioned. The two annotations have grown to mean essentially the same thing and so have become increasingly
 redundant.
 {{< /admonition >}}
 
 {{< admonition type="warning" title="Warning" >}}
 Entities annotated with [@Entity](javadoc/dev/morphia/annotations/Entity.html) that lack an
-[@Id](javadoc/dev/morphia/annotations/Id.html) are not eligible to serve as "top level" types.  This means they will not be mapped to
-a collection nor can they serve as the basis for querying or be saved directly (only as fields on top level types).  ID fields are used to
-perform proper updates on previously persisted entities.  Without that ID Morphia, can not properly restrict the update to the correct
+[@Id](javadoc/dev/morphia/annotations/Id.html) are not eligible to serve as "top level" types. This means they will not be mapped to
+a collection nor can they serve as the basis for querying or be saved directly (only as fields on top level types). ID fields are used to
+perform proper updates on previously persisted entities. Without that ID Morphia, can not properly restrict the update to the correct
 document in the database.
 {{< /admonition >}}
 
@@ -68,7 +68,7 @@ For maven users, it's as simple as adding one line to the Kotlin maven plugin `<
 ## External Types
 
 Sometimes persisted types come from external libraries whose source is either unavailable or simply can't be modified.
-Using these types would be impossible give then annotation requirements as stated above.
+Using these types would be impossible given the annotation requirements as stated above.
 Morphia 2.3 introduces a new experimental API that loosens these restrictions a bit.
 Using [@ExternalEntity](javadoc/dev/morphia/annotations/ExternalEntity.html) these external types can be mapped using a proxy type.
 
@@ -111,7 +111,7 @@ public class ThirdPartyEntityMixIn {
 }
 ```
 
-Here you'll note the use of the new annotation.  `ExternalEntity` looks just like [Entity](javadoc/dev/morphia/annotations/Entity.html)
+Here you'll note the use of the new annotation. `ExternalEntity` looks just like [Entity](javadoc/dev/morphia/annotations/Entity.html)
 but has a new field called `targetType`.
 As you can see here, we list the target type as our original `ThirdPartyEntity`.
 But this mix-in type otherwise looks just like the external type we're trying to map.

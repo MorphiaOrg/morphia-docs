@@ -27,13 +27,13 @@ MorphiaCursor<Author> aggregate = getDs().aggregate(Book.class)
 This lets Morphia know which collection to perform this aggregation against.
 Because of the transformational operations available in the aggregation [pipeline](https://docs.mongodb.com/manual/core/aggregation-pipeline), Morphia can not validate as much as it can with querying so care will need to be taken to ensure document fields actually exist when referencing them in your pipeline.
 
-### The Pipeline
+## The Pipeline
 
 Aggregation pipelines are comprised of a series of stages.
 Our example here has only one stage: `group()`.
 This method is the Morphia equivalent of the [$group](https://docs.mongodb.com/manual/reference/operator/aggregation/group/) operator.
 This stage, as the name suggests, groups together documents based on various criteria.
-In this example, we are collecting together all the books by author.  `group()` takes one parameter: a `Group` instance.
+In this example, we are collecting together all the books by author. `group()` takes one parameter: a `Group` instance.
 This instance is created using the `Group.of()` method which will return a new `Group` stage instance.
 There are a few overloads but the simplest version, `of()`, will generate a `$group` stage with no `_id`
 field in the document.
@@ -47,7 +47,7 @@ The next step defines a new field, `books` comprised of the titles of the books 
 { "_id" : "Dante", "books" : [ "The Banquet", "Divine Comedy", "Eclogues" ] }
 ```
 
-### Executing the Pipeline
+## Executing the Pipeline
 
 Once your pipeline is complete, you can execute it via the `execute()` method.
 This method takes a `Class` reference for the target type of your aggregation.
@@ -56,10 +56,10 @@ Additionally, you can also include some options to `execute()`.
 We can use the various options on the
 [AggregationOptions](javadoc/dev/morphia/aggregation/AggregationOptions.html) class to configure how we want the pipeline to execute.
 
-#### $out
+### $out
 
 Depending your use case, you might not want to return the results of your aggregation but simply output them to another collection.
-That's where `$out` comes in.  [$out](https://docs.mongodb.com/manual/reference/operator/aggregation/out/) is an operator that allows the results of a pipeline to be stored in to a named collection.
+That's where `$out` comes in. [$out](https://docs.mongodb.com/manual/reference/operator/aggregation/out/) is an operator that allows the results of a pipeline to be stored in to a named collection.
 This collection can not be sharded or a capped collection, however.
 This collection, if it does not exist, will be created upon execution of the pipeline.
 
@@ -90,10 +90,10 @@ By limiting the `Aggregation` API to two methods for `$out` (the seconds takes a
 This should, hopefully, make both APIs easier to digest and evolve.
 {{< /admonition >}}
 
-#### $merge
+### $merge
 
 [$merge](https://docs.mongodb.com/manual/reference/operator/aggregation/merge/) is a very similar option with some major differences.
-The biggest difference is that `$merge` can write to existing collections without destroying the existing documents.  `$out` would obliterate any existing documents and replace them with the results of the pipeline.  `$merge`, however, can deposit these new results alongside existing data and update existing data.
+The biggest difference is that `$merge` can write to existing collections without destroying the existing documents. `$out` would obliterate any existing documents and replace them with the results of the pipeline. `$merge`, however, can deposit these new results alongside existing data and update existing data.
 
 Using `$merge` might look something like this:
 

@@ -53,7 +53,7 @@ Any class annotated with
 [@Entity](javadoc/dev/morphia/annotations/Entity.html) is treated as a top level document stored directly in a collection.
 Any class with [@Entity](javadoc/dev/morphia/annotations/Entity.html) must have a field annotated with
 [@Id](javadoc/dev/morphia/annotations/Id.html) to define which field to use as the `_id` value in the document written to MongoDB.
-[@Embedded](javadoc/dev/morphia/annotations/Embedded.html) indicates that the class will result in a subdocument inside another document.  [@Embedded](javadoc/dev/morphia/annotations/Embedded.html) classes do not require the presence of an
+[@Embedded](javadoc/dev/morphia/annotations/Embedded.html) indicates that the class will result in a subdocument inside another document. [@Embedded](javadoc/dev/morphia/annotations/Embedded.html) classes do not require the presence of an
 [@Id](javadoc/dev/morphia/annotations/Id.html) field.
 
 {{< admonition type="note" title="Note" >}}
@@ -223,5 +223,5 @@ datastore.find(Employee.class)
 ```
 
 Take note of the `DeleteOptions` being passed in here.
-By default, mongodb will only delete the first matching document.
+By default, MongoDB will only delete the first matching document.
 If you want to delete all of them, you need to pass the `multi(true)` option as well.

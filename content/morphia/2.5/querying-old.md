@@ -5,6 +5,8 @@ weight: 120
 
 > **Deprecated:** This page documents the legacy query API that was removed in Morphia 3.0. See [Queries](../queries/) for the current API.
 
+# Querying (Legacy)
+
 {{< admonition type="warning" title="Warning" >}}
 This page describes the older approach to querying.
 While this older API is still supported, efforts should be made to update to the new API as outlined in the other [querying](../queries/) guide.
@@ -124,7 +126,7 @@ q.and(
 
 An `or` clause looks exactly the same except for using `or()` instead of `and()`, of course.
 For these clauses we use the `criteria()`
-method instead of `field()` but it is used in much the same fashion.  `and()` and `or()` take a
+method instead of `field()` but it is used in much the same fashion. `and()` and `or()` take a
 [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter of type `Criteria` so you can include as many filters as necessary.
 If all you need is an `and` clause, you don't need an explicit call to `and()`:
 
@@ -140,7 +142,7 @@ This generates an implicit `and` across the field comparisons.
 ## Text Searching
 
 Morphia also supports MongoDB's text search capabilities.
-In order to execute a text search against a collection, the collection must have a [text index](https://docs.mongodb.com/manual//core/index-text/) defined first.
+In order to execute a text search against a collection, the collection must have a [text index](https://docs.mongodb.com/manual/core/index-text/) defined first.
 Using Morphia that definition would look like this:
 
 ```java
@@ -218,7 +220,7 @@ As you can see here, we're saving this entity with a first and last name but our
 It's also worth noting that this project works with both the mapped document field name
 `"first_name"` and the Java field name `"firstName"`.
 
- The boolean value passed in instructs Morphia to either include (`true`) or exclude (`false`) the field.  It is not currently possible to list both inclusions and exclusions in one query.
+The boolean value passed in instructs Morphia to either include (`true`) or exclude (`false`) the field. It is not currently possible to list both inclusions and exclusions in one query.
 
 {{< admonition type="warning" title="Warning" >}}
 While projections can be a nice performance win in some cases, it's important to note that this object can not be safely saved back to MongoDB.
@@ -291,7 +293,7 @@ You can use Morphia to map queries you might have already written using the raw 
 
 For example:
 
-```
+```java
 Document query = new Document()
 	.append("albums",
             new Document("$elemMatch",

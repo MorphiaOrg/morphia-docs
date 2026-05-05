@@ -31,16 +31,16 @@ These values are unlikely to be suitable long term but should be sufficient for 
 committing to adopt Morphia.
 
 ## Manually Loading Configurations
-In some cases, you might find the need for multiple configuration files.  Such scenarios include varying test
-environments/configurations, multiple dataset configurations, or externally supplied configurations.  In such cases, you can manually
-load those configurations using [MorphiaConfig.load()](++javadoc/dev/morphia/config/MorphiaConfig.html#load(java.lang.String)++).  You
+In some cases, you might find the need for multiple configuration files. Such scenarios include varying test
+environments/configurations, multiple dataset configurations, or externally supplied configurations. In such cases, you can manually
+load those configurations using [MorphiaConfig.load()](++javadoc/dev/morphia/config/MorphiaConfig.html#load(java.lang.String)++). You
 can then pass this instance to `createDatastore()`.
 
 ## Dynamic Configuration Creation
-For many, the ability to dynamically create `MorphiaConfig` instances is not just a nicety but a hard requirement.  In this case, there
-are methods on `MorphiaConfig` to return a new version of the configuration with the updated value.  `MorphiaConfig` is immutable,
-however, so be sure to use the returned reference and not the original.  It should also be noted that once a `Datastore` is created using
-a `MorphiaConfig`, that configuration is fixed and can not be changed.  A new `Datastore` would need to be created with the updated version.
+For many, the ability to dynamically create `MorphiaConfig` instances is not just a nicety but a hard requirement. In this case, there
+are methods on `MorphiaConfig` to return a new version of the configuration with the updated value. `MorphiaConfig` is immutable,
+however, so be sure to use the returned reference and not the original. It should also be noted that once a `Datastore` is created using
+a `MorphiaConfig`, that configuration is fixed and can not be changed. A new `Datastore` would need to be created with the updated version.
 
 ## Collection and Property Naming
 
@@ -56,7 +56,7 @@ annotation. In 2.0, however, we defined some naming strategies. The naming strat
 3. `snake` This transforms element names in to their [snake case](https://en.wikipedia.org/wiki/Snake_case) versions.
 For those coming from a Python background or who work with Python developers regularly, this should look familiar.
 4. `camel` This transforms element names in to their [camel case](https://en.wikipedia.org/wiki/Camel_case) versions.
-This is the form most java developers will be familiar with.
+This is the form most Java developers will be familiar with.
 5. `kebab` This transforms element names in to their [kebab case](https://en.wikipedia.org/wiki/Kebab_case) versions.
 This looks exactly like the `snake case` but with `-` instead of `_` so that it looks like it's on a kebab skewer.
 
@@ -112,54 +112,48 @@ will not only make it consistent with other configurable elements but will make 
 the note below about using the ServiceLoader with Java 9 modules.
 {{< /admonition >}}
 
-#### Property Codecs
+### Property Codecs
 As unusual as is the need for a custom codec to handle types, there are rare cases where how Morphia processes a property on entity needs
-to be customized.  This processing is handled via the
-[MorphiaPropertyCodecProvider](++javadoc/dev/morphia/mapping/codec/MorphiaPropertyCodecProvider.html++).  Morphia discovers these
+to be customized. This processing is handled via the
+[MorphiaPropertyCodecProvider](++javadoc/dev/morphia/mapping/codec/MorphiaPropertyCodecProvider.html++). Morphia discovers these
 custom implementations via SPI the details of which won't be covered here.
 
-### Legacy Configuration
+## Legacy Configuration
 
 Morphia can be configured in one of two ways: the legacy mode and the modern mode. The defaults in the configuration code will give you
 the modern configuration and is the recommended way to configure Morphia. However, if you're upgrading an older project, you very likely
 have more data than can be easily updated within any reasonable limits. For those, cases using the legacy configuration is rather
 straightforward.
 
-Using the legacy configuration is a matter of defining a few entries in your configuration file.  An example of that is listed below.  If
+Using the legacy configuration is a matter of defining a few entries in your configuration file. An example of that is listed below. If
 you already have a `MorphiaConfig` in hand but would like to update it to reflect the legacy style configuration, you can call `.legacy()`
 on that reference and use the resulting `MorphiaConfig` instance.
 
-### Sample config files
+## Sample Config Files
 
 **Complete with defaults**
-```
-```
 {{< include-code file="complete-morphia-config.properties" >}}
 
 ---
 
 **Minimal config file**
-```
-```
 {{< include-code file="minimal-morphia-config.properties" >}}
 
 ---
 
 **Legacy config file**
-```
-```
 {{< include-code file="legacy-morphia-config.properties" >}}
 
 The legacy query factory is deprecated and will be removed in 3.0. It is advisable to switch to the newer query filters based API now to
 avoid breakage.
 
-### Some notes on ServiceLoader
+## Some Notes on ServiceLoader
 
 Morphia provides a number of extensibility points using [the SPI mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html)
-available in the JVM.  This allows for seamless, config-free inclusion of different functionality.  In general, this works without notice
-because most users will not need to implement such features and so needn't be bothered with such details.  However, if you are one of the
+available in the JVM. This allows for seamless, config-free inclusion of different functionality. In general, this works without notice
+because most users will not need to implement such features and so needn't be bothered with such details. However, if you are one of the
 lucky ones that **does** need to know **and** you use Java modules, please be aware that the usual services file in `META-INF/services` won't
-work.  In order to export your service for Morphia to find you need an entry in your `module-info.java` file as shown below:
+work. In order to export your service for Morphia to find you need an entry in your `module-info.java` file as shown below:
 
 ```java
 provides dev.morphia.mapping.codec.MorphiaPropertyCodecProvider with com.foo.MyCodecProvider;

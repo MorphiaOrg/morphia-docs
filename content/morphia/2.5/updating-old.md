@@ -5,6 +5,8 @@ weight: 140
 
 > **Deprecated:** This page documents the legacy update API that was removed in Morphia 3.0. See [Updates](../updates/) for the current API.
 
+# Updating (Legacy)
+
 There are two basic ways to update your data: insert/save a whole Entity or issue an update operation.
 
 ## Updating (on the server)

@@ -10,12 +10,12 @@ In addition to the familiar ascending/descending index types, Morphia and MongoD
 [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [text](https://docs.mongodb.com/manual/core/index-text/), and [geospatial](https://docs.mongodb.com/manual/applications/geospatial-indexes/)
 indexes.
 When defining [text indexes](#_text_indexing) there are certain restrictions which will be covered below.
-Full details for all these types are available in the [manual](https://docs.mongodb.com/manual/indexes).  Morphia will apply any indexes for you at start up by
+Full details for all these types are available in the [manual](https://docs.mongodb.com/manual/indexes). Morphia will apply any indexes for you at start up by
 setting the `morphia.apply-indexes` to true in the [configuration file](../configuration/).
 
 There are two ways to define indexes: at the class level and at the field level.
 
-### Class Level Indexes
+## Class Level Indexes
 
 Class level indexing begins with the [@Indexes](javadoc/dev/morphia/annotations/Indexes.html) annotation.
 This is a container annotation whose sole purpose is to hold a number of [@Index](javadoc/dev/morphia/annotations/Index.html) annotations.
@@ -42,7 +42,7 @@ public class IndexExample {
 }
 ```
 
-### Fields
+## Fields
 
 Which fields to index are defined with the [@Field](javadoc/dev/morphia/annotations/Field.html) annotation.
 An arbitrary number of [@Field](javadoc/dev/morphia/annotations/Field.html)s can be given but at least one must be present.
@@ -52,7 +52,7 @@ annotations.
 For most index types, this value is validated by default.
 An exception is made for [text indexing](#_text_indexing) as discussed below.
 
-### Index Options
+## Index Options
 
 Options for an index are defined on the [@IndexOptions](javadoc/dev/morphia/annotations/IndexOptions.html).
 More complete documentation can be found in the [manual](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#options).
@@ -61,13 +61,13 @@ When building an index on a collection, the database that holds the collection i
 For potentially long running index building operations, consider the **background** operation so that the MongoDB database remains available during the index building operation.
 The MongoDB [manual](https://docs.mongodb.com/manual/core/index-creation/#background-construction) has more detail.
 
-By default Morphia will attempt to validate the fields specified but in some cases that isn't desirable so you can turn it off via the options reference.  `IndexOptions` lets you define [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [sparse](https://docs.mongodb.com/manual/core/index-sparse/), and [partial](https://docs.mongodb.com/manual/core/index-partial/) indexes as well.  `IndexOptions` can also be used to give an index a more human friendly name.
+By default Morphia will attempt to validate the fields specified but in some cases that isn't desirable so you can turn it off via the options reference. `IndexOptions` lets you define [TTL](https://docs.mongodb.com/manual/core/index-ttl/), [sparse](https://docs.mongodb.com/manual/core/index-sparse/), and [partial](https://docs.mongodb.com/manual/core/index-partial/) indexes as well. `IndexOptions` can also be used to give an index a more human friendly name.
 
 {{< admonition type="note" title="Note" >}}
 Whether user specified or MongoDB generated, index names including their full namespace (i.e. database.collection) cannot be longer than the [Index Name Limit](https://docs.mongodb.com/manual/reference/limits/#Index-Name-Length).
 {{< /admonition >}}
 
-#### Partial Indexes
+### Partial Indexes
 
 New in MongoDB 3.2, [partial indexes](https://docs.mongodb.com/v3.2/core/index-partial/) only index the documents in a collection that meet a specified filter expression thereby reducing storage and maintenance costs.
 A partial filter is defined using a query as shown here:

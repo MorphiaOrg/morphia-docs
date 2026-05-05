@@ -16,7 +16,7 @@ You don't need to use Morphia to shard your collections, but if your collection 
 
 Documentation on how to choose a proper shard key can be found in the [manual](https://docs.mongodb.com/manual/sharding).
 
-### Shard Definition
+## Shard Definition
 
 Sharding definitions are driven by the [@ShardKeys](javadoc/dev/morphia/annotations/ShardKeys.html) annotation.
 This annotation takes two values: the shard keys themselves as defined by the [@ShardKey](javadoc/dev/morphia/annotations/ShardKey.html) annotation and the options to apply when sharding the collection via the [@ShardOptions](javadoc/dev/morphia/annotations/ShardOptions.html)
@@ -48,7 +48,7 @@ Additionally, since the default type is `RANGED`, you can omit this value entire
 {{< admonition type="note" title="Note" >}}
 In the example above, you'll note that the property we've defined as part of the shard key is declared as final.
 It is recommended that you follow this practice to help prevent mutating your shard key values in memory.
-If you were to fetch an entity and update one or more of the shard key properties, mongodb would be unable to find the document in the database to update with the new state.
+If you were to fetch an entity and update one or more of the shard key properties, MongoDB would be unable to find the document in the database to update with the new state.
 If you find yourself needing to mutate one of those properties, consult the [manual](https://docs.mongodb.com/manual/core/sharding-change-shard-key-value/) first.
 {{< /admonition >}}
 
@@ -56,17 +56,17 @@ If you find yourself needing to mutate one of those properties, consult the [man
 Morphia does not currently support redefining the shard key definition entirely.
 {{< /admonition >}}
 
-### Sharding Options
+## Sharding Options
 
 `@ShardKeys` also has an `options` field which takes a [@ShardOptions](javadoc/dev/morphia/annotations/ShardOptions.html).
 Using this annotation, you can configure the number of initial shards, [presplit the hashed zones](https://docs.mongodb.com/manual/core/hashed-sharding/#shard-an-empty-collection), or [enforce uniqueness](https://docs.mongodb.com/manual/core/sharding-shard-key/#unique-indexes) in your shard key.
 
-### How is it used?
+## How Is It Used?
 
 Once you have your sharding configured, you have the choice of manually sharding it via the mongo shell or having Morphia shard it for you.
 For the latter, there is a new method [shardCollections()](++javadoc/dev/morphia/Datastore.html#shardCollections()++) that will do
 this for you. It should be noted here that if your collection is not empty, there are certain administrative tasks you must perform on the collection first that Morphia does **not** handle.
 You can find those details in the server documentation.
 
-Once your collection is sharded, Morphia uses the shard key definition to update certain operations (such as saves/upserts and find-and-modify among others) to include the relevant shard key information so that mongodb can quickly and efficiently find the documents in the database.
+Once your collection is sharded, Morphia uses the shard key definition to update certain operations (such as saves/upserts and find-and-modify among others) to include the relevant shard key information so that MongoDB can quickly and efficiently find the documents in the database.
 This is done transparently for you so you needn't worry about doing such things manually.

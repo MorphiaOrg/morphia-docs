@@ -3,6 +3,8 @@ title: "Issues & Help"
 weight: 220
 ---
 
+# Issues & Help
+
 We are lucky to have a vibrant MongoDB Java community with lots of varying experience of using Morphia.
 We often find the quickest way to get support for general questions is through [GitHub discussions](https://github.com/MorphiaOrg/morphia/discussions),
 [the MongoDB community forums](https://community.mongodb.com/c/drivers-odms-connectors/), or through [stackoverflow](https://stackoverflow.com/questions/tagged/morphia).

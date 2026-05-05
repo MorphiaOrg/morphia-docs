@@ -14,7 +14,7 @@ Query<Product> query = datastore.find(Product.class);
 
 `find()` returns an instance of `Query` which we can use to build a query.
 
-### `filter()`
+## `filter()`
 
 The most significant method is `filter(Filter...)`.
 This method takes a number of filters to apply to the query being built.
@@ -32,7 +32,7 @@ query.filter(Filters.gte("price", 1000));
 This will append the new criteria to any existing criteria already defined.
 You can define as many filters in one call as you'd like or you may choose to append them in smaller groups based on whatever query building logic your application might have.
 
-### Complex Queries
+## Complex Queries
 
 Of course, queries are usually more complex than single field comparisons.
 Morphia offers both `and()` and `or()` to build up more complex queries.

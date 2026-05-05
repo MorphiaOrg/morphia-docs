@@ -15,9 +15,9 @@ These values are listed below:
 3. The discriminator key
 4. The discriminator value
 
-### Collection and property naming
+## Collection and Property Naming
 
-Traditionally Morphia has used with the class's "simple name" for the collection name if you choose to not manually map the name of an entity's collection.
+Traditionally Morphia has used the class's "simple name" for the collection name if you choose to not manually map the name of an entity's collection.
 Similarly, an entity's properties were named after the Java field name unless mapped otherwise with the
 `@Property` annotation.
 In 2.0, however, we define naming strategies.
@@ -28,15 +28,15 @@ As of 2.0, the naming strategies supported out of the box are:
 3. `snake` This transforms element names in to their [snake case](https://en.wikipedia.org/wiki/Snake_case) versions.
 For those coming from a Python background or who work with Python developers regularly, this should look familiar.
 4. `camel` This transforms element names in to their [camel case](https://en.wikipedia.org/wiki/Camel_case) versions.
-This is the form most java developers will be familiar with.
+This is the form most Java developers will be familiar with.
 5. `kebab` This transforms element names in to their [kebab case](https://en.wikipedia.org/wiki/Kebab_case) versions.
 This looks exactly like the `snake case` but with `-` instead of `_` so that it looks like it's on a kebab skewer.
 
-These strategies can all be access via the `NamingStrategy` class via their named methods.
+These strategies can all be accessed via the `NamingStrategy` class via their named methods.
 In the case where you have a custom naming strategy you'd like to employ, e.g., perhaps some hashing function to obscure element names, you can simply extend `NamingStrategy`
 yourself and implement whatever logic you might need.
 
-### Discriminator keys and values
+## Discriminator Keys and Values
 
 Morphia has long hard coded the choice of how to encode an entity's type in to the resulting documents in the database using the
 `className` key and the simple name of the class.
@@ -52,10 +52,10 @@ The choices here are simpler:
 1. `className()`/`lowerClassName()`
 2. `simpleName()`/`lowerSimpleName()`
 
- These call all be accessed via their named methods on `DiscriminatorFunction` and just like the `NamingStrategy` cases if the provided
-  options are not sufficient, you can implement your own by subclassing `DiscriminatorFunction` and implementing your own function.
+These can all be accessed via their named methods on `DiscriminatorFunction` and just like the `NamingStrategy` cases, if the provided
+options are not sufficient, you can implement your own by subclassing `DiscriminatorFunction` and implementing your own function.
 
-### User-defined Codecs
+## User-Defined Codecs
 
 Morphia makes heavy use of the driver's `Codec` infrastructure.
 All of the persistence of your entities is handled by Morphia-defined and -configured codecs.
@@ -63,22 +63,21 @@ Morphia also makes use of driver-defined codecs with a select number of replacem
 This is typically sufficient for users' needs.
 However, there are invariably times when more control is needed.
 
-Starting with 2.3, you can provide your own `CodecProvider` to customize how Morphia handles the types you're interested.
+Starting with 2.3, you can provide your own `CodecProvider` to customize how Morphia handles the types you're interested in.
 It's not advised to write custom codecs for your entities (why mark them as entities at that point?) but if you're comfortable taking that on, then it is, of course, your prerogative.
 You can register your custom `CodecProvider` implementation via the
-link:++javadoc/dev/morphia/mapping/MapperOptions.Builder.html#codecProvider()++[MapperOptions.Builder#codecProvider(org.bson.codecs
-method.
+[MapperOptions.Builder#codecProvider()](++javadoc/dev/morphia/mapping/MapperOptions.Builder.html#codecProvider()++) method.
 For details on how to write a `Codec` and a `CodecProvider`, please consult
 [the driver's documentation](https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/data-formats/codecs/).
 Using your custom `CodecProvider`, you can supply as many `Codec` implementations as you need.
 
-### Old versus New
+## Old versus New
 
 Morphia can be configured in one of two ways: the legacy mode and the modern mode.
 
-#### Legacy
+### Legacy
 
-We'll cover the legacy mode first as it reflects how Morphia worked prior to 2.0.  `MapperOptions` drives the configuration and so this is where we'll start.
+We'll cover the legacy mode first as it reflects how Morphia worked prior to 2.0. `MapperOptions` drives the configuration and so this is where we'll start.
 Prior to 2.0, you could simply create a `MapperOptions` instance directly.
 Starting with 2.0, you will need to use one of the factory methods.
 In this instance, you will want the `legacy()` method.
@@ -90,7 +89,7 @@ The `legacy()` builder currently configures the following settings:
 3. `identity()` as both the class and field name strategies
 4. Configures the legacy query implementation
 
-#### Modern
+### Modern
 
 One of the big goals for 2.0 was to modernize both the API and behavior of Morphia.
 As such, the `builder()` method returns a

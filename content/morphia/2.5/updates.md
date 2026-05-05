@@ -40,7 +40,7 @@ public class Address
 }
 ```
 
-### set()/unset()
+## set()/unset()
 
 To change the name of the hotel, one would use something like this:
 
@@ -74,7 +74,7 @@ datastore
 
 After this update, the name of the hotel would be `null` when the entity is loaded.
 
-### Multiple Updates
+## Multiple Updates
 
 By default, an update operation will only update the first document matching the query.
 This behavior can be modified via the optional
@@ -88,7 +88,7 @@ datastore
         .multi(true));
 ```
 
-### Upserts
+## Upserts
 
 In some cases, updates are issued against a query that might not match any documents.
 In these cases, it's often fine for those updates to simply pass with no effect.
@@ -106,14 +106,14 @@ datastore
 // creates { "_id" : ObjectId("4c60629d2f1200000000161d"), "stars" : 50 }
 ```
 
-### Checking results
+## Checking Results
 
 In all this one thing we haven't really looked at is how to verify the results of an update.
 The `execute()` method returns an instance of
 `com.mongodb.client.result.UpdateResult`.
 Using this class, you can get specific numbers from the update operation as well as any generated ID as the result of an upsert.
 
-### Returning the updated entity
+## Returning the Updated Entity
 
 There are times when a document needs to be updated and also fetched from the database.
 In the server documentation, this is referred to as [findAndModify](https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/).
@@ -131,7 +131,7 @@ datastore
         .returnDocument(ReturnDocument.AFTER));
 ```
 
-### Merges
+## Merges
 
 A specialized form of an update is the [merge()](++javadoc/dev/morphia/Datastore.html#merge(T)++) operation.
 A common case in scenarios where multiple subsystems or applications share a database is where one part of the system might only have part of a larger entity. e.g., a
@@ -143,7 +143,7 @@ Using `merge()`, a specific set of `$set` updates are issued to only save fields
 This is useful but limited.
 What happens to any null fields and empty Lists?
 Using `MapperOptions`, Morphia can be configured to not persist those fields such that they never end up in the database.
-In the above scenario, however, Morphia is only issuing a `$set` for the fields that should be persisted which leaves potentially outdated information in the database. (e.g., say a process removes the final item from a List in memory.  `merge()` would actually **leave** that last item in the database because an update would not be issued for that empty List.) In 2.2, a new value is added to the optional [InsertOneOptions](javadoc/dev/morphia/InsertOneOptions.html) to account for this.
+In the above scenario, however, Morphia is only issuing a `$set` for the fields that should be persisted which leaves potentially outdated information in the database. (e.g., say a process removes the final item from a List in memory. `merge()` would actually **leave** that last item in the database because an update would not be issued for that empty List.) In 2.2, a new value is added to the optional [InsertOneOptions](javadoc/dev/morphia/InsertOneOptions.html) to account for this.
 
 Setting [unsetMissing](++javadoc/dev/morphia/InsertOneOptions.html#unsetMissing(boolean)++) to true, any property defined on an entity
 that isn't getting updated via `$set` will have a `$unset` operator defined.

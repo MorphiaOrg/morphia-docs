@@ -43,7 +43,7 @@ session.commitTransaction();
 session.close();
 ```
 
-This is essentially the same logic as above but now we're manually managing the transactional boundaries.  `MorphiaSession` is also
+This is essentially the same logic as above but now we're manually managing the transactional boundaries. `MorphiaSession` is also
 `AutoCloseable` so you could wrap the entire block in a `try-with-resources` block and let that manage the session boundary for you:
 
 ```java

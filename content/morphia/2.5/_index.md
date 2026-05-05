@@ -3,6 +3,8 @@ title: "Getting Started"
 weight: 10
 ---
 
+# Getting Started
+
 The recommended way to get started using Morphia in your project is with a dependency management system such as maven or gradle.
 To use Morphia using either build tool, you will need to update your build configuration with the following information.
 
@@ -50,6 +52,6 @@ repositories {
 
 
 {{< admonition type="note" title="Note" >}}
-Morphia 2.0 requires Java 11 or greater.  Morphia is actively tested on server versions 6 and above.  Older server versions are not
-tested but, generally, **should** work though no guarantees are made.  Morphia 2.5 and beyond requires a minimum driver version of 5.0.
+Morphia 2.0 requires Java 11 or greater. Morphia is actively tested on server versions 6 and above. Older server versions are not
+tested but, generally, **should** work though no guarantees are made. Morphia 2.5 and beyond requires a minimum driver version of 5.0.
 {{< /admonition >}}
