@@ -14,15 +14,12 @@ default: site
 # latest full version for each branch, using content/<branch>/.version for
 # the major.minor baseline.  One full version string per line, in VERSIONS order.
 
-versions.list: $(wildcard content/morphia/*/.version) bin/syncVersions.kt
+versions.list: bin/syncVersions.kt
 	@echo "Discovering versions..."
 	@> $@
 	@for V in $(VERSIONS); do \
 	  FULL=$$(jbang bin/syncVersions.kt $$V) ; \
 	  echo "$$FULL" >> $@ ; \
-	  if [ "$$V" = "master" ]; then \
-	    printf '%s' "$$FULL" | grep -oE '^[0-9]+\.[0-9]+' > "content/morphia/master/.version" ; \
-	  fi ; \
 	done
 	@echo "Generated $@"
 
@@ -38,12 +35,10 @@ data/versions.yaml: versions.list
 	i=1 ; \
 	for V in $(VERSIONS); do \
 	  FULL=$$(sed -n "$${i}p" versions.list) ; \
-	  MINOR=$$(cat "content/morphia/$$V/.version" | tr -d '[:space:]') ; \
 	  echo "$$FULL" | grep -q SNAPSHOT && SNAP=true || SNAP=false ; \
 	  [ "$$FULL" = "$$LATEST" ] && LAT=true || LAT=false ; \
-	  [ "$$V" = "master" ] && DISP="master" || DISP="$$MINOR" ; \
 	  printf "  - branch: \"%s\"\n    version: \"%s\"\n    display: \"%s\"\n    latest: %s\n    snapshot: %s\n" \
-	    "$$V" "$$FULL" "$$DISP" "$$LAT" "$$SNAP" >> $@ ; \
+	    "$$V" "$$FULL" "$$V" "$$LAT" "$$SNAP" >> $@ ; \
 	  i=$$((i+1)) ; \
 	done
 	@echo "Generated $@"
@@ -63,8 +58,10 @@ javadocs: Makefile-javadoc
 $(HUGO_OUT):
 	@mkdir -p $@
 
-site: data/versions.yaml javadocs
-	@hugo --destination $(HUGO_OUT) --cleanDestinationDir
+site: data/versions.yaml Makefile-javadoc
+	@rm -rf $(HUGO_OUT)
+	@hugo --destination $(HUGO_OUT)
+	@$(MAKE) -f Makefile-javadoc alldocs
 	@touch $(HUGO_OUT)/.nojekyll
 	@echo "Site built → $(HUGO_OUT)"
 
@@ -103,17 +100,6 @@ push: guard-master
 
 publish: guard-master $(GH_PAGES)/index.html push
 
-# ── Promote ───────────────────────────────────────────────────────────────────
-# Copy master content to a versioned folder named after content/morphia/master/.version.
-# Master is left unchanged; the new folder becomes a stable versioned branch.
-
-promote:
-	@VERSION=$$(cat content/morphia/master/.version | tr -d '[:space:]') ; \
-	TARGET=content/morphia/$$VERSION ; \
-	[ -d "$$TARGET" ] && { echo "ERROR: $$TARGET already exists"; exit 1; } ; \
-	cp -r content/morphia/master "$$TARGET" ; \
-	echo "Promoted master → $$TARGET"
-
 # ── Utility ───────────────────────────────────────────────────────────────────
 clean:
 	@rm -rf $(HUGO_OUT) build/javadoc-jars versions.list Makefile-javadoc data/versions.yaml
@@ -121,4 +107,4 @@ clean:
 mrclean: clean
 	@rm -rf build $(GH_PAGES)
 
-.PHONY: promote
+.PHONY:

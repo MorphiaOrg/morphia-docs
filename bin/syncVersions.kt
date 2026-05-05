@@ -6,7 +6,6 @@
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import org.semver4j.Semver
-import java.io.File
 import java.net.URI
 
 const val RELEASE_BASE  = "https://repo1.maven.org/maven2/dev/morphia/morphia"
@@ -21,13 +20,12 @@ fun main(vararg args: String) {
     }
 
     val branch = args[0]
-    val minorVersion = File("content/morphia/$branch/.version").readText().trim()
-    val (major, minor) = minorVersion.split(".").map { it.toInt() }
+    val (major, minor) = branch.split(".").map { it.toInt() }
     val artifact = if (major == 1) "core" else "morphia-core"
 
     val version = latestRelease(artifact, major, minor)
         ?: latestSnapshot(artifact, major, minor)
-        ?: "$minorVersion.0-SNAPSHOT"
+        ?: "$branch.0-SNAPSHOT"
     println(version)
 }
 

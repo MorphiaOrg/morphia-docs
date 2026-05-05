@@ -14,7 +14,7 @@ do
   else
     ARTIFACT=core
   fi
-  SHORTVER=$( echo $VERSION | cut -d. -f-2 )
+  FOLDER=$( echo $VERSION | cut -d. -f-2 )
 
   if [ "${VERSION/-SNAPSHOT/}" != "${VERSION}" ]
   then
@@ -30,16 +30,14 @@ do
 	@mvn -q -U dependency:get -Dartifact=dev.morphia.morphia:${ARTIFACT}:${VERSION}:jar:javadoc \\
 	  -DremoteRepositories=${REPO} -Dtransitive=false
 
-build/site/morphia/$SHORTVER/javadoc/index.html: \$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
+build/site/morphia/$FOLDER/javadoc/index.html: \$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar
 	@echo Extracting javadoc for ${VERSION}
-	@mkdir -p build/site/morphia/$SHORTVER/javadoc/
+	@mkdir -p build/site/morphia/$FOLDER/javadoc/
 	@unzip -DD -q -o \$(M2_PATH)/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}-javadoc.jar \\
-		-d build/site/morphia/$SHORTVER/javadoc/
+		-d build/site/morphia/$FOLDER/javadoc/
 " >> Makefile-javadoc
 
-
-
-DOCS="$DOCS build/site/morphia/$SHORTVER/javadoc/index.html"
+DOCS="$DOCS build/site/morphia/$FOLDER/javadoc/index.html"
 done < versions.list
 
 cat << EOF >> Makefile-javadoc
