@@ -27,7 +27,7 @@ jobs:
           distribution: 'zulu'
 
       - name: Set up jbang
-        uses: jbangdev/jbang-action@v0.122.0
+        uses: jbangdev/jbang-action@v0.138.0
 
       - name: Cache Maven repository
         uses: actions/cache@v4
