@@ -26,19 +26,23 @@ jobs:
           java-version: 21
           distribution: 'zulu'
 
+      - name: Set up jbang
+        uses: jbangdev/jbang-action@v0.122.0
+
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('versions.list') }}
+          restore-keys: ${{ runner.os }}-maven-
+
       - name: Configure git identity
         run: |
           git config --global user.name evanchooly
           git config --global user.email jlee@antwerkz.com
 
-      - name: Stage content
-        run: make stage-content
-
       - name: Build site
         run: make site
-
-      - name: Download Javadoc
-        run: make javadocs
 
       - name: Sync to gh-pages
         env:
