@@ -70,21 +70,15 @@ watch: data/versions.yaml
 	@hugo server --destination $(HUGO_OUT) --bind 0.0.0.0
 
 # ── Branch guard ─────────────────────────────────────────────────────────────
-# Publishing and pushing are only permitted when running on the master branch.
-# In CI, GITHUB_REF is checked; locally, the current git branch is checked.
-
-guard-master:
-	@if [ -n "$${GITHUB_REF}" ]; then \
-	  [ "$${GITHUB_REF}" = "refs/heads/master" ] || \
-	    { echo "ERROR: publish only runs on master (GITHUB_REF=$${GITHUB_REF})"; exit 1; } ; \
-	else \
-	  BRANCH=$$(git rev-parse --abbrev-ref HEAD) ; \
-	  [ "$$BRANCH" = "master" ] || \
-	    { echo "ERROR: publish only runs on master (current branch: $$BRANCH)"; exit 1; } ; \
-	fi
+# Evaluate at parse time: non-empty when on master, empty otherwise.
+ifdef GITHUB_REF
+  _MASTER := $(filter refs/heads/master,$(GITHUB_REF))
+else
+  _MASTER := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null | grep -Fx master)
+endif
 
 # ── gh-pages ─────────────────────────────────────────────────────────────────
-$(GH_PAGES): guard-master .PHONY
+$(GH_PAGES): .PHONY
 	@[ ! -d $@ ] && git clone $${REMOTE_REPO} -b gh-pages --depth 1 --no-single-branch $(GH_PAGES) || true
 	@git -C $@ reset --hard --quiet && git -C $@ pull --all --quiet
 
@@ -93,13 +87,18 @@ $(GH_PAGES)/index.html: $(GH_PAGES) site
 	  rsync -Cra --delete --exclude=CNAME --exclude=.git ../$(HUGO_OUT)/ . ; \
 	  git add .
 
-push: guard-master
-	@cd $(GH_PAGES) ; \
-	  git commit -a -m "pushing docs updates" ; \
-	  git pull --rebase ; \
-	  git push $${REMOTE_REPO}
+push:
+	@if [ -z "$(_MASTER)" ]; then \
+	  echo "Skipping push — not on master branch" ; \
+	else \
+	  cd $(GH_PAGES) && \
+	  git commit -a -m "pushing docs updates" && \
+	  git pull --rebase && \
+	  git push $${REMOTE_REPO} ; \
+	fi
 
-publish: guard-master $(GH_PAGES)/index.html push
+publish: $(if $(_MASTER),$(GH_PAGES)/index.html push)
+	@$(if $(_MASTER),,echo "Skipping publish — not on master branch")
 
 # ── Utility ───────────────────────────────────────────────────────────────────
 clean:
