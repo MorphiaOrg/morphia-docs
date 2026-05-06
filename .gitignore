@@ -1,19 +1,12 @@
 *.iml
 .idea
 .cache
-build
 node_modules
 gh_pages/
 /public
 
 # Hugo generated output
-/build/site/
-/build/javadoc-jars/
-/build/morphia-src/
-
-# Legacy Antora artefacts
-antora-playbook.yml
-package-lock.json
+/build/
 /Makefile-javadoc
 /versions.list
 /data/versions.yaml

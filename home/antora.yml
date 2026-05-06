@@ -1,7 +1,0 @@
-name: landing
-title: Home
-version: master
-display_version: landing
-
-nav:
-#- modules/contribute/nav.adoc
