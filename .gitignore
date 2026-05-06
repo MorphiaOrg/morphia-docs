@@ -10,3 +10,4 @@ gh_pages/
 /Makefile-javadoc
 /versions.list
 /data/versions.yaml
+/.hugo_build.lock
