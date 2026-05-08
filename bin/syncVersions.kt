@@ -11,6 +11,8 @@ import org.apache.maven.model.v4.MavenStaxReader
 import org.semver4j.Semver
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 import java.net.URL
 
@@ -51,9 +53,25 @@ fun latestRelease(major: Int, minor: Int): Semver? {
         .maxByOrNull { it.patch }
 }
 
+val AMBIGUOUS_STRING = Regex("-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?|true|false|null|~|yes|no|on|off")
+
+fun quotingYaml(opts: DumperOptions): Yaml {
+    val representer = object : Representer(opts) {
+        init {
+            representers[String::class.java] = org.yaml.snakeyaml.representer.Represent { data ->
+                val str = data as String
+                val style = if (AMBIGUOUS_STRING.matches(str)) DumperOptions.ScalarStyle.SINGLE_QUOTED
+                            else DumperOptions.ScalarStyle.PLAIN
+                representScalar(Tag.STR, str, style)
+            }
+        }
+    }
+    return Yaml(representer, opts)
+}
+
 fun syncAntora(version: String, minorVersion: String, snapshot: Boolean, srcRef: String) {
     val opts = DumperOptions().apply { defaultFlowStyle = DumperOptions.FlowStyle.BLOCK }
-    val yaml = Yaml(opts)
+    val yaml = quotingYaml(opts)
     val data = yaml.load<MutableMap<String, Any>>(ANTORA_FILE.readText())
     val asciidoc = data["asciidoc"] as? Map<*, *>
         ?: error("antora.yml missing 'asciidoc' key")
