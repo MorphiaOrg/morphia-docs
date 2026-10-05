@@ -91,6 +91,7 @@ morphia.mapper=critter
 Or pass `-Dmorphia.mapper=critter` on the Maven command line when running tests.
 
 For production deployments, consider using the [critter-maven plugin](../maven-plugin/) to generate models at build time and eliminate the startup cost entirely.
+Runtime generation requires your entities to be loaded by the same class loader (or be in the same module) as Morphia; if they aren't, as in some application server or JPMS layouts, use the plugin. See [Class loaders and modules](../maven-plugin/#class-loaders-and-modules).
 
 ## User-defined Codecs
 
