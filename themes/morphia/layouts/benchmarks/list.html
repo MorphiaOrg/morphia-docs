@@ -1,0 +1,111 @@
+{{ define "body-class" }}doc{{ end }}
+
+{{ define "main" }}
+{{/* Variants in a fixed order; reflection is the baseline the ratios compare against. */}}
+{{ $variants := slice "reflection" "critter" "critter-runtime" }}
+{{ $entries := dict }}
+{{ with site.Data.benchmarks }}{{ with .entries }}{{ $entries = . }}{{ end }}{{ end }}
+
+{{/* Index the latest run of each variant by "<benchmark> | <params>" so the table can line the variants up. */}}
+{{ $s := newScratch }}
+{{ range $variant := $variants }}
+  {{ with index $entries (printf "Mapper: %s" $variant) }}
+    {{ $run := index . (sub (len .) 1) }}
+    {{ $s.SetInMap "runs" $variant $run }}
+    {{ range $run.benches }}
+      {{ $parts := split .name " ( " }}
+      {{ $method := index $parts 0 }}
+      {{ $methodParts := split $method "." }}
+      {{ $label := delimit (last 2 $methodParts) "." }}
+      {{ $params := slice }}
+      {{ if gt (len $parts) 1 }}
+        {{ $json := strings.TrimSuffix " )" (index $parts 1) }}
+        {{ range $k, $v := transform.Unmarshal $json }}
+          {{ if ne $k "variant" }}{{ $params = $params | append $v }}{{ end }}
+        {{ end }}
+      {{ end }}
+      {{ $key := $label }}
+      {{ with $params }}{{ $key = printf "%s | %s" $label (delimit . ", ") }}{{ end }}
+      {{ $s.Add "keys" (slice $key) }}
+      {{ $s.SetInMap "rows" (printf "%s#%s" $key $variant) . }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ $keys := uniq ($s.Get "keys") }}
+{{ $runs := $s.Get "runs" }}
+
+<div class="doc-layout bench-layout">
+  <main class="doc-main bench-main" id="doc-main">
+    <article class="doc-content">
+      <h1 class="doc-title">{{ .Title }}</h1>
+      {{ .Content }}
+
+      {{ if not $keys }}
+      <div class="bench-empty">
+        <p>No benchmark results are available yet. They appear here after the Mapper Profiling workflow records a run.</p>
+      </div>
+      {{ else }}
+      {{ $latest := index $runs "reflection" | default (index $runs "critter") | default (index $runs "critter-runtime") }}
+      <h2 id="latest">Latest results</h2>
+      <p class="bench-meta">
+        {{ $sha := $latest.commit.id | default "" }}
+        {{ if findRE "^[0-9a-f]{40}$" $sha }}
+        Commit <a href="https://github.com/MorphiaOrg/morphia/commit/{{ $sha }}"><code>{{ substr $sha 0 8 }}</code></a>,
+        {{ else }}
+        Commit <code>{{ substr $sha 0 8 }}</code>,
+        {{ end }}
+        recorded {{ (time (int (div $latest.date 1000))).UTC.Format "2 January 2006" }}.
+        Ratios compare each critter variant with reflection: below 1.00× is faster.
+      </p>
+      <div class="bench-table-wrap">
+        <table class="bench-table">
+          <thead>
+            <tr>
+              <th scope="col">Benchmark</th>
+              {{ range $variants }}<th scope="col" class="num"><span class="bench-swatch bench-swatch--{{ . }}"></span>{{ . }}</th>{{ end }}
+            </tr>
+          </thead>
+          <tbody>
+            {{ range $key := $keys }}
+            {{ $base := index ($s.Get "rows") (printf "%s#reflection" $key) }}
+            <tr>
+              <th scope="row"><code>{{ $key }}</code></th>
+              {{ range $variant := $variants }}
+              {{ $bench := index ($s.Get "rows") (printf "%s#%s" $key $variant) }}
+              <td class="num">
+                {{ with $bench }}
+                  {{ $v := float .value }}
+                  <span class="bench-value">{{ if ge $v 100 }}{{ printf "%.0f" $v }}{{ else if ge $v 10 }}{{ printf "%.1f" $v }}{{ else }}{{ printf "%.2f" $v }}{{ end }}</span>
+                  <span class="bench-unit">{{ .unit }}</span>
+                  {{ if and $base (ne $variant "reflection") (gt (float $base.value) 0) }}
+                    {{ $ratio := div $v (float $base.value) }}
+                    <span class="bench-ratio{{ if lt $ratio 1.0 }} bench-ratio--faster{{ end }}">{{ printf "%.2f×" $ratio }}</span>
+                  {{ end }}
+                {{ else }}
+                  <span class="bench-unit">—</span>
+                {{ end }}
+              </td>
+              {{ end }}
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="history">History</h2>
+      <p class="bench-meta">One chart per benchmark, one line per variant. Hover a point to see the commit it measured.</p>
+      <div class="bench-charts" id="bench-charts" data-variants="{{ delimit $variants "," }}" data-src="{{ "benchmarks/data.json" | relURL }}">
+        <noscript><p>The history charts need JavaScript; the table above shows the latest run.</p></noscript>
+      </div>
+      {{ end }}
+    </article>
+  </main>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+        integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD"
+        crossorigin="anonymous"></script>
+<script src="{{ "js/benchmarks.js" | relURL }}"></script>
+{{ end }}

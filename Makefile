@@ -55,18 +55,44 @@ Makefile-javadoc: versions.list bin/generate-makefile.sh
 javadocs: Makefile-javadoc
 	@$(MAKE) -f Makefile-javadoc alldocs
 
+# ── Benchmark history ────────────────────────────────────────────────────────
+# The "Mapper Profiling" workflow in MorphiaOrg/morphia records JMH results on
+# its benchmark-data branch as a data.js script.  It is never served or run as
+# a script here: the prefix is stripped, the remainder is validated as JSON, and
+# the JSON feeds both Hugo's results table and the browser's trend charts.  If
+# the fetch or validation fails, an empty data set is written so the site still
+# builds.
+
+BENCH_URL      = https://raw.githubusercontent.com/MorphiaOrg/morphia/benchmark-data/mappers/data.js
+BENCH_JSON     = data/benchmarks.json
+BENCH_STATIC   = static/benchmarks/data.json
+BENCH_FALLBACK = {"entries":{}}
+
+benchmark-data: .PHONY
+	@mkdir -p $(dir $(BENCH_JSON)) $(dir $(BENCH_STATIC))
+	@if curl -sfL $(BENCH_URL) \
+	     | sed -e '1s/^window\.BENCHMARK_DATA = //' -e '$$s/;[[:space:]]*$$//' > $(BENCH_JSON).tmp \
+	   && jq -e '.entries | type == "object"' $(BENCH_JSON).tmp > /dev/null 2>&1 ; then \
+	  mv $(BENCH_JSON).tmp $(BENCH_JSON) ; \
+	else \
+	  echo "WARNING: could not fetch valid benchmark data from $(BENCH_URL); publishing an empty data set" ; \
+	  rm -f $(BENCH_JSON).tmp ; \
+	  echo '$(BENCH_FALLBACK)' > $(BENCH_JSON) ; \
+	fi
+	@cp $(BENCH_JSON) $(BENCH_STATIC)
+
 # ── Hugo build ────────────────────────────────────────────────────────────────
 $(HUGO_OUT):
 	@mkdir -p $@
 
-site: data/versions.yaml Makefile-javadoc
+site: data/versions.yaml Makefile-javadoc benchmark-data
 	@rm -rf $(HUGO_OUT)
 	@hugo --destination $(HUGO_OUT)
 	@$(MAKE) -f Makefile-javadoc alldocs
 	@touch $(HUGO_OUT)/.nojekyll
 	@echo "Site built → $(HUGO_OUT)"
 
-watch: data/versions.yaml
+watch: data/versions.yaml benchmark-data
 	@hugo server --destination $(HUGO_OUT) --bind 0.0.0.0
 
 # ── Branch guard ─────────────────────────────────────────────────────────────
@@ -102,7 +128,7 @@ publish: $(if $(_MASTER),$(GH_PAGES)/index.html push)
 
 # ── Utility ───────────────────────────────────────────────────────────────────
 clean:
-	@rm -rf $(HUGO_OUT) build/javadoc-jars versions.list Makefile-javadoc data/versions.yaml
+	@rm -rf $(HUGO_OUT) build/javadoc-jars versions.list Makefile-javadoc data/versions.yaml $(BENCH_JSON) $(BENCH_STATIC)
 
 mrclean: clean
 	@rm -rf build $(GH_PAGES)
