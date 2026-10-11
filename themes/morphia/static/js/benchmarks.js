@@ -19,7 +19,7 @@
   };
   var INK = '#14110d';
   var INK_MUTED = '#5a5247';
-  var INK_FAINT = '#8a8276';
+  var INK_FAINT = '#5a5247';
   var RULE = 'rgba(20,17,13,0.10)';
   var PAPER = '#fbf9f3';
   var MONO = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
