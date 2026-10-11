@@ -508,7 +508,7 @@ footer.bot .meta a:hover { color: var(--ink-2); }
 .doc-content .bench-table tr:last-child th { border-bottom: none; }
 .bench-table .num { text-align: right; white-space: nowrap; }
 .bench-value { font-family: var(--font-mono); color: var(--ink); }
-.bench-unit { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-4); margin-left: 4px; }
+.bench-unit { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); margin-left: 4px; }
 .bench-ratio { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
 .bench-ratio--faster { color: var(--ink); font-weight: 500; }
 .bench-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 999px; margin-right: 6px; vertical-align: 1px; }
