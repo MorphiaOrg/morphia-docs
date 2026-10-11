@@ -5,6 +5,7 @@
 GH_PAGES=gh_pages
 BRANCHES=master 2.5.x 2.4.x 1.6.x
 PLAYBOOK=antora-playbook.yml
+BENCHMARK_DATA=https://raw.githubusercontent.com/MorphiaOrg/morphia/benchmark-data/mappers/data.js
 
 default: site sync
 
@@ -65,6 +66,13 @@ site: versions.list package-lock.json javadocs
 	@npm run build
 	@touch build/site/.nojekyll
 	@cp home/modules/ROOT/pages/*.html build/site/landing
+	@make -s benchmarks
+
+benchmarks: .PHONY
+	@mkdir -p build/site/benchmarks
+	@cp benchmarks/index.html benchmarks/benchmarks.js build/site/benchmarks/
+	@curl -sfL $(BENCHMARK_DATA) -o build/site/benchmarks/data.js \
+		|| { echo "WARNING: could not fetch benchmark data from $(BENCHMARK_DATA)" ; rm -f build/site/benchmarks/data.js ; }
 
 sync: $(GH_PAGES)/index.html
 
