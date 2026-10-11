@@ -94,9 +94,11 @@
 
       <h2 id="history">History</h2>
       <p class="bench-meta">One chart per benchmark, one line per variant. Hover a point to see the commit it measured.</p>
-      <div class="bench-charts" id="bench-charts" data-variants="{{ delimit $variants "," }}" data-src="{{ "benchmarks/data.json" | relURL }}">
+      <div class="bench-charts" id="bench-charts" data-variants="{{ delimit $variants "," }}">
         <noscript><p>The history charts need JavaScript; the table above shows the latest run.</p></noscript>
       </div>
+      {{/* Inlined rather than fetched so the charts also work when the site is opened from file://. */}}
+      <script type="application/json" id="bench-data">{{ site.Data.benchmarks }}</script>
       {{ end }}
     </article>
   </main>

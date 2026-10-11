@@ -1,15 +1,15 @@
 /* ============================================================
    Mapper benchmark history charts
-   Fetches the benchmark history (github-action-benchmark's data from the
-   morphia repo's benchmark-data branch, converted to JSON at build time) and
-   draws one line chart per benchmark, with one line per mapper variant.
+   Reads the benchmark history (github-action-benchmark's data from the
+   morphia repo's benchmark-data branch, inlined into the page at build time)
+   and draws one line chart per benchmark, with one line per mapper variant.
    Every string from the data goes into the page as text, never as markup.
    ============================================================ */
 (function () {
   'use strict';
 
   var container = document.getElementById('bench-charts');
-  if (!container || !window.Chart || !window.fetch) return;
+  if (!container || !window.Chart) return;
 
   // Fixed variant -> color assignment (validated for CVD separation on the paper surface).
   var COLORS = {
@@ -54,18 +54,14 @@
     container.appendChild(p);
   }
 
-  fetch(container.dataset.src || 'data.json')
-    .then(function (response) {
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      return response.json();
-    })
-    .then(function (data) {
-      if (!data || typeof data.entries !== 'object' || data.entries === null) throw new Error('unexpected data');
-      render(data);
-    })
-    .catch(function () {
-      showMessage('The benchmark history could not be loaded; the table above shows the latest run.');
-    });
+  try {
+    var source = document.getElementById('bench-data');
+    var data = JSON.parse(source ? source.textContent : 'null');
+    if (!data || typeof data.entries !== 'object' || data.entries === null) throw new Error('unexpected data');
+    render(data);
+  } catch (e) {
+    showMessage('The benchmark history could not be loaded; the table above shows the latest run.');
+  }
 
   function render(data) {
     // Collect every commit measured (in run order) and every value per benchmark/variant/commit.

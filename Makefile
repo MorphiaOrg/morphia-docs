@@ -59,17 +59,16 @@ javadocs: Makefile-javadoc
 # The "Mapper Profiling" workflow in MorphiaOrg/morphia records JMH results on
 # its benchmark-data branch as a data.js script.  It is never served or run as
 # a script here: the prefix is stripped, the remainder is validated as JSON, and
-# the JSON feeds both Hugo's results table and the browser's trend charts.  If
-# the fetch or validation fails, an empty data set is written so the site still
-# builds.
+# the JSON feeds Hugo's results table and is inlined into the page for the
+# browser's trend charts.  If the fetch or validation fails, an empty data set
+# is written so the site still builds.
 
 BENCH_URL      = https://raw.githubusercontent.com/MorphiaOrg/morphia/benchmark-data/mappers/data.js
 BENCH_JSON     = data/benchmarks.json
-BENCH_STATIC   = static/benchmarks/data.json
 BENCH_FALLBACK = {"entries":{}}
 
 benchmark-data: .PHONY
-	@mkdir -p $(dir $(BENCH_JSON)) $(dir $(BENCH_STATIC))
+	@mkdir -p $(dir $(BENCH_JSON))
 	@if curl -sfL $(BENCH_URL) \
 	     | sed -e '1s/^window\.BENCHMARK_DATA = //' -e '$$s/;[[:space:]]*$$//' > $(BENCH_JSON).tmp \
 	   && jq -e '.entries | type == "object"' $(BENCH_JSON).tmp > /dev/null 2>&1 ; then \
@@ -79,7 +78,6 @@ benchmark-data: .PHONY
 	  rm -f $(BENCH_JSON).tmp ; \
 	  echo '$(BENCH_FALLBACK)' > $(BENCH_JSON) ; \
 	fi
-	@cp $(BENCH_JSON) $(BENCH_STATIC)
 
 # ── Hugo build ────────────────────────────────────────────────────────────────
 $(HUGO_OUT):
@@ -128,7 +126,7 @@ publish: $(if $(_MASTER),$(GH_PAGES)/index.html push)
 
 # ── Utility ───────────────────────────────────────────────────────────────────
 clean:
-	@rm -rf $(HUGO_OUT) build/javadoc-jars versions.list Makefile-javadoc data/versions.yaml $(BENCH_JSON) $(BENCH_STATIC)
+	@rm -rf $(HUGO_OUT) build/javadoc-jars versions.list Makefile-javadoc data/versions.yaml $(BENCH_JSON)
 
 mrclean: clean
 	@rm -rf build $(GH_PAGES)

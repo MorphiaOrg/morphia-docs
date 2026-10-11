@@ -11,5 +11,4 @@ gh_pages/
 /versions.list
 /data/versions.yaml
 /.hugo_build.lock
-/static/benchmarks/data.json
 /data/benchmarks.json
