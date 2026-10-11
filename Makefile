@@ -5,6 +5,7 @@
 GH_PAGES=gh_pages
 BRANCHES=master 2.5.x 2.4.x 1.6.x
 PLAYBOOK=antora-playbook.yml
+REMOTE_REPO ?= https://github.com/MorphiaOrg/morphia.git
 BENCHMARK_DATA=https://raw.githubusercontent.com/MorphiaOrg/morphia/benchmark-data/mappers/data.js
 
 default: site sync
