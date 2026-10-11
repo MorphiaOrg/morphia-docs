@@ -495,6 +495,32 @@ footer.bot .meta a:hover { color: var(--ink-2); }
 /* Errors */
 .doc-content .chroma .err { color: #c84040; }
 
+/* ── BENCHMARKS ── */
+.bench-main { max-width: var(--layout-max); }
+.bench-main .doc-content > p, .bench-main .doc-content > ul { max-width: var(--content-max); }
+.bench-meta { color: var(--ink-3); font-size: 0.9375rem; }
+.bench-empty { background: var(--paper); border: 1px dashed var(--rule-2); border-radius: var(--radius-md); padding: 20px 24px; color: var(--ink-3); }
+.bench-empty p { margin: 0; }
+.bench-table-wrap { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--rule); border-radius: var(--radius-md); background: var(--paper); }
+.doc-content .bench-table { margin: 0; font-variant-numeric: tabular-nums; }
+.doc-content .bench-table th[scope="row"] { font-weight: 400; background: transparent; border-bottom: 1px solid var(--rule); font-family: var(--font-sans); white-space: nowrap; }
+.doc-content .bench-table th[scope="row"] code { background: none; padding: 0; color: var(--ink-2); }
+.doc-content .bench-table tr:last-child th { border-bottom: none; }
+.bench-table .num { text-align: right; white-space: nowrap; }
+.bench-value { font-family: var(--font-mono); color: var(--ink); }
+.bench-unit { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); margin-left: 4px; }
+.bench-ratio { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+.bench-ratio--faster { color: var(--ink); font-weight: 500; }
+.bench-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 999px; margin-right: 6px; vertical-align: 1px; }
+.bench-swatch--reflection { background: #b85c10; }
+.bench-swatch--critter { background: #008c84; }
+.bench-swatch--critter-runtime { background: #7d4aa6; }
+.bench-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 1.5rem 0; }
+.bench-chart { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius-md); padding: 16px 16px 12px; }
+.bench-chart figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.doc-content .bench-chart figcaption code { background: none; padding: 0; color: var(--ink); font-weight: 500; }
+.bench-canvas { position: relative; height: 260px; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
   :root { --pad: 28px; }
@@ -505,6 +531,7 @@ footer.bot .meta a:hover { color: var(--ink-2); }
   .doc-sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--rule); display: none; }
   .doc-sidebar.open { display: block; }
   .doc-main { padding: 24px 20px; }
+  .bench-charts { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .fgrid { grid-template-columns: 1fr; }
