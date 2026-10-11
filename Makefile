@@ -71,8 +71,14 @@ site: versions.list package-lock.json javadocs
 benchmarks: .PHONY
 	@mkdir -p build/site/benchmarks
 	@cp benchmarks/index.html benchmarks/benchmarks.js build/site/benchmarks/
-	@curl -sfL $(BENCHMARK_DATA) -o build/site/benchmarks/data.js \
-		|| { echo "WARNING: could not fetch benchmark data from $(BENCHMARK_DATA)" ; rm -f build/site/benchmarks/data.js ; }
+	@rm -f build/site/benchmarks/data.json build/benchmark-data.json
+	@# data.js is a script assigning window.BENCHMARK_DATA; publish only the JSON so the page never executes it.
+	@curl -sfL $(BENCHMARK_DATA) \
+		| sed -e '1s/^[[:space:]]*window\.BENCHMARK_DATA[[:space:]]*=[[:space:]]*//' -e '$$s/;[[:space:]]*$$//' \
+		> build/benchmark-data.json \
+		&& jq -e '.entries | type == "object"' build/benchmark-data.json > /dev/null 2>&1 \
+		&& mv build/benchmark-data.json build/site/benchmarks/data.json \
+		|| { echo "WARNING: could not fetch valid benchmark data from $(BENCHMARK_DATA)" ; rm -f build/benchmark-data.json ; }
 
 sync: $(GH_PAGES)/index.html
 
