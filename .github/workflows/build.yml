@@ -23,7 +23,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: lts/*
       - name: User Info
         run: |
           git config --global user.name evanchooly
