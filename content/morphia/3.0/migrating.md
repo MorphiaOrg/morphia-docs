@@ -30,6 +30,38 @@ An OpenRewrite recipe is available to automate this migration:
 
 Run the `dev.morphia.rewrite.recipes.config.MorphiaConfigMigration` recipe to convert `MapperOptions` usages to `MorphiaConfig` automatically.
 
+### Entity listeners
+
+`EntityListener` is now an empty marker interface. Each life cycle event has its own listener interface, and a listener implements the
+ones for the events it handles. `hasAnnotation()` is gone: implementing an event's interface is what makes a listener handle it.
+
+| 2.x `EntityListener` method                         | 3.0 interface                                                                     |
+|-----------------------------------------------------|-----------------------------------------------------------------------------------|
+| `prePersist(T entity, Document document, Datastore)` | `PrePersistListener<T>`: `prePersist(T entity, Datastore)`                       |
+| `postPersist(T entity, Document document, Datastore)` | `PostPersistListener<T>`, or `PostPersistDocumentListener<T>` to keep the `Document` |
+| `preLoad(T entity, Document document, Datastore)`    | `PreLoadListener<T>`: unchanged                                                  |
+| `postLoad(T entity, Document document, Datastore)`   | `PostLoadListener<T>`, or `PostLoadDocumentListener<T>` to keep the `Document`     |
+
+`Mapper.addInterceptor()` has been removed, along with `Mapper.getListeners()` and `Mapper.hasListeners()`. List global listeners in
+the `morphia.listeners` setting, or pass them to `MorphiaConfig.listeners(...)`, instead. Listeners are now fixed when the datastore is
+created. See [Life Cycle Methods](../life-cycle-methods/) for details.
+
+The `dev.morphia.UpgradeToMorphia30` recipe migrates `EntityListener` implementations to the new interfaces, choosing
+`PostPersistDocumentListener` or `PostLoadDocumentListener` for a `postPersist` or `postLoad` that uses its `Document`. It removes
+`hasAnnotation()` overrides and updates calls to the migrated methods. It marks what it can't migrate for you to finish by hand:
+
+- each `addInterceptor()` call
+- a `prePersist` that uses its `Document`, which was always empty: to change what's saved, use a `PostPersistDocumentListener`
+- a method that uses the old `Mapper` parameter: use `datastore.getMapper()`
+- an override that uses the `Document` when the method it overrides migrates without it
+- an anonymous listener that handles more than one event, since it can implement only one interface
+- calls it can't update, such as one that would drop a `Document` argument that does something, and calls to `hasAnnotation()`
+
+Calls to `getListeners()` and `hasListeners()` aren't marked and will fail to compile.
+
+The order of `@PreLoad` listeners has changed for entities created through a constructor, such as records. They now run after the
+entity's properties are decoded, just before its `@PostLoad` listeners, because the instance can't exist any earlier.
+
 ## Migrating to 2.5
 Morphia 2.5 is primarily a driver upgrade.  Changes in the driver are incompatible with the 2.4 driver and so Morphia 2.5 requires a
 driver version of 5.x or greater.  If you need a 4.x driver for some reason, you can use Morphia 2.4.x.  The 2.5.x series can only

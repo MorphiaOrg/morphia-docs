@@ -93,6 +93,16 @@ Or pass `-Dmorphia.mapper=critter` on the Maven command line when running tests.
 For production deployments, consider using the [critter-maven plugin](../maven-plugin/) to generate models at build time and eliminate the startup cost entirely.
 Runtime generation requires your entities to be loaded by the same class loader (or be in the same module) as Morphia; if they aren't, as in some application server or JPMS layouts, use the plugin. See [Class loaders and modules](../maven-plugin/#class-loaders-and-modules).
 
+## Global entity listeners
+
+- `morphia.listeners`
+
+A comma-separated list of listener classes to run for every entity they accept, such as an auditing listener or
+`dev.morphia.validation.ValidationExtension`. Each class implements one or more of the per-event listener interfaces, such as
+`PrePersistListener`, and has a public no-argument constructor. In code, `MorphiaConfig.listeners(List.of(...))` takes instances
+instead. See [Life Cycle Methods](../life-cycle-methods/#global-listeners) for details. This replaces `Mapper.addInterceptor()`, which
+was removed in 3.0.
+
 ## User-defined Codecs
 
 - `morphia.codec-provider`
