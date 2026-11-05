@@ -40,7 +40,8 @@ public class BankAccount {
 }
 ```
 
-An `@EntityListeners` class can do the same, with methods that also take the entity. A class used this way needs a no-argument
+An `@EntityListeners` class can do the same, with methods that also take the entity. A class used this way must implement
+`EntityListener`, for example `EntityListener<BankAccount>`, even when it only has annotated methods, and needs a no-argument
 constructor; Morphia creates one instance of it per entity type.
 
 ## Listener interfaces
@@ -111,4 +112,6 @@ without the `Document`, and leave the `Document` parameter off annotated methods
 
 An entity whose values are passed to its constructor, such as a record, doesn't exist until all of its properties have been decoded.
 Its `@PreLoad` listeners therefore run after decoding, just before its `@PostLoad` listeners, and changes they make to the `Document`
-don't affect the entity. An entity with life cycle methods of its own needs a no-argument constructor.
+don't affect the entity. An entity with life cycle methods of its own, or with `@EntityListeners`, needs a no-argument constructor;
+without one, Morphia can't map it. To listen to an entity that is created only through a constructor, use a
+[global listener](#global-listeners) instead.
