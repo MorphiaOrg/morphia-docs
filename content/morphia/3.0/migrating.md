@@ -59,6 +59,21 @@ The `dev.morphia.UpgradeToMorphia30` recipe migrates `EntityListener` implementa
 
 Calls to `getListeners()` and `hasListeners()` aren't marked and will fail to compile.
 
+Annotated life cycle methods, such as a `@PostLoad` method, are now allowed only on the entity itself. An `@EntityListeners` class
+implements the event's interface instead, and Morphia rejects one that still has annotated methods when the entity is mapped. The
+`UpgradeToMorphia30` recipe migrates these classes: it adds the interface for each event, removes the annotations, and has the
+interface's method call the annotated methods, passing the entity, the `Document` and the `Datastore` they took. A method that already
+has the interface's signature becomes the interface's method. It chooses the `Document` variant of an interface when a `postPersist`
+or `postLoad` method takes the `Document`. It marks a class for you to finish by hand when:
+
+- it extends a class that has annotated methods, or a class that is itself a listener
+- a method would clash with one the class has or inherits, such as an inherited `postLoad`
+- an annotated method throws a checked exception, takes a type the entity can't be passed as, or is generic in the entity
+- a `@PrePersist` method uses its `Document`
+- the class handles unrelated entity types, inherits `EntityListener` raw or with another type, or already uses the other interface
+  for an event
+- a type the new methods name, such as `Document` or `Datastore`, would be ambiguous in the file
+
 The order of `@PreLoad` listeners has changed for entities created through a constructor, such as records. They now run after the
 entity's properties are decoded, just before its `@PostLoad` listeners, because the instance can't exist any earlier.
 

@@ -14,7 +14,7 @@ There are three places to put that code:
 
 1. methods on the entity itself, annotated with the event's annotation
 2. [`@EntityListeners`](++javadoc/dev/morphia/annotations/EntityListeners.html++) classes named on the entity, for code shared by
-   several entities
+   several entities, which implement the event's [listener interface](#listener-interfaces)
 3. global listeners, listed in the [configuration](../configuration/), which run for every entity they accept
 
 {{< admonition type="note" title="Note" >}}
@@ -40,9 +40,9 @@ public class BankAccount {
 }
 ```
 
-An `@EntityListeners` class can do the same, with methods that also take the entity. A class used this way must implement
-`EntityListener`, for example `EntityListener<BankAccount>`, even when it only has annotated methods, and needs a no-argument
-constructor; Morphia creates one instance of it per entity type.
+Only an entity's own methods can carry these annotations. An `@EntityListeners` class implements the event's
+[listener interface](#listener-interfaces) instead, and an entity that names a class with annotated methods is rejected when it's
+mapped.
 
 ## Listener interfaces
 
@@ -59,6 +59,9 @@ Each event has a listener interface, which `@EntityListeners` classes, global li
 
 A listener may implement any number of these, but only one per event: a class that implements both `PostLoadListener` and
 `PostLoadDocumentListener` is rejected when it's registered.
+
+An `@EntityListeners` class must implement at least one of these interfaces and have a no-argument constructor. Morphia creates one
+instance of it for each entity that names it, when the entity is mapped, so a class that can't be created fails the mapping.
 
 The type argument decides which entities a listener sees: a `PrePersistListener<Auditable>` is called for `Auditable` entities alone,
 and a `PrePersistListener<Object>` for every entity. A lambda can't keep its type argument, so it's called for every entity; type a
