@@ -18,7 +18,13 @@
 </aside>
 
 {{ define "sidebar-tree" }}
+{{/* Pages are ordered by weight; a heading starts each run of pages sharing a front matter "group". */}}
+{{ $group := "" }}
 {{ range .pages }}
+  {{ with .Params.group }}{{ if ne . $group }}
+    <div class="sidebar-group">{{ . }}</div>
+  {{ end }}{{ end }}
+  {{ $group = .Params.group | default "" }}
   {{ $isActive := eq .Permalink $.current.Permalink }}
   {{ $isAncestor := $.current.IsDescendant . }}
   <div class="sidebar-item{{ if $isActive }} sidebar-item--active{{ end }}{{ if $isAncestor }} sidebar-item--ancestor{{ end }}">

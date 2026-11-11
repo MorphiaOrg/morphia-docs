@@ -1,6 +1,7 @@
 ---
 title: "Life Cycle Methods"
-weight: 180
+weight: 70
+group: "Mapping"
 ---
 
 Morphia can call your code at four points in an entity's life cycle:

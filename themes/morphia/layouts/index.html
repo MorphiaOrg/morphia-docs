@@ -172,9 +172,9 @@
 <pre><span class="tok-kw">var</span> ds = Morphia.createDatastore(client, <span class="tok-str">"blog"</span>);
 
 <span class="tok-cls">Query</span>&lt;<span class="tok-cls">Post</span>&gt; q = ds.find(<span class="tok-cls">Post</span>.class)
-  .filter(<span class="tok-fn">eq</span>(<span class="tok-str">"author"</span>, ada))
-  .filter(<span class="tok-fn">gte</span>(<span class="tok-str">"score"</span>, <span class="tok-num">0.8</span>))
-  .filter(<span class="tok-fn">in</span>(<span class="tok-str">"tags"</span>, <span class="tok-str">"java"</span>, <span class="tok-str">"mongo"</span>));
+  .filter(<span class="tok-fn">eq</span>(<span class="tok-str">"author"</span>, ada),
+          <span class="tok-fn">gte</span>(<span class="tok-str">"score"</span>, <span class="tok-num">0.8</span>),
+          <span class="tok-fn">in</span>(<span class="tok-str">"tags"</span>, <span class="tok-cls">List</span>.of(<span class="tok-str">"java"</span>, <span class="tok-str">"mongo"</span>)));
 
 <span class="tok-cls">List</span>&lt;<span class="tok-cls">Post</span>&gt; top = q
   .iterator(<span class="tok-kw">new</span> <span class="tok-cls">FindOptions</span>()
@@ -208,7 +208,7 @@
     <div class="cta-grid">
       <div>
         <div class="eyebrow"><span class="sq"></span>get started</div>
-        <h2>Five lines from <em class="teal">annotation</em> to <em class="amber">collection</em>.</h2>
+        <h2>Five lines from <em class="teal">annotation</em> to <em class="blue">collection</em>.</h2>
       </div>
       <div class="cmds">
         {{ with .Site.Data.versions }}{{ range .versions }}{{ if .latest }}

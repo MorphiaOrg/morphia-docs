@@ -1,6 +1,7 @@
 ---
 title: "Life Cycle Methods"
-weight: 200
+weight: 70
+group: "Mapping"
 ---
 
 # Life Cycle Methods

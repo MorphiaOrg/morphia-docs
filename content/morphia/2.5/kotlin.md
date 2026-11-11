@@ -1,6 +1,7 @@
 ---
 title: "Kotlin"
-weight: 70
+weight: 40
+group: "Setup"
 ---
 
 # Kotlin

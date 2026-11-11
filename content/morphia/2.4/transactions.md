@@ -1,6 +1,7 @@
 ---
 title: "Transactions"
-weight: 190
+weight: 160
+group: "Writing Data"
 ---
 Starting with MongoDB version 4.0, multi-document transactions are now supported on replica sets.
 Morphia 2.0 introduced a simple mechanism to access this functionality.

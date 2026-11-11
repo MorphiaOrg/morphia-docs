@@ -17,11 +17,11 @@
     'critter': '#008c84',
     'critter-runtime': '#7d4aa6'
   };
-  var INK = '#14110d';
-  var INK_MUTED = '#5a5247';
-  var INK_FAINT = '#5a5247';
-  var RULE = 'rgba(20,17,13,0.10)';
-  var PAPER = '#fbf9f3';
+  var INK = '#0b2a2e';
+  var INK_MUTED = '#3c6467';
+  var INK_FAINT = '#3c6467';
+  var RULE = 'rgba(11,42,46,0.10)';
+  var PAPER = '#ffffff';
   var MONO = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
   var SHA = /^[0-9a-f]{40}$/;

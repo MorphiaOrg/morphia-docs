@@ -1,6 +1,7 @@
 ---
 title: "Indexing"
-weight: 90
+weight: 60
+group: "Mapping"
 ---
 Morphia provides annotations that allow developers to define indexes for a collection to be defined alongside the other mapping data on an entity's source.
 In addition to the familiar ascending/descending index types, Morphia and MongoDB support

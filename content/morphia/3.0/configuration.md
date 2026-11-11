@@ -1,6 +1,7 @@
 ---
 title: "Configuration"
-weight: 50
+weight: 20
+group: "Setup"
 ---
 
 Starting in Morphia 3.0, configuration will be driven via a configuration file.  However programmatic configuration is still supported for those who prefer, or need, a more flexible approach. The file should live in your build's resources folder and be named `META-INF/morphia-config.properties`. Reference documentation for the configuration file can be found in the [javadoc](++javadoc/dev/morphia/config/MorphiaConfig.html++) but

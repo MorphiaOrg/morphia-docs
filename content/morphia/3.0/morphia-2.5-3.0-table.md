@@ -1,6 +1,7 @@
 ---
 title: "API Changes: Morphia 2.5 to 3.0"
-weight: 999
+weight: 220
+group: "Upgrading"
 ---
 
 <!--

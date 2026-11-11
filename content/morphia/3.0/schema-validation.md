@@ -1,6 +1,7 @@
 ---
 title: "Schema Validation"
-weight: 190
+weight: 90
+group: "Mapping"
 ---
 
 Morphia provides annotations that allow developers to define document validations for a collection to be defined alongside the other mapping data on an entity's source.  [Schema validation](https://docs.mongodb.com/manual/core/schema-validation/) provides the capability to perform schema validation during updates and insertions.

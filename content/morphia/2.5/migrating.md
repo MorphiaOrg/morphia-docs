@@ -1,6 +1,7 @@
 ---
 title: "Migration"
-weight: 20
+weight: 180
+group: "Upgrading"
 ---
 
 # Migration

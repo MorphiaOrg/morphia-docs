@@ -1,6 +1,7 @@
 ---
 title: "Text Searches"
-weight: 150
+weight: 130
+group: "Querying"
 ---
 
 Morphia also supports MongoDB's text search capabilities.

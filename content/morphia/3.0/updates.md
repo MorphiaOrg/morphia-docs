@@ -1,6 +1,7 @@
 ---
 title: "Updates"
-weight: 120
+weight: 140
+group: "Writing Data"
 ---
 
 Updates are issued using a `Query` instance. These update operations are executed on the server without fetching any documents across the wire.

@@ -1,6 +1,7 @@
 ---
 title: "Deletes"
-weight: 130
+weight: 160
+group: "Writing Data"
 ---
 
 Queries are used to delete documents from the database as well.

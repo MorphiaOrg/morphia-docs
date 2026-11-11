@@ -1,6 +1,7 @@
 ---
 title: "Deletes"
 weight: 150
+group: "Writing Data"
 ---
 
 # Deletes

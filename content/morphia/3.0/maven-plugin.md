@@ -1,6 +1,7 @@
 ---
 title: "Maven Plugin"
-weight: 60
+weight: 40
+group: "Setup"
 ---
 
 The `critter-maven` plugin generates Morphia entity models and property accessors at build time (AOT — ahead of time), so they are ready on the classpath before your application starts.

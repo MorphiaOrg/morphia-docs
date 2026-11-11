@@ -1,6 +1,7 @@
 ---
 title: "Configuration (Legacy)"
-weight: 60
+weight: 30
+group: "Setup"
 ---
 
 > **Deprecated:** This page documents the legacy `MapperOptions`-based configuration superseded in Morphia 2.4. See [Configuration](../configuration/) for the current approach.

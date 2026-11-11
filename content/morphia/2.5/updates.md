@@ -1,6 +1,7 @@
 ---
 title: "Updates"
-weight: 130
+weight: 140
+group: "Writing Data"
 ---
 
 # Updates

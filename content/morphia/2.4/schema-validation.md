@@ -1,6 +1,7 @@
 ---
 title: "Schema Validation"
-weight: 210
+weight: 90
+group: "Mapping"
 ---
 
 # Schema Validation

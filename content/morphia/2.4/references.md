@@ -1,6 +1,7 @@
 ---
 title: "References"
-weight: 180
+weight: 80
+group: "Mapping"
 ---
 
 MongoDB tries to encourage self-contained documents so that data can be fetched much more efficiently via single reads from the database.

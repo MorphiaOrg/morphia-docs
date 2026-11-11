@@ -9,13 +9,14 @@
       {{ .Content }}
     </article>
     <nav class="doc-pagination" aria-label="Page navigation">
-      {{ with .PrevInSection }}
+      {{/* Hugo's NextInSection/PrevInSection run against weight order, so they map to previous/next here. */}}
+      {{ with .NextInSection }}
         <a class="doc-pagination__prev" href="{{ .Permalink }}">
           <span class="doc-pagination__label">Previous</span>
           <span class="doc-pagination__title">{{ .LinkTitle }}</span>
         </a>
       {{ end }}
-      {{ with .NextInSection }}
+      {{ with .PrevInSection }}
         <a class="doc-pagination__next" href="{{ .Permalink }}">
           <span class="doc-pagination__label">Next</span>
           <span class="doc-pagination__title">{{ .LinkTitle }}</span>

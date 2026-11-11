@@ -1,6 +1,7 @@
 ---
 title: "Migration"
-weight: 30
+weight: 210
+group: "Upgrading"
 ---
 
 ## Migrating to 3.0

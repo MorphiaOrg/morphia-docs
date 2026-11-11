@@ -1,6 +1,7 @@
 ---
 title: "Preparing for 3.0"
-weight: 40
+weight: 190
+group: "Upgrading"
 ---
 
 # Preparing for 3.0
@@ -21,10 +22,10 @@ model opens the door to some interesting optimizations and potential new feature
 approach.
 
 ## Critter
-For the last several years, Morphia has been available as an optional add on to Morphia that
+For the last several years, critter has been available as an optional add on to Morphia that
 offers some nice features over and above what Morphia does in core. In addition to compile time checked constants for property names,
 etc., the latest critter can also generate the codecs necessary to manage entities with minimal or no reflection needed. In 3.0, critter
-will be brought in to Morphia proper and will live under the same lifecycle and release cycles as Morphia itself. Indeed, it will likely
+will be brought in to Morphia proper and will live under the same lifecycle and release cycles as Morphia itself. It will likely
 be the core of how Morphia works in the future. Much testing and performance evaluation needs to happen before that final decision is
 reached but that will be part of the 3.0 dev cycle as well.
 

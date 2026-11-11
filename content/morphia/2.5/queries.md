@@ -1,6 +1,7 @@
 ---
 title: "Queries"
 weight: 110
+group: "Querying"
 ---
 
 # Queries

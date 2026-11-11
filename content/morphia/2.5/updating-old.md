@@ -1,6 +1,7 @@
 ---
 title: "Updating (Legacy)"
-weight: 140
+weight: 145
+group: "Writing Data"
 ---
 
 > **Deprecated:** This page documents the legacy update API that was removed in Morphia 3.0. See [Updates](../updates/) for the current API.

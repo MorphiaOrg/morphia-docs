@@ -1,6 +1,7 @@
 ---
 title: "Indexing"
-weight: 90
+weight: 60
+group: "Mapping"
 ---
 
 # Indexing

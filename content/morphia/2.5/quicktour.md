@@ -1,6 +1,6 @@
 ---
 title: "Quick Tour"
-weight: 30
+weight: 10
 ---
 
 # Quick Tour

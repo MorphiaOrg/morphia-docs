@@ -1,6 +1,7 @@
 ---
 title: "Queries"
 weight: 110
+group: "Querying"
 ---
 
 Morphia provides the [Query<T>](javadoc/dev/morphia/query/Query.html) class to build a query and map the results back to instances of your entity classes and attempts to provide as much type safety and validation as possible.

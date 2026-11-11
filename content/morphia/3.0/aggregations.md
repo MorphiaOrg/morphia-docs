@@ -1,6 +1,7 @@
 ---
 title: "Aggregations"
-weight: 140
+weight: 180
+group: "Aggregations"
 ---
 
 The [aggregation framework](https://docs.mongodb.com/manual/aggregation) in MongoDB allows you to define a series (called a pipeline) of operations (called stages) against the data in a collection.

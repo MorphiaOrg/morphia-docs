@@ -1,6 +1,7 @@
 ---
 title: "Configuration"
-weight: 50
+weight: 20
+group: "Setup"
 ---
 
 # Configuration

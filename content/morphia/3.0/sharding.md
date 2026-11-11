@@ -1,6 +1,7 @@
 ---
 title: "Sharding"
 weight: 100
+group: "Mapping"
 ---
 
 {{< admonition type="note" title="Note" >}}

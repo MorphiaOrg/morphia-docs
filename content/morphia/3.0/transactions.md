@@ -1,6 +1,7 @@
 ---
 title: "Transactions"
 weight: 170
+group: "Writing Data"
 ---
 
 Starting with MongoDB version 4.0, multi-document transactions are now supported on replica sets.

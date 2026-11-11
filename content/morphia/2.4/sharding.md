@@ -1,6 +1,7 @@
 ---
 title: "Sharding"
 weight: 100
+group: "Mapping"
 ---
 {{< admonition type="note" title="Note" >}}
 Sharding support is new in 2.3 and should be considered experimental.

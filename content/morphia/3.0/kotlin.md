@@ -1,6 +1,7 @@
 ---
 title: "Kotlin"
-weight: 70
+weight: 30
+group: "Setup"
 ---
 
 In general, your Kotlin types should work out of the box with Morphia.

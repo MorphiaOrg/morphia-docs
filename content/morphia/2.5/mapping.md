@@ -1,6 +1,7 @@
 ---
 title: "Mapping"
-weight: 80
+weight: 50
+group: "Mapping"
 ---
 
 # Mapping

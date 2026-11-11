@@ -1,6 +1,7 @@
 ---
 title: "Configuration"
-weight: 50
+weight: 20
+group: "Setup"
 ---
 
 Starting in Morphia 2.4, configuration uses a newer configuration mechanism, `MorphiaConfig`.  This class will replace

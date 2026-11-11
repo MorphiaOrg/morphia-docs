@@ -1,6 +1,6 @@
 ---
 title: "Quick Tour"
-weight: 20
+weight: 10
 ---
 
 Morphia wraps the MongoDB Java driver so some level of familiarity with using the driver can be helpful.

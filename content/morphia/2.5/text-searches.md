@@ -1,6 +1,7 @@
 ---
 title: "Text Searches"
-weight: 170
+weight: 130
+group: "Querying"
 ---
 
 # Text Searches

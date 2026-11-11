@@ -1,6 +1,7 @@
 ---
 title: "Aggregations"
-weight: 160
+weight: 170
+group: "Aggregations"
 ---
 
 # Aggregations
