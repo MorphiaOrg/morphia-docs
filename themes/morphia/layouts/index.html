@@ -39,18 +39,18 @@
           <h4><span class="swatch"></span><span class="label">User.java</span> · entity</h4>
           <pre id="java-pre"><span class="tok-ann">@Entity</span>
 <span class="tok-kw">public class</span> <span class="tok-cls">User</span> {
-  <span class="row left" data-i="0"><span class="tok-ann">@Id</span> <span class="tok-cls">ObjectId</span> id;</span>
-  <span class="row left" data-i="1"><span class="tok-cls">String</span> name;</span>
-  <span class="row left" data-i="2"><span class="tok-ann">@Indexed</span> <span class="tok-cls">String</span> email;</span>
-  <span class="row left" data-i="3"><span class="tok-cls">List</span>&lt;<span class="tok-cls">String</span>&gt; tags;</span>
-  <span class="row left" data-i="4"><span class="tok-ann">@GeoIndex</span> <span class="tok-cls">Point</span> location;</span>
-  <span class="row left" data-i="5"><span class="tok-kw">double</span> score;</span>
-}</pre>
+<span class="row left" data-i="0">  <span class="tok-ann">@Id</span> <span class="tok-cls">ObjectId</span> id;</span><!--
+--><span class="row left" data-i="1">  <span class="tok-cls">String</span> name;</span><!--
+--><span class="row left" data-i="2">  <span class="tok-ann">@Indexed</span> <span class="tok-cls">String</span> email;</span><!--
+--><span class="row left" data-i="3">  <span class="tok-cls">List</span>&lt;<span class="tok-cls">String</span>&gt; tags;</span><!--
+--><span class="row left" data-i="4">  <span class="tok-ann">@GeoIndex</span> <span class="tok-cls">Point</span> location;</span><!--
+--><span class="row left" data-i="5">  <span class="tok-kw">double</span> score;</span><!--
+-->}</pre>
         </div>
         <div class="bridge" id="bridge">
           <svg viewBox="0 0 84 360" preserveAspectRatio="none" aria-hidden="true">
             <defs>
-              <linearGradient id="bg-grad" x1="0" y1="0" x2="84" y2="0">
+              <linearGradient id="bg-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="84" y2="0">
                 <stop offset="0" stop-color="var(--accent-2)"/>
                 <stop offset="1" stop-color="var(--accent-1)"/>
               </linearGradient>
@@ -62,18 +62,17 @@
             <path d="M0 270 C 30 270, 54 276, 84 276" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.72s linear infinite"/>
             <path d="M0 320 C 30 320, 54 326, 84 326" stroke="url(#bg-grad)" stroke-width="1.4" fill="none" opacity="0.45" style="animation:flowFade 2.2s 0.90s linear infinite"/>
           </svg>
-          <div class="badge" id="bridge-badge">morph →</div>
         </div>
         <div class="side right">
           <h4><span class="label">users</span> · document<span class="swatch"></span></h4>
           <pre id="bson-pre">{
-  <span class="row right" data-i="0"><span class="tok-key">"_id"</span>: ObjectId(<span class="tok-str">"662f9a..."</span>),</span>
-  <span class="row right" data-i="1"><span class="tok-key">"name"</span>: <span class="tok-str">"Ada Lovelace"</span>,</span>
-  <span class="row right" data-i="2"><span class="tok-key">"email"</span>: <span class="tok-str">"ada@analytical.engine"</span>,</span>
-  <span class="row right" data-i="3"><span class="tok-key">"tags"</span>: [<span class="tok-str">"math"</span>, <span class="tok-str">"poet"</span>, <span class="tok-str">"first"</span>],</span>
-  <span class="row right" data-i="4"><span class="tok-key">"location"</span>: { <span class="tok-key">type</span>: <span class="tok-str">"Point"</span>, <span class="tok-key">coords</span>: [...] },</span>
-  <span class="row right" data-i="5"><span class="tok-key">"score"</span>: <span class="tok-num">0.987</span></span>
-}</pre>
+<span class="row right" data-i="0">  <span class="tok-key">"_id"</span>: ObjectId(<span class="tok-str">"662f9a..."</span>),</span><!--
+--><span class="row right" data-i="1">  <span class="tok-key">"name"</span>: <span class="tok-str">"Ada Lovelace"</span>,</span><!--
+--><span class="row right" data-i="2">  <span class="tok-key">"email"</span>: <span class="tok-str">"ada@analytical.engine"</span>,</span><!--
+--><span class="row right" data-i="3">  <span class="tok-key">"tags"</span>: [<span class="tok-str">"math"</span>, <span class="tok-str">"poet"</span>, <span class="tok-str">"first"</span>],</span><!--
+--><span class="row right" data-i="4">  <span class="tok-key">"location"</span>: { <span class="tok-key">type</span>: <span class="tok-str">"Point"</span>, <span class="tok-key">coords</span>: [...] },</span><!--
+--><span class="row right" data-i="5">  <span class="tok-key">"score"</span>: <span class="tok-num">0.987</span></span><!--
+-->}</pre>
         </div>
       </div>
     </div>

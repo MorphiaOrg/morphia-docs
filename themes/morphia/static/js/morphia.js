@@ -57,23 +57,40 @@
   /* ── Morph animation ── */
   var leftRows  = document.querySelectorAll('#java-pre .row.left');
   var rightRows = document.querySelectorAll('#bson-pre .row.right');
-  var badge     = document.getElementById('bridge-badge');
   if (leftRows.length && rightRows.length) {
     var idx = 0;
-    var dir = 'to-bson';
     function tick() {
       leftRows.forEach(function (r) { r.classList.remove('active'); });
       rightRows.forEach(function (r) { r.classList.remove('active'); });
       leftRows[idx].classList.add('active');
       rightRows[idx].classList.add('active');
       idx = (idx + 1) % leftRows.length;
-      if (idx === 0) {
-        dir = (dir === 'to-bson') ? 'to-java' : 'to-bson';
-        if (badge) badge.textContent = dir === 'to-bson' ? 'morph →' : '← morph';
-      }
     }
     tick();
     setInterval(tick, 1300);
+
+    // Draw each bridge curve from a Java row to its matching BSON row.
+    var bridge = document.getElementById('bridge');
+    var svg    = bridge && bridge.querySelector('svg');
+    var paths  = svg ? svg.querySelectorAll('path') : [];
+    function alignBridge() {
+      var b = bridge.getBoundingClientRect();
+      svg.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height);
+      paths.forEach(function (p, i) {
+        if (!leftRows[i] || !rightRows[i]) return;
+        var l = leftRows[i].getBoundingClientRect();
+        var r = rightRows[i].getBoundingClientRect();
+        var y1 = l.top + l.height / 2 - b.top;
+        var y2 = r.top + r.height / 2 - b.top;
+        p.setAttribute('d', 'M0 ' + y1 + ' C ' + b.width * 0.36 + ' ' + y1 + ', ' +
+          b.width * 0.64 + ' ' + y2 + ', ' + b.width + ' ' + y2);
+      });
+    }
+    if (svg) {
+      alignBridge();
+      window.addEventListener('resize', alignBridge);
+      if (document.fonts) document.fonts.ready.then(alignBridge);
+    }
   }
 
   /* ── Docs sidebar mobile toggle ── */
