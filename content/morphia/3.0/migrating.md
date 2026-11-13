@@ -82,6 +82,30 @@ Aggregations in 3.0 are built by passing stages to `pipeline(Stage...)` and run 
 | `Expressions.field("$qty")`, `Expressions.value(250)`                 | `"$qty"`, `250`: stages and expressions accept field names and values directly |
 | `Expressions.of()`                                                    | `Expressions.document()`                                                      |
 
+The 2.x stage factories that 3.0 removes are renamed to the factories named after each stage by `StageFactoryRename`, including
+static imports of them. The arguments don't change:
+
+| 2.5                                                                    | 3.0                                                                    |
+|------------------------------------------------------------------------|------------------------------------------------------------------------|
+| `AddFields.of()`, `AutoBucket.of()`, `Bucket.of()`, `Facet.of()`       | `addFields()`, `autoBucket()`, `bucket()`, `facet()`                   |
+| `CollectionStats.with()`, `CurrentOp.of()`, `IndexStats.of()`, `PlanCacheStats.of()` | `collStats()`, `currentOp()`, `indexStats()`, `planCacheStats()` |
+| `GeoNear.to(..)`, `GraphLookup.from(..)`, `Lookup.from(..)`            | `geoNear(..)`, `graphLookup(..)`, `lookup(..)`                         |
+| `Group.of(..)`, `Projection.of()`, `Sort.on()`, `Unset.fields(..)`     | `group(..)`, `project()`, `sort()`, `unset(..)`                        |
+| `Limit.of(n)`, `Skip.of(n)`, `Sample.of(n)`                            | `limit(n)`, `skip(n)`, `sample(n)`                                     |
+| `Match.on(..)`, `Redact.on(..)`, `SortByCount.on(..)`, `Unwind.on(..)` | `match(..)`, `redact(..)`, `sortByCount(..)`, `unwind(..)`             |
+| `ReplaceRoot.with(..)`, `ReplaceWith.with(..)`                         | `replaceRoot(..)`, `replaceWith(..)`                                   |
+| `Merge.into(..)`, `Out.to(..)`                                         | `merge(..)`, `out(..)`                                                 |
+
+A few expression helpers moved or were renamed too:
+
+| 2.5                                                         | 3.0                                                                 |
+|-------------------------------------------------------------|---------------------------------------------------------------------|
+| `AccumulatorExpressions.stdDevPop(..)`, `stdDevSamp(..)`    | `WindowExpressions.stdDevPop(..)`, `stdDevSamp(..)`                 |
+| `StringExpressions.substr(..)`                              | `StringExpressions.substrBytes(..)`, which is what `$substr` aliases |
+| `BooleanExpressions.LogicalExpression`                      | `dev.morphia.aggregation.expressions.impls.LogicalExpression`       |
+| `ObjectExpressions.MergeObjects`                            | `dev.morphia.aggregation.expressions.impls.MergeObjects`            |
+| `dev.morphia.aggregation.codecs.ExpressionCodec`            | `dev.morphia.mapping.codec.expressions.ExpressionCodec`             |
+
 For example:
 
 ```java
@@ -113,15 +137,53 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 | `UpdateExecute`       | `query.update(ops...).execute()`, `.execute(options)`       | `query.update(ops...)`, `query.update(options, ops...)`                     |
 | `UpdateExecute`       | `query.modify(ops...).execute()`, `.execute(options)`       | `query.modify(ops...)`, `query.modify(options, ops...)`                     |
 | `UpdateReturnType`    | `Update<T> update = query.update(..)`                       | `UpdateResult update = query.update(..)`                                    |
+| `QueryExecute`        | `query.execute()`, `query.execute(options)`                 | `query.iterator()`, with the options moved by `QueryFindOptions`            |
+| `MetaMigration`       | `new Meta(..)`, `Meta.textScore()`                          | `Meta.textScore(field)`, `Meta.indexKey(field)`, and the other `Meta` factories |
+| `FindAndModifyOptionsMigration` | `new FindAndModifyOptions().returnNew(true)`      | `new ModifyOptions().returnDocument(ReturnDocument.AFTER)`                  |
 
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
-`QueryFindOptions` moves them only when the call is chained from that `find()` call. For one held in a variable or passed in from
-elsewhere, move the options yourself.
+`QueryFindOptions` moves them, whether they're created inline or held in a variable, when the call is chained from that `find()`
+call. If that `find()` already has a `FindOptions` that only names a collection, such as one written by `DatastoreFindCollection`
+below, the recipe merges the two, but only when that collection is a string literal, a variable, or a field, and the moved options are created inline (`new FindOptions()...`). If the moved options name
+a collection with a string literal, that collection wins, as it did in 2.x. If they name it any other way, the recipe can't tell
+which collection 2.x would have used, so it leaves the call alone. The recipe leaves any other combination alone rather than drop or change either set
+of options. For a query held in a variable, move the options yourself.
+
+`FindAndModifyOptions` becomes its parent type, `ModifyOptions`, and its one extra method, `returnNew(boolean)`, becomes the
+matching `returnDocument(..)` call. In Kotlin, it converts `returnNew(..)` only when the argument is `true` or `false`. A variable or
+computed flag is left as `returnNew(flag)`, which doesn't compile in 3.0, so change it to
+`returnDocument(if (flag) ReturnDocument.AFTER else ReturnDocument.BEFORE)` yourself. `Meta.getField()` is renamed to `field()`, which is internal in 3.0.
 
 `UpdateExecute` handles the `update(..).execute()` and `modify(..).execute()` chains, and `UpdateReturnType` changes variables
 declared as `Update<T>` to `UpdateResult`, since `query.update(..)` now runs the update itself. Check any `Update` or `Modify` held
 in a variable by hand: the update now runs where the variable is assigned, not where `execute()` was called. Code that uses the
 legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs](#legacy-query-update-and-aggregation-apis).
+
+#### Removed `Datastore` overloads
+
+| Recipe                       | 2.5                                                | 3.0                                                              |
+|------------------------------|----------------------------------------------------|------------------------------------------------------------------|
+| `DatastoreFindCollection`    | `datastore.find("collection", Type.class)`         | `datastore.find(Type.class, new FindOptions().collection("collection"))` |
+| `DatastoreDeleteQuery`       | `datastore.delete(query)`, `delete(query, options)` | `query.delete()`, `query.delete(options)`                       |
+| `DatastoreMergeWriteConcern` | `datastore.merge(entity, writeConcern)`            | `datastore.merge(entity, new InsertOneOptions().writeConcern(writeConcern))` |
+| `DatastoreSaveInsertOptions` | `datastore.save(entity, new InsertOptions()...)`   | `datastore.save(entity, new InsertOneOptions()...)`              |
+| `DatastoreSaveInsertOptions` | `datastore.save(collection, new InsertOptions()...)` | `datastore.save(new ArrayList<>(collection), new InsertManyOptions()...)` |
+| `DatastoreSaveInsertOptions` | `datastore.save(collection)`, for a `Collection` that isn't a `List` | `datastore.save(new ArrayList<>(collection))`      |
+
+In Kotlin, `DatastoreDeleteQuery` leaves a null-safe call such as `datastore?.delete(query)` unchanged.
+
+In Kotlin, `DatastoreMergeWriteConcern` leaves a `merge(entity, writeConcern)` call unchanged when it is the whole body of an
+expression-bodied function, such as `fun store(e: Entity) = datastore.merge(e, wc)`. In 3.0, `merge` returns the entity, so
+rewriting it would change the function's inferred return type from `Unit`, or stop it compiling if `Unit` is declared. Change it to a
+block body, `fun store(e: Entity) { datastore.merge(e, InsertOneOptions().writeConcern(wc)) }`, to keep the `Unit` return type.
+
+`DatastoreSaveInsertOptions` only rewrites an `InsertOptions` that's created in the call, such as
+`new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. When saving a single entity, it drops
+`ordered(..)`, which `InsertOneOptions` doesn't have, as long as its argument has no side effects. The removed `Iterable` overloads
+saved, and returned, a new copy of what they were given, so the recipe copies the argument too, even a `List`: into an `ArrayList`
+in Java, which it can only do for a `Collection`, and with `toMutableList()` in Kotlin. It leaves the call alone if copying the
+argument first would change the order in which option arguments with side effects run. Anything else is left for you to change as described in
+[Keys, `AdvancedDatastore` and `InsertOptions`](#keys-advanceddatastore-and-insertoptions).
 
 #### Removed `Datastore` methods
 
@@ -135,8 +197,7 @@ matching setting is on. All three are off by default:
 | `datastore.ensureCaps()`               | `morphia.apply-caps=true`, or `MorphiaConfig.applyCaps(true)`                     |
 | `datastore.ensureIndexes()`            | `morphia.apply-indexes=true`, or `MorphiaConfig.applyIndexes(true)`               |
 
-The recipe removes calls to `enableDocumentValidation()` and `ensureIndexes()`; remove calls to `ensureCaps()` by hand. Removing the
-call doesn't turn the setting on, so if you relied on any of these, set it in your [configuration](../configuration/).
+The recipe removes calls to all three. Removing the call doesn't turn the setting on, so if you relied on any of these, set it in your [configuration](../configuration/).
 
 #### Moved and renamed types
 
@@ -148,6 +209,9 @@ call doesn't turn the setting on, so if you relied on any of these, set it in yo
 | `dev.morphia.mapping.MapperOptions.PropertyDiscovery` | `dev.morphia.mapping.PropertyDiscovery` |
 | `dev.morphia.query.internal.MorphiaCursor`   | `dev.morphia.query.MorphiaCursor`         |
 | `dev.morphia.EntityInterceptor`              | `dev.morphia.EntityListener`              |
+| `dev.morphia.annotations.NotSaved`           | `dev.morphia.annotations.LoadOnly`        |
+
+The recipe also removes `@dev.morphia.annotations.experimental.Constructor`, which 3.0 doesn't need.
 
 #### `@Embedded` removed
 
@@ -337,7 +401,8 @@ datastore.find(Hotel.class)
 
 `query.modify(..)` returns the document as it was before the update unless you ask for the new one. `datastore.findAndModify(query,
 ops)` returned the updated document, so pass `new ModifyOptions().returnDocument(ReturnDocument.AFTER)` to keep that. The 2.x
-`FindAndModifyOptions` maps to `ModifyOptions` for `modify()`, and to `FindAndDeleteOptions` for `findAndDelete()`.
+`FindAndModifyOptions` maps to `ModifyOptions` for `modify()`, which the recipe changes for you, and to
+`FindAndDeleteOptions` for `findAndDelete()`, which it doesn't.
 
 The recipe's `UpdateExecute` step only rewrites `update(..).execute(..)` and `modify(..).execute(..)` written as one chain, and
 `UpdateReturnType` retypes variables declared as `Update<T>`. Neither touches code built on `UpdateOperations`, which needs these
@@ -423,7 +488,10 @@ inherit still compile. For example, `CountOptions.getMaxTime(TimeUnit)` now come
 
 `InsertOptions` is gone. Use `InsertOneOptions` when saving or inserting one entity and `InsertManyOptions` for a list. Both have
 `writeConcern(..)` and `bypassDocumentValidation(..)`, and `InsertManyOptions` has `ordered(..)`. `save(Iterable, InsertOptions)`
-becomes `save(List, InsertManyOptions)`, so copy an `Iterable` that isn't a `List` into one first.
+becomes `save(List, InsertManyOptions)`, so copy an `Iterable` that isn't a `List` into one first. The recipe's
+`DatastoreSaveInsertOptions` step converts an `InsertOptions` that's created in the `save()` call, and copies a `Collection` into an
+`ArrayList`. See
+[Removed `Datastore` overloads](#removed-datastore-overloads).
 
 #### Listeners and codecs
 
@@ -487,8 +555,8 @@ On 2.5, `Point.convert()` returns the equivalent driver `Point`, so you can swit
 | 2.5                               | 3.0                                                                                       |
 |-----------------------------------|-------------------------------------------------------------------------------------------|
 | `@Embedded`                       | `@Entity` with no `@Id`; see [`@Embedded` removed](#embedded-removed)                     |
-| `@NotSaved`                       | `@LoadOnly`                                                                               |
-| `@experimental.Constructor`       | nothing: remove it. See [Constructors](../mapping/#constructors) for how Morphia picks one |
+| `@NotSaved`                       | `@LoadOnly` (the recipe makes this change)                                                |
+| `@experimental.Constructor`       | nothing (the recipe removes it). See [Constructors](../mapping/#constructors) for how Morphia picks one |
 | `@Converters`, `@Handler`         | no replacement. Register a codec provider instead: see [User-defined Codecs](../configuration/#user-defined-codecs) and [Property Codecs](../configuration/#property-codecs) |
 
 ### Extension SPI and internal constructors
