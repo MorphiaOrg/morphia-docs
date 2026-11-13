@@ -49,8 +49,8 @@ its result instead of an `Update` or `Modify`.
 
 **Options:** the getters on Morphia's options classes are gone or internal. The options classes are builders.
 
-**Removed packages:** `dev.morphia.geo` (use the driver's GeoJSON types), the pre-2.0 aggregation pipeline, the criteria query
-API, `Key`, and `MapperOptions` are all gone.
+**Removed packages and types:** `dev.morphia.geo` (use the driver's GeoJSON types), the pre-2.0 aggregation pipeline, the
+criteria query API, `Key`, and `MapperOptions` are all gone.
 
 ## Removed types
 

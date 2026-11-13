@@ -164,7 +164,7 @@ legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs
 | `DatastoreMergeWriteConcern` | `datastore.merge(entity, writeConcern)`            | `datastore.merge(entity, new InsertOneOptions().writeConcern(writeConcern))` |
 | `DatastoreSaveInsertOptions` | `datastore.save(entity, new InsertOptions()...)`   | `datastore.save(entity, new InsertOneOptions()...)`              |
 | `DatastoreSaveInsertOptions` | `datastore.save(list, new InsertOptions()...)`     | `datastore.save(list, new InsertManyOptions()...)`               |
-| `DatastoreSaveInsertOptions` | `datastore.save(iterable[, options])`              | `datastore.save(new ArrayList<>(iterable)[, options])`           |
+| `DatastoreSaveInsertOptions` | `datastore.save(collection[, options])` for a `Collection` that isn't a `List` | `datastore.save(new ArrayList<>(collection)[, options])` |
 
 `DatastoreSaveInsertOptions` only rewrites an `InsertOptions` that's created in the call, such as
 `new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. `ordered(..)` is dropped when saving a single
@@ -476,7 +476,8 @@ inherit still compile. For example, `CountOptions.getMaxTime(TimeUnit)` now come
 `InsertOptions` is gone. Use `InsertOneOptions` when saving or inserting one entity and `InsertManyOptions` for a list. Both have
 `writeConcern(..)` and `bypassDocumentValidation(..)`, and `InsertManyOptions` has `ordered(..)`. `save(Iterable, InsertOptions)`
 becomes `save(List, InsertManyOptions)`, so copy an `Iterable` that isn't a `List` into one first. The recipe's
-`DatastoreSaveInsertOptions` step does this for `save()` calls whose `InsertOptions` is created in the call. See
+`DatastoreSaveInsertOptions` step converts an `InsertOptions` that's created in the `save()` call, and copies a `Collection` into an
+`ArrayList`. See
 [Removed `Datastore` overloads](#removed-datastore-overloads).
 
 #### Listeners and codecs
