@@ -172,6 +172,11 @@ legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs
 
 In Kotlin, `DatastoreDeleteQuery` leaves a null-safe call such as `datastore?.delete(query)` unchanged.
 
+In Kotlin, `DatastoreMergeWriteConcern` leaves a `merge(entity, writeConcern)` call unchanged when it is the whole body of an
+expression-bodied function, such as `fun store(e: Entity) = datastore.merge(e, wc)`. In 3.0, `merge` returns the entity, so
+rewriting it would change the function's inferred return type from `Unit`, or stop it compiling if `Unit` is declared. Change it to a
+block body, `fun store(e: Entity) { datastore.merge(e, InsertOneOptions().writeConcern(wc)) }`, to keep the `Unit` return type.
+
 `DatastoreSaveInsertOptions` only rewrites an `InsertOptions` that's created in the call, such as
 `new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. When saving a single entity, it drops
 `ordered(..)`, which `InsertOneOptions` doesn't have, as long as its argument has no side effects. The removed `Iterable` overloads
