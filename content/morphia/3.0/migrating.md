@@ -143,7 +143,7 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 
 `ArraySliceMigration` evaluates the limit before the skip, the reverse of the 2.5 constructor. It leaves `new ArraySlice(skip, limit)`
 alone when that could change what the arguments evaluate to: when neither is a literal and either one has side effects, such as a
-method call. That call doesn't compile in 3.0, so change it to `ArraySlice.limit(limit).skip(skip)` yourself. If the order the
+method call or, in Kotlin, a property read that could run a getter. That call doesn't compile in 3.0, so change it to `ArraySlice.limit(limit).skip(skip)` yourself. If the order the
 arguments run in matters, assign them to local variables first.
 
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
