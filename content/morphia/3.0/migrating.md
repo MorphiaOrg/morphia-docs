@@ -251,7 +251,7 @@ ones for the events it handles. `hasAnnotation()` is gone: implementing an event
 | `preLoad(T entity, Document document, Datastore)`    | `PreLoadListener<T>`: unchanged                                                  |
 | `postLoad(T entity, Document document, Datastore)`   | `PostLoadListener<T>`, or `PostLoadDocumentListener<T>` to keep the `Document`     |
 
-`Mapper.addInterceptor()` has been removed, along with `Mapper.getListeners()` and `Mapper.hasListeners()`. List global listeners in
+`Mapper.addInterceptor()` has been removed, along with `Mapper.getInterceptors()` and `Mapper.hasInterceptors()`. List global listeners in
 the `morphia.listeners` setting, or pass them to `MorphiaConfig.listeners(...)`, instead. Listeners are now fixed when the datastore is
 created. See [Life Cycle Methods](../life-cycle-methods/) for details.
 
@@ -260,13 +260,12 @@ The `dev.morphia.UpgradeToMorphia30` recipe migrates `EntityListener` implementa
 `hasAnnotation()` overrides and updates calls to the migrated methods. It marks what it can't migrate for you to finish by hand:
 
 - each `addInterceptor()` call
+- each `getInterceptors()` and `hasInterceptors()` call: read the configured listeners from `MorphiaConfig.listeners()` instead
 - a `prePersist` that uses its `Document`, which was always empty: to change what's saved, use a `PostPersistDocumentListener`
 - a method that uses the old `Mapper` parameter: use `datastore.getMapper()`
 - an override that uses the `Document` when the method it overrides migrates without it
 - an anonymous listener that handles more than one event, since it can implement only one interface
 - calls it can't update, such as one that would drop a `Document` argument that does something, and calls to `hasAnnotation()`
-
-Calls to `getListeners()` and `hasListeners()` aren't marked and will fail to compile.
 
 Annotated life cycle methods, such as a `@PostLoad` method, are now allowed only on the entity itself. An `@EntityListeners` class
 implements the event's interface instead, and Morphia rejects one that still has annotated methods when the entity is mapped. The
