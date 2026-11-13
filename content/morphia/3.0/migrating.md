@@ -144,8 +144,9 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
 `QueryFindOptions` moves them, whether they're created inline or held in a variable, when the call is chained from that `find()`
 call. If that `find()` already has a `FindOptions` that only names a collection, such as one written by `DatastoreFindCollection`
-below, the recipe merges the two, but only when the moved options are created inline (`new FindOptions()...`). A collection named
-in the moved options wins, as it did in 2.x. The recipe leaves any other combination alone rather than drop or change either set
+below, the recipe merges the two, but only when the moved options are created inline (`new FindOptions()...`). If the moved options name
+a collection with a string literal, that collection wins, as it did in 2.x. If they name it any other way, the recipe can't tell
+which collection 2.x would have used, so it leaves the call alone. The recipe leaves any other combination alone rather than drop or change either set
 of options. For a query held in a variable, move the options yourself.
 
 `FindAndModifyOptions` becomes its parent type, `ModifyOptions`, and its one extra method, `returnNew(boolean)`, becomes the
@@ -169,11 +170,14 @@ legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs
 | `DatastoreSaveInsertOptions` | `datastore.save(collection, new InsertOptions()...)` | `datastore.save(new ArrayList<>(collection), new InsertManyOptions()...)` |
 | `DatastoreSaveInsertOptions` | `datastore.save(collection)`, for a `Collection` that isn't a `List` | `datastore.save(new ArrayList<>(collection))`      |
 
+In Kotlin, `DatastoreDeleteQuery` leaves a null-safe call such as `datastore?.delete(query)` unchanged.
+
 `DatastoreSaveInsertOptions` only rewrites an `InsertOptions` that's created in the call, such as
 `new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. When saving a single entity, it drops
 `ordered(..)`, which `InsertOneOptions` doesn't have, as long as its argument has no side effects. The removed `Iterable` overloads
 saved, and returned, a new copy of what they were given, so the recipe copies the argument too, even a `List`: into an `ArrayList`
-in Java, which it can only do for a `Collection`, and with `toList()` in Kotlin. Anything else is left for you to change as described in
+in Java, which it can only do for a `Collection`, and with `toMutableList()` in Kotlin. It leaves the call alone if copying the
+argument first would change the order in which option arguments with side effects run. Anything else is left for you to change as described in
 [Keys, `AdvancedDatastore` and `InsertOptions`](#keys-advanceddatastore-and-insertoptions).
 
 #### Removed `Datastore` methods
