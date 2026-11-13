@@ -493,7 +493,59 @@ On 2.5, `Point.convert()` returns the equivalent driver `Point`, so you can swit
 
 ### Extension SPI and internal constructors
 
-<!-- MorphiaOrg/morphia#4483: extension SPI changes, constructors that are now internal -->
+This section only matters if you constructed Morphia's stage, expression or filter classes directly, or extended Morphia's
+internals. Code that builds pipelines and queries through the static factories isn't affected.
+
+#### Use the static factories instead of constructors
+
+The public constructors of every aggregation stage, and of most classes in `dev.morphia.aggregation.expressions.impls`, are now
+internal. Create them with their static factories instead:
+
+| 2.5                                                    | 3.0                                                                      |
+|--------------------------------------------------------|--------------------------------------------------------------------------|
+| `new Group()`, `new Match()`, `new Sort()`, and the other stages | the stage's factory: `Group.group()`, `Match.match(..)`, `Sort.sort()`, `Unwind.unwind(..)`, and so on |
+| `new Group.GroupId()`                                  | `Group.id()`, `Group.id(..)`                                             |
+| `new Densify.Range(..)`                                | `Densify.Range.bounded(..)`, `full(..)`, `partition(..)`                 |
+| `new DateToString()`, `new IfNull()`, and the other `expressions.impls` classes | the factory in the matching `*Expressions` class, such as `DateExpressions.dateToString()` or `ConditionalExpressions.ifNull()` |
+| `new dev.morphia.query.Sort(..)`                       | `Sort.ascending(field)`, `Sort.descending(field)`, `naturalAscending()`, `naturalDescending()` |
+| `new TextSearchFilter(..)`                             | `Filters.text(..)`                                                       |
+| `new CurrentDateOperator(..)`                          | `UpdateOperators.currentDate(field)`                                     |
+| `new MorphiaCursor(..)`                                | `query.iterator()`, or `aggregation.iterator()`                          |
+
+Subclassing `Stage` to add a custom stage is no longer supported, since its constructor is internal too.
+
+These accessors are also now internal: `ArraySlice.getLimit()` and `getSkip()`, `dev.morphia.query.Sort.getField()` and `getOrder()`,
+and `RegexFilter.pattern()`. Pass the pattern to `Filters.regex(field, pattern)` instead. `ArrayExpressions.array(Expression...)` is
+gone; `array(Object...)` remains, returns an `Expression`, and is marked `@MorphiaExperimental`.
+
+#### Custom filters, expressions and conventions
+
+Encoding moved out of the filter and expression classes into codecs that Morphia registers itself. As a result:
+
+- `encode()` is gone from the `expressions.impls` classes that had it, such as `DateToString`, `IfNull` and `SwitchExpression`, and
+  from `RegexFilter` and `TextSearchFilter`.
+- `Filter.writeNamedValue()` and `writeUnnamedValue()` are gone, and `Filter.getValue()`, `setValue()` and `path()` are internal.
+- Getters that only served encoding are gone: `CurrentDateOperator.toTarget()`, `CurrentDateOperator.TypeSpecification.toTarget()`,
+  `IfNull.getDocument()`, `getReplacement()` and `getTarget()`, and `ConvertType.getIdentifier()`. `DateToParts.timezone(Expression)`
+  is replaced by `timezone(Object)`.
+- These `expressions.impls` types are now internal: `Accumulator`, `ArrayExpression`, `ArrayLiteral`, `EndResultsExpression`,
+  `ExpMovingAvg`, `FieldHolder`, `Fields`, `FunctionExpression`, `LiteralExpression`, `MathExpression`, `MetaExpression`,
+  `NRankedResultsExpression`, `RankedResultsExpression`, `ReduceExpression`, `ReplaceExpression`, `SetFieldExpression`,
+  `ShiftExpression`, `UnsetFieldExpression` and `ValueExpression`.
+
+There's no supported way to plug in your own filter or expression encoding. If you subclassed a filter or expression to change what
+it writes, build the same query with `Filters.expr(..)` and the expression factories, or pass a native `Document` query to
+`datastore.find(Type.class, document)`.
+
+`MorphiaConvention.apply(Mapper, EntityModelBuilder)` is gone. `MorphiaConvention` now extends `MappingConvention<EntityModel>`, so a
+convention implements `apply(Mapper, EntityModel)` and works on the finished model. Register conventions with `ServiceLoader`, in
+`META-INF/services/dev.morphia.mapping.conventions.MorphiaConvention`. `MapperOptions.Builder.addConvention()` went away with
+`MapperOptions`.
+
+#### Mapping internals
+
+`InstanceCreatorFactory` and `MappingValidator` are now internal. The `EntityAndEmbed`, `EntityOrEmbed` and `MultipleId` class rules,
+`ValidationExtension.hasAnnotation()` and `OnEntityListenerAdapter` are gone, with no replacement.
 
 ## Migrating to 2.5
 Morphia 2.5 is primarily a driver upgrade.  Changes in the driver are incompatible with the 2.4 driver and so Morphia 2.5 requires a
