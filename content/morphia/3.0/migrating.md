@@ -224,7 +224,159 @@ entity's properties are decoded, just before its `@PostLoad` listeners, because 
 
 ### Legacy query, update and aggregation APIs
 
-<!-- MorphiaOrg/morphia#4481: legacy criteria query API, legacy update and modify API, pre-2.0 aggregation pipeline -->
+3.0 removes the query, update and aggregation APIs that 2.0 replaced. They were deprecated throughout 2.x, and the recipe can't
+convert them because the replacements are shaped differently, so they need restructuring by hand. Code that already avoids 2.5's
+deprecation warnings doesn't use any of them.
+
+#### Criteria queries
+
+The fluent criteria API (`field()`, `criteria()`, `and()`, `or()` and the string form of `filter()`) is gone. Build queries from
+`dev.morphia.query.filters.Filters` and pass them to `filter(Filter...)`. Filters passed to one `filter()` call, or to several calls,
+are combined with `$and`.
+
+```java
+// 2.5
+Query<Hotel> query = datastore.find(Hotel.class);
+query.field("stars").greaterThanOrEq(4);
+query.or(
+    query.criteria("city").equal("Paris"),
+    query.criteria("city").equal("London"));
+query.filter("price <", 300);
+
+// 3.0
+Query<Hotel> query = datastore.find(Hotel.class)
+    .filter(gte("stars", 4),
+        or(eq("city", "Paris"), eq("city", "London")),
+        lt("price", 300));
+```
+
+| 2.5                                                         | 3.0                                                                      |
+|-------------------------------------------------------------|--------------------------------------------------------------------------|
+| `field(f)` / `criteria(f)` + `equal(v)`, `notEqual(v)`      | `eq(f, v)`, `ne(f, v)`                                                   |
+| `greaterThan`, `greaterThanOrEq`, `lessThan`, `lessThanOrEq` | `gt`, `gte`, `lt`, `lte`                                                |
+| `exists()`, `doesNotExist()`                                | `exists(f)`, `exists(f).not()`                                           |
+| `in(v)`, `hasAnyOf(v)`; `notIn(v)`, `hasNoneOf(v)`          | `in(f, v)`; `nin(f, v)`                                                  |
+| `hasAllOf(v)`, `hasThisOne(v)`, `sizeEq(n)`                 | `all(f, v)`, `eq(f, v)`, `size(f, n)`                                    |
+| `mod(d, r)`, `type(t)`, `elemMatch(..)`                     | `mod(f, d, r)`, `type(f, t)`, `elemMatch(f, filters...)`                 |
+| `startsWith`, `endsWith`, `contains` and their `IgnoreCase` forms | `regex(f, pattern)`, with `.caseInsensitive()` for the `IgnoreCase` forms |
+| `near`, `nearSphere`, `within`, `intersects`                | `near`, `nearSphere`, `geoWithin`, `geoIntersects`                       |
+| `and(criteria...)`, `or(criteria...)`                       | `and(filters...)`, `or(filters...)`                                      |
+| `filter("field op", value)`                                 | the matching `Filters` method                                            |
+| `where(js)` (`WhereCriteria`)                               | `where(js)`                                                              |
+| `search(text)`, `search(text, language)`                    | `filter(text(text))`, `filter(text(text).language(language))`            |
+
+See [Query Filters](../query-filters/) for the full list. These types are gone with the criteria API: `FieldEnd`, `Criteria`,
+`CriteriaContainer`, `CriteriaJoin`, `FilterOperator`, `WhereCriteria`, `AbstractCriteria`, `LegacyQueryFactory`,
+`AbstractQueryFactory` and `LegacyQueryCodec`.
+
+`QueryFactory` and `DefaultQueryFactory` are now internal, and custom query factories are no longer supported. Remove any
+`morphia.query-factory` setting or `queryFactory(..)` call that names your own factory. `MorphiaConfig.legacy()` still applies the
+legacy mapping settings, but it no longer switches queries to the legacy API.
+
+#### Running queries and reading ids
+
+| 2.5                                  | 3.0                                                                                  |
+|--------------------------------------|--------------------------------------------------------------------------------------|
+| `query.find()`, `query.find(options)` | `query.iterator()`; pass the options to `datastore.find(Type.class, options)`       |
+| `query.retrieveKnownFields()`        | `datastore.find(Type.class, new FindOptions().projection().knownFields())`           |
+| `query.keys()`, `query.keys(options)` | a query that projects only `_id`, reading the id from each entity                   |
+
+```java
+// 2.5
+List<Key<Hotel>> keys = datastore.find(Hotel.class).filter(eq("city", "Paris")).keys().toList();
+
+// 3.0
+List<ObjectId> ids = datastore.find(Hotel.class, new FindOptions().projection().include("_id"))
+    .filter(eq("city", "Paris"))
+    .stream()
+    .map(Hotel::getId)
+    .toList();
+```
+
+`Key` itself is gone in 3.0; see [Options, keys, geo types and annotations](#options-keys-geo-types-and-annotations).
+
+#### Updates and find-and-modify
+
+`UpdateOperations`, `Datastore.createUpdateOperations()` and `Datastore.update()` are gone, along with the `Update` and `Modify`
+types that `query.update(..)` and `query.modify(..)` returned in 2.x, and `Updates`. Build the update from
+`dev.morphia.query.updates.UpdateOperators` and pass it to `query.update(..)`, which runs it and returns the driver's
+`UpdateResult`.
+
+**The default changed from updating every matching document to updating one.** `Datastore.update(query, operations)` updated
+every document the query matched. `query.update(..)` updates only the first, so pass `new UpdateOptions().multi(true)` to keep the
+old behavior.
+
+```java
+// 2.5
+UpdateOperations<Hotel> ops = datastore.createUpdateOperations(Hotel.class)
+    .inc("stars")
+    .set("lastUpdated", now);
+datastore.update(datastore.find(Hotel.class).filter(eq("city", "Paris")), ops);
+
+// 3.0
+datastore.find(Hotel.class)
+    .filter(eq("city", "Paris"))
+    .update(new UpdateOptions().multi(true), inc("stars"), set("lastUpdated", now));
+```
+
+| 2.5 `UpdateOperations` method              | 3.0 `UpdateOperators` method        |
+|--------------------------------------------|-------------------------------------|
+| `set`, `setOnInsert`, `unset`              | `set`, `setOnInsert`, `unset`       |
+| `inc`, `dec`, `max`, `min`                 | `inc`, `dec`, `max`, `min`          |
+| `push`, `addToSet`                         | `push`, `addToSet`                  |
+| `removeFirst(f)`, `removeLast(f)`          | `pop(f).removeFirst()`, `pop(f)`    |
+| `removeAll(f, value)`                      | `pull(f, value)`, or `pullAll(f, values)` for a list |
+| `disableValidation()`, `enableValidation()` | `query.disableValidation()`, `query.enableValidation()` |
+
+| 2.5                                                   | 3.0                                                                         |
+|-------------------------------------------------------|-----------------------------------------------------------------------------|
+| `datastore.update(query, ops[, options])`             | `query.update([options,] operators...)`                                     |
+| `datastore.findAndModify(query, ops[, options])`      | `query.modify([options,] operators...)`                                     |
+| `datastore.findAndDelete(query[, options])`           | `query.findAndDelete([new FindAndDeleteOptions()...])`                      |
+| `query.update(..).execute([options])`, `query.modify(..).execute([options])` | `query.update([options,] ..)`, `query.modify([options,] ..)` |
+
+`query.modify(..)` returns the document as it was before the update unless you ask for the new one. `datastore.findAndModify(query,
+ops)` returned the updated document, so pass `new ModifyOptions().returnDocument(ReturnDocument.AFTER)` to keep that. The 2.x
+`FindAndModifyOptions` maps to `ModifyOptions` for `modify()`, and to `FindAndDeleteOptions` for `findAndDelete()`.
+
+The recipe's `UpdateExecute` and `UpdateReturnType` steps only rewrite `update(..).execute(..)` and `modify(..).execute(..)` written
+as one chain. An `Update` or `Modify` held in a variable, and anything built on `UpdateOperations`, needs these changes by hand.
+
+#### The pre-2.0 aggregation pipeline
+
+`Datastore.createAggregation()`, `AggregationPipeline` and `AggregationPipelineImpl` are gone. Start the aggregation with
+`datastore.aggregate(..)` and pass the stages to `pipeline(..)`. The old builders in `dev.morphia.aggregation` and
+`dev.morphia.query` have replacements in `dev.morphia.aggregation.stages`, but their APIs differ, so each use has to be rewritten:
+
+| 2.5                                                                   | 3.0                                                                           |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| `createAggregation(Type.class)`                                       | `aggregate(Type.class)`, or `aggregate(Type.class, Target.class)`             |
+| `match(query)`                                                        | `match(filters...)`                                                           |
+| `group(..)` with `dev.morphia.aggregation.Group` and `Accumulator`    | `Group.group(id(..)).field(name, accumulator)`, with `AccumulatorExpressions` |
+| `project(..)` with `dev.morphia.aggregation.Projection`               | `Projection.project().include(..)`, `exclude(..)`, `suppressId()`             |
+| `geoNear(..)` with `dev.morphia.aggregation.GeoNear` and `GeoNearBuilder` | `GeoNear.geoNear(point)` and its setters                                  |
+| `bucket(field, boundaries[, BucketOptions])`                          | `Bucket.bucket().groupBy(field).boundaries(..).defaultValue(..).outputField(..)` |
+| `bucketAuto(field, count[, BucketAutoOptions])`                       | `AutoBucket.autoBucket().groupBy(field).buckets(count).granularity(..).outputField(..)` |
+| `BucketAutoOptions.Granularity`                                       | the driver's `com.mongodb.client.model.BucketGranularity`                    |
+| `lookup(from, localField, foreignField, as)`                          | `Lookup.lookup(from).localField(..).foreignField(..).as(..)`                  |
+| `limit`, `skip`, `sample`, `sort`, `sortByCount`, `unwind`            | the `stages` factory of the same name, such as `limit(n)` or `unwind(field)` |
+| `aggregate(Target.class[, options])`                                  | `aggregate(Type.class, Target.class[, options])` ... `.iterator()`            |
+| `out(..)`                                                             | an `Out.out(..)` stage at the end of the pipeline                             |
+
+```java
+// 2.5
+Iterator<Author> authors = datastore.createAggregation(Book.class)
+    .group("author", grouping("books", push("title")))
+    .aggregate(Author.class);
+
+// 3.0
+Iterator<Author> authors = datastore.aggregate(Book.class, Author.class)
+    .pipeline(group(id("author"))
+        .field("books", push("$title")))
+    .iterator();
+```
+
+See [Aggregations](../aggregations/) and [Aggregation Stages](../aggregation-stages/) for each stage's API.
 
 ### Options, keys, geo types and annotations
 
