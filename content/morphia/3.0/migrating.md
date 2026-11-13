@@ -112,15 +112,16 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 | `RegexPatternMerge`   | `regex("field").pattern("p")`                               | `regex("field", "p")`                                                       |
 | `UpdateExecute`       | `query.update(ops...).execute()`, `.execute(options)`       | `query.update(ops...)`, `query.update(options, ops...)`                     |
 | `UpdateExecute`       | `query.modify(ops...).execute()`, `.execute(options)`       | `query.modify(ops...)`, `query.modify(options, ops...)`                     |
-| `UpdateReturnType`    | `Update<T> result = query.update(..).execute()`             | `UpdateResult result = query.update(..)`                                    |
+| `UpdateReturnType`    | `Update<T> update = query.update(..)`                       | `UpdateResult update = query.update(..)`                                    |
 
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
 `QueryFindOptions` moves them only when the call is chained from that `find()` call. For one held in a variable or passed in from
 elsewhere, move the options yourself.
 
-`UpdateExecute` and `UpdateReturnType` handle the `update(..).execute()` and `modify(..).execute()` chains. An `Update` or `Modify`
-held in a variable, and code that uses the legacy `UpdateOperations` API, need the manual changes described in
-[Legacy APIs](#legacy-query-update-and-aggregation-apis).
+`UpdateExecute` handles the `update(..).execute()` and `modify(..).execute()` chains, and `UpdateReturnType` changes variables
+declared as `Update<T>` to `UpdateResult`, since `query.update(..)` now runs the update itself. Check any `Update` or `Modify` held
+in a variable by hand: the update now runs where the variable is assigned, not where `execute()` was called. Code that uses the
+legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs](#legacy-query-update-and-aggregation-apis).
 
 #### Removed `Datastore` methods
 
