@@ -216,17 +216,25 @@ The recipe also removes `@dev.morphia.annotations.experimental.Constructor`, whi
 #### `@Embedded` removed
 
 `@Embedded` was deprecated in 2.2 and is gone in 3.0: use `@Entity` on every mapped type. A type that's only stored inside other
-entities is an `@Entity` with no `@Id` field. The recipe removes `@Embedded` annotations, but it doesn't add `@Entity`, so add it to
-any type that had only `@Embedded`, and move any `useDiscriminator`, `discriminator` or `discriminatorKey` values from `@Embedded` to
-`@Entity`. Morphia can't map a type that has neither `@Entity` nor `@ExternalEntity`.
+entities is an `@Entity` with no `@Id` field. The recipe makes this change for you:
+
+- On a type with only `@Embedded`, it replaces `@Embedded` with `@Entity`, keeping any `useDiscriminator`, `discriminatorKey` and
+  `discriminator` values. Both annotations have the same defaults for these, so the mapping doesn't change. `@Embedded`'s `value` was
+  unused, so it's dropped. On `@Entity`, `value` names the collection.
+- On a type with both annotations, it removes `@Embedded` and moves any of those three values that `@Entity` doesn't set over to
+  `@Entity`. If both annotations set one of them to different values, `@Entity`'s value is kept and the recipe marks the annotation.
+  Check the marked types, and keep whichever value your stored documents need.
+- It removes `@Embedded` from anywhere else it appears.
+
+Morphia can't map a type that has neither `@Entity` nor `@ExternalEntity`.
 
 ```java
 // 2.5
-@Embedded
+@Embedded(useDiscriminator = false)
 public class Address { ... }
 
 // 3.0
-@Entity
+@Entity(useDiscriminator = false)
 public class Address { ... }
 ```
 
@@ -554,7 +562,7 @@ On 2.5, `Point.convert()` returns the equivalent driver `Point`, so you can swit
 
 | 2.5                               | 3.0                                                                                       |
 |-----------------------------------|-------------------------------------------------------------------------------------------|
-| `@Embedded`                       | `@Entity` with no `@Id`; see [`@Embedded` removed](#embedded-removed)                     |
+| `@Embedded`                       | `@Entity` with no `@Id` (the recipe makes this change); see [`@Embedded` removed](#embedded-removed) |
 | `@NotSaved`                       | `@LoadOnly` (the recipe makes this change)                                                |
 | `@experimental.Constructor`       | nothing (the recipe removes it). See [Constructors](../mapping/#constructors) for how Morphia picks one |
 | `@Converters`, `@Handler`         | no replacement. Register a codec provider instead: see [User-defined Codecs](../configuration/#user-defined-codecs) and [Property Codecs](../configuration/#property-codecs) |
