@@ -27,7 +27,8 @@ How this comparison was made:
   out, so an element that is now internal shows up as removed.
 - The codec packages, `dev.morphia.aggregation.codecs` and `dev.morphia.mapping.codec`, are left out. They hold Morphia's encoding
   machinery rather than API that applications call.
-- Signatures use erased types. Types are shown by simple name, except where the simple name is shared by more than one type.
+- Signatures use erased types. Types are shown by simple name, except where the simple name is shared by more than one type, internal ones
+  included, such as `dev.morphia.query.MorphiaCursor` and 2.5's `dev.morphia.query.internal.MorphiaCursor`.
 - Each class is compared on the methods it declares. A method that a class now inherits instead of declaring, such as
   `CountOptions.getMaxTime(TimeUnit)` from the driver's `CountOptions`, shows up as removed even though it can still be called.
 - A row with both columns filled pairs a removed method with an added one of the same name. That happens when the parameter types
@@ -291,15 +292,15 @@ These 2.5 types have no public counterpart of the same name in 3.0. Where a type
 | `Aggregation currentOp(CurrentOp)` |  |
 | `Aggregation densify(Densify)` |  |
 | `Aggregation documents(DocumentExpression[])` |  |
-| `MorphiaCursor execute(Class)` |  |
-| `MorphiaCursor execute(Class, AggregationOptions)` |  |
+| `dev.morphia.query.internal.MorphiaCursor execute(Class)` |  |
+| `dev.morphia.query.internal.MorphiaCursor execute(Class, AggregationOptions)` |  |
 | `Aggregation facet(Facet)` |  |
 | `Aggregation fill(Fill)` |  |
 | `Aggregation geoNear(dev.morphia.aggregation.stages.GeoNear)` |  |
 | `Aggregation graphLookup(GraphLookup)` |  |
 | `Aggregation group(dev.morphia.aggregation.stages.Group)` |  |
 | `Aggregation indexStats()` |  |
-|  | `MorphiaCursor iterator()` |
+|  | `dev.morphia.query.MorphiaCursor iterator()` |
 | `Aggregation limit(long)` |  |
 | `Aggregation lookup(Lookup)` |  |
 | `Aggregation match(Filter[])` |  |
@@ -446,22 +447,22 @@ These 2.5 types have no public counterpart of the same name in 3.0. Where a type
 | `static DateDeltaExpression dateSubtract(Expression, long, TimeUnit)` | `static DateDeltaExpression dateSubtract(Object, long, TimeUnit)` |
 | `static DateToParts dateToParts(Expression)` | `static DateToParts dateToParts(Object)` |
 | `static DateTruncExpression dateTrunc(Expression, TimeUnit)` | `static DateTruncExpression dateTrunc(Object, TimeUnit)` |
-| `static DateExpressions.DateExpression dayOfMonth(Expression)` | `static Expression dayOfMonth(Object)` |
-| `static DateExpressions.DateExpression dayOfWeek(Expression)` | `static Expression dayOfWeek(Object)` |
-| `static DateExpressions.DateExpression dayOfYear(Expression)` | `static Expression dayOfYear(Object)` |
-| `static DateExpressions.DateExpression hour(Expression)` | `static Expression hour(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression dayOfMonth(Expression)` | `static Expression dayOfMonth(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression dayOfWeek(Expression)` | `static Expression dayOfWeek(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression dayOfYear(Expression)` | `static Expression dayOfYear(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression hour(Expression)` | `static Expression hour(Object)` |
 | `static IsoDates isoDayOfWeek(Expression)` | `static IsoDates isoDayOfWeek(Object)` |
 | `static IsoDates isoWeek(Expression)` | `static IsoDates isoWeek(Object)` |
 | `static IsoDates isoWeekYear(Expression)` | `static IsoDates isoWeekYear(Object)` |
-| `static DateExpressions.DateExpression milliseconds(Expression)` | `static Expression milliseconds(Object)` |
-| `static DateExpressions.DateExpression minute(Expression)` | `static Expression minute(Object)` |
-| `static DateExpressions.DateExpression month(Expression)` | `static Expression month(Object)` |
-| `static DateExpressions.DateExpression second(Expression)` | `static Expression second(Object)` |
-| `static DateExpressions.DateExpression toDate(Expression)` | `static Expression toDate(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression milliseconds(Expression)` | `static Expression milliseconds(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression minute(Expression)` | `static Expression minute(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression month(Expression)` | `static Expression month(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression second(Expression)` | `static Expression second(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression toDate(Expression)` | `static Expression toDate(Object)` |
 | `static Expression tsIncrement(Expression)` | `static Expression tsIncrement(Object)` |
 | `static Expression tsSecond(Expression)` | `static Expression tsSecond(Object)` |
-| `static DateExpressions.DateExpression week(Expression)` | `static Expression week(Object)` |
-| `static DateExpressions.DateExpression year(Expression)` | `static Expression year(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression week(Expression)` | `static Expression week(Object)` |
+| `static dev.morphia.aggregation.expressions.DateExpressions.DateExpression year(Expression)` | `static Expression year(Object)` |
 
 ### dev.morphia.aggregation.expressions.Expressions
 
@@ -1241,18 +1242,18 @@ These 2.5 types have no public counterpart of the same name in 3.0. Where a type
 |---|---|
 | `default CriteriaContainer and(Criteria[])` |  |
 | `default FieldEnd criteria(String)` |  |
-| `default MorphiaCursor execute()` |  |
-| `default MorphiaCursor execute(FindOptions)` |  |
+| `default dev.morphia.query.internal.MorphiaCursor execute()` |  |
+| `default dev.morphia.query.internal.MorphiaCursor execute(FindOptions)` |  |
 | `default Map explain(FindOptions)` |  |
 | `Map explain(FindOptions, ExplainVerbosity)` |  |
 | `default FieldEnd field(String)` |  |
 | `default Query filter(Filter[])` | `Query filter(Filter[])` |
 | `default Query filter(String, Object)` |  |
-| `default MorphiaCursor find()` |  |
-| `default MorphiaCursor find(FindOptions)` |  |
+| `default dev.morphia.query.internal.MorphiaCursor find()` |  |
+| `default dev.morphia.query.internal.MorphiaCursor find(FindOptions)` |  |
 | `Object first(FindOptions)` |  |
-| `MorphiaCursor iterator()` | `MorphiaCursor iterator()` |
-| `MorphiaCursor iterator(FindOptions)` |  |
+| `dev.morphia.query.internal.MorphiaCursor iterator()` | `dev.morphia.query.MorphiaCursor iterator()` |
+| `dev.morphia.query.internal.MorphiaCursor iterator(FindOptions)` |  |
 | `MorphiaKeyCursor keys()` |  |
 | `MorphiaKeyCursor keys(FindOptions)` |  |
 | `default Object modify(ModifyOptions, UpdateOperator[])` |  |

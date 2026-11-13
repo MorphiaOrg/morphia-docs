@@ -142,10 +142,11 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 | `FindAndModifyOptionsMigration` | `new FindAndModifyOptions().returnNew(true)`      | `new ModifyOptions().returnDocument(ReturnDocument.AFTER)`                  |
 
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
-`QueryFindOptions` moves them only when the call is chained from that `find()` call. If that `find()` already has a `FindOptions`
-that only names a collection, such as one written by `DatastoreFindCollection` below, the recipe merges the two. It leaves any
-other combination alone rather than drop either set of options. For options held in a variable or passed in from elsewhere, move
-them yourself.
+`QueryFindOptions` moves them, whether they're created inline or held in a variable, when the call is chained from that `find()`
+call. If that `find()` already has a `FindOptions` that only names a collection, such as one written by `DatastoreFindCollection`
+below, the recipe merges the two, but only when the moved options are created inline (`new FindOptions()...`). A collection named
+in the moved options wins, as it did in 2.x. The recipe leaves any other combination alone rather than drop or change either set
+of options. For a query held in a variable, move the options yourself.
 
 `FindAndModifyOptions` becomes its parent type, `ModifyOptions`, and its one extra method, `returnNew(boolean)`, becomes the
 matching `returnDocument(..)` call. `Meta.getField()` is renamed to `field()`, which is internal in 3.0.
@@ -163,13 +164,14 @@ legacy `UpdateOperations` API needs the manual changes described in [Legacy APIs
 | `DatastoreDeleteQuery`       | `datastore.delete(query)`, `delete(query, options)` | `query.delete()`, `query.delete(options)`                       |
 | `DatastoreMergeWriteConcern` | `datastore.merge(entity, writeConcern)`            | `datastore.merge(entity, new InsertOneOptions().writeConcern(writeConcern))` |
 | `DatastoreSaveInsertOptions` | `datastore.save(entity, new InsertOptions()...)`   | `datastore.save(entity, new InsertOneOptions()...)`              |
-| `DatastoreSaveInsertOptions` | `datastore.save(list, new InsertOptions()...)`     | `datastore.save(list, new InsertManyOptions()...)`               |
-| `DatastoreSaveInsertOptions` | `datastore.save(collection[, options])` for a `Collection` that isn't a `List` | `datastore.save(new ArrayList<>(collection)[, options])` |
+| `DatastoreSaveInsertOptions` | `datastore.save(collection, new InsertOptions()...)` | `datastore.save(new ArrayList<>(collection), new InsertManyOptions()...)` |
+| `DatastoreSaveInsertOptions` | `datastore.save(collection)`, for a `Collection` that isn't a `List` | `datastore.save(new ArrayList<>(collection))`      |
 
 `DatastoreSaveInsertOptions` only rewrites an `InsertOptions` that's created in the call, such as
-`new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. `ordered(..)` is dropped when saving a single
-entity, since `InsertOneOptions` has no such setting. In Java, it copies an `Iterable` into an `ArrayList` only when it's a
-`Collection`. Anything else is left for you to change as described in
+`new InsertOptions().writeConcern(wc)`, because it has to rebuild it as the new type. When saving a single entity, it drops
+`ordered(..)`, which `InsertOneOptions` doesn't have, as long as its argument has no side effects. The removed `Iterable` overloads
+saved, and returned, a new copy of what they were given, so the recipe copies the argument too, even a `List`: into an `ArrayList`
+in Java, which it can only do for a `Collection`, and with `toList()` in Kotlin. Anything else is left for you to change as described in
 [Keys, `AdvancedDatastore` and `InsertOptions`](#keys-advanceddatastore-and-insertoptions).
 
 #### Removed `Datastore` methods
