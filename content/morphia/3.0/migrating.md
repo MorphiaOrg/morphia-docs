@@ -285,6 +285,23 @@ or `postLoad` method takes the `Document`. It marks a class for you to finish by
 The order of `@PreLoad` listeners has changed for entities created through a constructor, such as records. They now run after the
 entity's properties are decoded, just before its `@PostLoad` listeners, because the instance can't exist any earlier.
 
+### Untyped values and per-entity discriminator keys
+
+An entity can store its discriminator under its own key with `@Entity(discriminatorKey = "...")`. Where nothing else says what type a
+stored document is, Morphia 2.x looked only for the configured key (`morphia.discriminator-key`, `_t` by default). That covers values
+held by a field of type `Object`, or in a `List<Object>` or a `Map<String, Object>`. An entity using its own key was read back from
+those places as a `Document`. In 3.0 it's read back as the entity, once Morphia has mapped it, as it already was when it used the
+configured key.
+
+This can change what you read back. A stored document in one of those places that has a string field named like an entity's own
+discriminator key, holding exactly that entity's discriminator, now loads as that entity rather than as a `Document`. For example, with
+`@Entity(discriminatorKey = "type", discriminator = "PNG") class Png`, the untyped value `{type: "PNG", ...}` loads as a `Png`. A field of
+that name holding anything else, such as another value, a number, or a different entity's discriminator, still leaves the document a
+`Document`, as before.
+
+If you keep plain documents in untyped fields and their field names overlap an entity's discriminator key, check that their values can't
+match that entity's discriminator, or give the field a type so Morphia doesn't have to guess.
+
 ### Legacy query, update and aggregation APIs
 
 3.0 removes the query, update and aggregation APIs that 2.0 replaced. They were deprecated throughout 2.x, and the recipe can't
