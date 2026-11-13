@@ -77,7 +77,7 @@ Aggregations in 3.0 are built by passing stages to `pipeline(Stage...)` and run 
 | `aggregation.merge(Merge.into(..))`                                   | `pipeline(Merge.merge(..))`                                                   |
 | `aggregation.execute(Target.class)`                                   | `datastore.aggregate(Source.class, Target.class)` ... `.iterator()`           |
 | `aggregation.execute(Target.class, options)`                          | The options passed to `datastore.aggregate(..)`, then `.iterator()`           |
-| `datastore.aggregate("collection")`                                   | `datastore.aggregate(Document.class, aggregationOptions().collection("collection"))` |
+| `datastore.aggregate("collection")`                                   | `datastore.aggregate(Document.class, AggregationOptions.aggregationOptions().collection("collection"))` |
 | `new AggregationOptions()`                                            | `AggregationOptions.aggregationOptions()`                                     |
 | `Expressions.field("$qty")`, `Expressions.value(250)`                 | `"$qty"`, `250`: stages and expressions accept field names and values directly |
 | `Expressions.of()`                                                    | `Expressions.document()`                                                      |
