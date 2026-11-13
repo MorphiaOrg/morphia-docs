@@ -503,7 +503,7 @@ internal. Create them with their static factories instead:
 
 | 2.5                                                    | 3.0                                                                      |
 |--------------------------------------------------------|--------------------------------------------------------------------------|
-| `new Group()`, `new Match()`, `new Sort()`, and the other stages | the stage's factory: `Group.group()`, `Match.match(..)`, `Sort.sort()`, `Unwind.unwind(..)`, and so on |
+| `new Group()`, `new Match()`, `new Sort()`, and the other classes in `dev.morphia.aggregation.stages` | the stage's factory: `Group.group()`, `Match.match(..)`, `Sort.sort()`, `Unwind.unwind(..)`, and so on |
 | `new Group.GroupId()`                                  | `Group.id()`, `Group.id(..)`                                             |
 | `new Densify.Range(..)`                                | `Densify.Range.bounded(..)`, `full(..)`, `partition(..)`                 |
 | `new DateToString()`, `new IfNull()`, and the other `expressions.impls` classes | the factory in the matching `*Expressions` class, such as `DateExpressions.dateToString()` or `ConditionalExpressions.ifNull()` |
