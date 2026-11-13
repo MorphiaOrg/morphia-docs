@@ -356,8 +356,8 @@ changes by hand, and an `Update` or `Modify` held in a variable needs checking b
 | `group(..)` with `dev.morphia.aggregation.Group` and `Accumulator`    | `Group.group(id("$field")).field(name, accumulator)`, with `AccumulatorExpressions`; field references in 3.0 expressions start with `$` |
 | `project(..)` with `dev.morphia.aggregation.Projection`               | `Projection.project().include(..)`, `exclude(..)`, `suppressId()`             |
 | `geoNear(..)` with `dev.morphia.aggregation.GeoNear` and `GeoNearBuilder` | `GeoNear.geoNear(point)` and its setters                                  |
-| `bucket(field, boundaries[, BucketOptions])`                          | `Bucket.bucket().groupBy(field).boundaries(..).defaultValue(..).outputField(..)` |
-| `bucketAuto(field, count[, BucketAutoOptions])`                       | `AutoBucket.autoBucket().groupBy(field).buckets(count).granularity(..).outputField(..)` |
+| `bucket(field, boundaries[, BucketOptions])`                          | `Bucket.bucket().groupBy("$field").boundaries(..).defaultValue(..).outputField(..)` |
+| `bucketAuto(field, count[, BucketAutoOptions])`                       | `AutoBucket.autoBucket().groupBy("$field").buckets(count).granularity(..).outputField(..)` |
 | `BucketAutoOptions.Granularity`                                       | the driver's `com.mongodb.client.model.BucketGranularity`                    |
 | `lookup(from, localField, foreignField, as)`                          | `Lookup.lookup(from).localField(..).foreignField(..).as(..)`                  |
 | `limit`, `skip`, `sample`, `sort`, `sortByCount`, `unwind`            | the `stages` factory of the same name, such as `limit(n)` or `unwind(field)` |
