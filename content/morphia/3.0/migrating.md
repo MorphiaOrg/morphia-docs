@@ -493,8 +493,9 @@ On 2.5, `Point.convert()` returns the equivalent driver `Point`, so you can swit
 
 ### Extension SPI and internal constructors
 
-This section only matters if you constructed Morphia's stage, expression or filter classes directly, or extended Morphia's
-internals. Code that builds pipelines and queries through the static factories isn't affected.
+This section matters if you constructed Morphia's stage, expression or filter classes directly, extended Morphia's internals, or
+read values back from the objects the factories return, for example with `Sort.getField()` or through one of the expression types
+listed below. Code that only builds pipelines and queries through the static factories isn't affected.
 
 #### Use the static factories instead of constructors
 
@@ -534,13 +535,20 @@ Encoding moved out of the filter and expression classes into codecs that Morphia
   `ShiftExpression`, `UnsetFieldExpression` and `ValueExpression`.
 
 There's no supported way to plug in your own filter or expression encoding. If you subclassed a filter or expression to change what
-it writes, build the same query with `Filters.expr(..)` and the expression factories, or pass a native `Document` query to
-`datastore.find(Type.class, document)`.
+it writes:
+
+- for a query filter, build the same condition from `Filters`, using `Filters.expr(..)` to compare with aggregation expressions,
+  or pass a native `Document` query to `datastore.find(Type.class, document)`.
+- for an expression used in a pipeline stage, such as a `Group.field(..)` accumulator, rebuild it from the expression factories in
+  `dev.morphia.aggregation.expressions`. If they can't express it, 3.0 has no replacement; please
+  [file an issue](https://github.com/MorphiaOrg/morphia/issues) describing what you need.
 
 `MorphiaConvention.apply(Mapper, EntityModelBuilder)` is gone. `MorphiaConvention` now extends `MappingConvention<EntityModel>`, so a
-convention implements `apply(Mapper, EntityModel)` and works on the finished model. Register conventions with `ServiceLoader`, in
-`META-INF/services/dev.morphia.mapping.conventions.MorphiaConvention`. `MapperOptions.Builder.addConvention()` went away with
-`MapperOptions`.
+convention implements `apply(Mapper, EntityModel)` and works on the finished model. `MapperOptions.Builder.addConvention()` went
+away with `MapperOptions`, so register conventions with `ServiceLoader`: list them in
+`META-INF/services/dev.morphia.mapping.conventions.MorphiaConvention`, or, in a named module, declare
+`provides dev.morphia.mapping.conventions.MorphiaConvention with ...` in `module-info.java`. See
+[Some notes on ServiceLoader](../configuration/#some-notes-on-serviceloader).
 
 #### Mapping internals
 
