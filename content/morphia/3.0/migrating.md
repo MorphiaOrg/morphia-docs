@@ -381,7 +381,115 @@ See [Aggregations](../aggregations/) and [Aggregation Stages](../aggregation-sta
 
 ### Options, keys, geo types and annotations
 
-<!-- MorphiaOrg/morphia#4482: options getters, Key/AdvancedDatastore/InsertOptions, geo types, annotations -->
+#### Options getters
+
+Morphia's options classes are builders in 3.0: you set values on them and pass them in, but you can't read the values back. These
+getters were deprecated in 2.5 and are gone:
+
+| Class               | Removed                                                                                               |
+|---------------------|-------------------------------------------------------------------------------------------------------|
+| `FindOptions`       | `getAllowDiskUse()`, `getBatchSize()`, `getCollation()`, `getComment()`, `getCursorType()`, `getHint()`, `getLimit()`, `getMax()`, `getMaxAwaitTime()`, `getMaxTime()`, `getMin()`, `getSkip()`, `getSort()`, `isNoCursorTimeout()`, `isOplogReplay()`, `isPartial()`, `isReturnKey()`, `isShowRecordId()` |
+| `DeleteOptions`     | `isMulti()`                                                                                           |
+| `UpdateOptions`     | `isMulti()`                                                                                           |
+| `InsertManyOptions` | `getBypassDocumentValidation()`, `getOptions()`, `isOrdered()`                                        |
+| `InsertOneOptions`  | `getBypassDocumentValidation()`, `getOptions()`                                                       |
+
+There are no public replacements. The accessors that remain, such as `UpdateOptions.multi()`, `FindOptions.copy()` and
+`InsertOneOptions.writeConcern()` with no arguments, are marked `@MorphiaInternal` and may change without notice. If your code needs
+a value back, such as a page size it set on a `FindOptions`, keep it in a variable of your own.
+
+`CountOptions`, `DeleteOptions`, `UpdateOptions` and `ModifyOptions` still extend the driver's options classes, so the getters they
+inherit still compile. For example, `CountOptions.getMaxTime(TimeUnit)` now comes from the driver's `CountOptions`.
+
+#### Keys, `AdvancedDatastore` and `InsertOptions`
+
+`Key` and `KeyCodec` are gone. A `Key<T>` was stored as a DBRef (`$ref` and `$id`). Depending on what you used it for:
+
+- to refer to another entity, make the field that entity's type and annotate it with `@Reference`, which also stores a DBRef unless
+  you set `idOnly = true`. See [References](../references/).
+- to hold or pass around an id, use the id's own type, such as `ObjectId`.
+- to read ids from a query, project `_id` as shown in [Running queries and reading ids](#running-queries-and-reading-ids).
+
+`AdvancedDatastore` is gone. Use `Datastore`:
+
+| 2.5 `AdvancedDatastore`                    | 3.0                                                                                    |
+|--------------------------------------------|----------------------------------------------------------------------------------------|
+| `createQuery(Type.class, document)`        | `find(Type.class, document)`                                                           |
+| `createAggregation(collection, Type.class)` | `aggregate(Type.class, AggregationOptions.aggregationOptions().collection(collection))` |
+| `createUpdateOperations(Type.class, dbObject)` | build the update with `UpdateOperators`, see [Updates and find-and-modify](#updates-and-find-and-modify) |
+| `createRef(Type.class, id)`, `createRef(entity)` | the driver's `new DBRef(collection, id)`, or an `@Reference` field                |
+| `insert(entity, InsertOptions)`, `insert(list, InsertOptions)` | `insert(entity, InsertOneOptions)`, `insert(list, InsertManyOptions)`  |
+| `queryByExample(collection, example)`      | `queryByExample(example)`, which queries the example's own collection                  |
+
+`InsertOptions` is gone. Use `InsertOneOptions` when saving or inserting one entity and `InsertManyOptions` for a list. Both have
+`writeConcern(..)` and `bypassDocumentValidation(..)`, and `InsertManyOptions` has `ordered(..)`. `save(Iterable, InsertOptions)`
+becomes `save(List, InsertManyOptions)`, so copy an `Iterable` that isn't a `List` into one first.
+
+#### Listeners and codecs
+
+`AbstractEntityInterceptor` is gone. Its no-op methods moved to the interface in 2.x, and the per-event listener interfaces replace it
+in 3.0. The recipe's `EntityInterceptor` to `EntityListener` change doesn't reach classes that extend `AbstractEntityInterceptor`,
+so change them by hand: drop the `extends` and implement the interface for each event the class handles, as described in
+[Entity listeners](#entity-listeners).
+
+```java
+// 2.5
+public class AuditListener extends AbstractEntityInterceptor {
+    @Override
+    public void prePersist(Object entity, Document document, Datastore datastore) { ... }
+}
+
+// 3.0
+public class AuditListener implements PrePersistListener<Object> {
+    @Override
+    public void prePersist(Object entity, Datastore datastore) { ... }
+}
+```
+
+`MorphiaMapCodecProvider` is gone. Morphia encodes `Map` properties itself, so remove any reference to it.
+
+#### Geo types
+
+Everything in `dev.morphia.geo` is gone, along with `dev.morphia.query.Shape`. These were deprecated in 2.0 in favor of the driver's
+GeoJSON types in `com.mongodb.client.model.geojson`, which the 3.0 filters and the `GeoNear` stage take. Changing the imports isn't
+enough: the driver types are built with constructors and `Position`s rather than Morphia's factories, and a `Position` takes the
+longitude first.
+
+```java
+// 2.5
+import dev.morphia.geo.Point;
+import static dev.morphia.geo.PointBuilder.pointBuilder;
+
+Point paris = pointBuilder().latitude(48.8566).longitude(2.3522).build();
+
+// 3.0
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
+Point paris = new Point(new Position(2.3522, 48.8566));   // longitude, latitude
+```
+
+| 2.5                                                         | 3.0                                                                                |
+|-------------------------------------------------------------|------------------------------------------------------------------------------------|
+| `PointBuilder` (`latitude(..)`, `longitude(..)`)            | `new Point(new Position(longitude, latitude))`                                     |
+| `GeoJson.lineString(points...)`                             | `new LineString(positions)`                                                        |
+| `GeoJson.polygon(points...)`, `polygon(exterior, interiors...)` | `new Polygon(positions)`, `new Polygon(new PolygonCoordinates(exterior, holes...))` |
+| `GeoJson.multiPoint(..)`, `multiLineString(..)`, `multiPolygon(..)` | `new MultiPoint(..)`, `new MultiLineString(..)`, `new MultiPolygon(..)`    |
+| `GeoJson.geometryCollection(..)`, `Geometry`                | `new GeometryCollection(..)`, `Geometry`                                           |
+| `CoordinateReferenceSystem`, `NamedCoordinateReferenceSystem` | the driver classes of the same names                                            |
+| `Point.getLatitude()`, `getLongitude()`                     | `point.getPosition().getValues().get(1)`, `.get(0)`                                |
+| `Shape.box(..)`, `center(..)`, `centerSphere(..)`, `polygon(..)` | `Filters.box(field, ..)`, `center(field, ..)`, `centerSphere(field, ..)`, `polygon(field, ..)` |
+
+On 2.5, `Point.convert()` returns the equivalent driver `Point`, so you can switch call sites over before you upgrade.
+
+#### Annotations
+
+| 2.5                               | 3.0                                                                                       |
+|-----------------------------------|-------------------------------------------------------------------------------------------|
+| `@Embedded`                       | `@Entity` with no `@Id`; see [`@Embedded` removed](#embedded-removed)                     |
+| `@NotSaved`                       | `@LoadOnly`                                                                               |
+| `@experimental.Constructor`       | nothing: remove it. See [Constructors](../mapping/#constructors) for how Morphia picks one |
+| `@Converters`, `@Handler`         | no replacement. Register a codec provider instead: see [User-defined Codecs](../configuration/#user-defined-codecs) and [Property Codecs](../configuration/#property-codecs) |
 
 ### Extension SPI and internal constructors
 
