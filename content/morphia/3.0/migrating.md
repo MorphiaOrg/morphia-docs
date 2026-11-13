@@ -339,8 +339,9 @@ datastore.find(Hotel.class)
 ops)` returned the updated document, so pass `new ModifyOptions().returnDocument(ReturnDocument.AFTER)` to keep that. The 2.x
 `FindAndModifyOptions` maps to `ModifyOptions` for `modify()`, and to `FindAndDeleteOptions` for `findAndDelete()`.
 
-The recipe's `UpdateExecute` and `UpdateReturnType` steps only rewrite `update(..).execute(..)` and `modify(..).execute(..)` written
-as one chain. An `Update` or `Modify` held in a variable, and anything built on `UpdateOperations`, needs these changes by hand.
+The recipe's `UpdateExecute` step only rewrites `update(..).execute(..)` and `modify(..).execute(..)` written as one chain, and
+`UpdateReturnType` retypes variables declared as `Update<T>`. Neither touches code built on `UpdateOperations`, which needs these
+changes by hand, and an `Update` or `Modify` held in a variable needs checking because the update now runs where it's assigned.
 
 #### The pre-2.0 aggregation pipeline
 
@@ -352,7 +353,7 @@ as one chain. An `Update` or `Modify` held in a variable, and anything built on 
 |-----------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | `createAggregation(Type.class)`                                       | `aggregate(Type.class)`, or `aggregate(Type.class, Target.class)`             |
 | `match(query)`                                                        | `match(filters...)`                                                           |
-| `group(..)` with `dev.morphia.aggregation.Group` and `Accumulator`    | `Group.group(id(..)).field(name, accumulator)`, with `AccumulatorExpressions` |
+| `group(..)` with `dev.morphia.aggregation.Group` and `Accumulator`    | `Group.group(id("$field")).field(name, accumulator)`, with `AccumulatorExpressions`; field references in 3.0 expressions start with `$` |
 | `project(..)` with `dev.morphia.aggregation.Projection`               | `Projection.project().include(..)`, `exclude(..)`, `suppressId()`             |
 | `geoNear(..)` with `dev.morphia.aggregation.GeoNear` and `GeoNearBuilder` | `GeoNear.geoNear(point)` and its setters                                  |
 | `bucket(field, boundaries[, BucketOptions])`                          | `Bucket.bucket().groupBy(field).boundaries(..).defaultValue(..).outputField(..)` |
@@ -361,7 +362,7 @@ as one chain. An `Update` or `Modify` held in a variable, and anything built on 
 | `lookup(from, localField, foreignField, as)`                          | `Lookup.lookup(from).localField(..).foreignField(..).as(..)`                  |
 | `limit`, `skip`, `sample`, `sort`, `sortByCount`, `unwind`            | the `stages` factory of the same name, such as `limit(n)` or `unwind(field)` |
 | `aggregate(Target.class[, options])`                                  | `aggregate(Type.class, Target.class[, options])` ... `.iterator()`            |
-| `out(..)`                                                             | an `Out.out(..)` stage at the end of the pipeline                             |
+| `out(..)`                                                             | an `Out.out(..)` stage at the end of the pipeline, which runs it              |
 
 ```java
 // 2.5
@@ -371,7 +372,7 @@ Iterator<Author> authors = datastore.createAggregation(Book.class)
 
 // 3.0
 Iterator<Author> authors = datastore.aggregate(Book.class, Author.class)
-    .pipeline(group(id("author"))
+    .pipeline(group(id("$author"))
         .field("books", push("$title")))
     .iterator();
 ```
