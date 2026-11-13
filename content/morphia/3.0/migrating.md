@@ -144,7 +144,7 @@ List<Document> list = datastore.aggregate(Sale.class, Document.class)
 In 3.0, `Query` no longer takes a `FindOptions` when you run it: pass the options to `Datastore.find(Class, FindOptions)` instead.
 `QueryFindOptions` moves them, whether they're created inline or held in a variable, when the call is chained from that `find()`
 call. If that `find()` already has a `FindOptions` that only names a collection, such as one written by `DatastoreFindCollection`
-below, the recipe merges the two, but only when the moved options are created inline (`new FindOptions()...`). If the moved options name
+below, the recipe merges the two, but only when that collection is a string literal, a variable, or a field, and the moved options are created inline (`new FindOptions()...`). If the moved options name
 a collection with a string literal, that collection wins, as it did in 2.x. If they name it any other way, the recipe can't tell
 which collection 2.x would have used, so it leaves the call alone. The recipe leaves any other combination alone rather than drop or change either set
 of options. For a query held in a variable, move the options yourself.
