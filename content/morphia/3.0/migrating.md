@@ -149,7 +149,9 @@ in the moved options wins, as it did in 2.x. The recipe leaves any other combina
 of options. For a query held in a variable, move the options yourself.
 
 `FindAndModifyOptions` becomes its parent type, `ModifyOptions`, and its one extra method, `returnNew(boolean)`, becomes the
-matching `returnDocument(..)` call. `Meta.getField()` is renamed to `field()`, which is internal in 3.0.
+matching `returnDocument(..)` call. In Kotlin, it converts `returnNew(..)` only when the argument is `true` or `false`. A variable or
+computed flag is left as `returnNew(flag)`, which doesn't compile in 3.0, so change it to
+`returnDocument(if (flag) ReturnDocument.AFTER else ReturnDocument.BEFORE)` yourself. `Meta.getField()` is renamed to `field()`, which is internal in 3.0.
 
 `UpdateExecute` handles the `update(..).execute()` and `modify(..).execute()` chains, and `UpdateReturnType` changes variables
 declared as `Update<T>` to `UpdateResult`, since `query.update(..)` now runs the update itself. Check any `Update` or `Modify` held
