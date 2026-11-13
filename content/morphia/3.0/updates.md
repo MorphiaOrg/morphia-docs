@@ -147,6 +147,42 @@ Regardless of whether this value is set, `merge()` will issue a `find()` for tha
 Without using `unsetMissing()`, this is useful for merging the in memory state with what's in the database.
 With this value set, the two should be identical, of course.
 
+## Replaces
+
+Where `merge()` updates only some of a document's fields, [replace()](++javadoc/dev/morphia/Datastore.html#replace(T)++) swaps the
+whole stored document for the current state of the entity.
+This looks a lot like `save()`, but with one important difference: `save()` inserts the document if it doesn't exist, while `replace()`
+expects the document to already be in the database.
+
+```java
+Hotel hotel = datastore.find(Hotel.class)
+    .filter(eq("name", "Hilton"))
+    .first();
+hotel.setStars(5);
+
+datastore.replace(hotel);
+```
+
+The document to replace is found using the entity's ID, along with its shard key values if the collection is
+[sharded](../sharding/).
+If no document matches, `replace()` throws a
+[DocumentNotFoundException](++javadoc/dev/morphia/DocumentNotFoundException.html++).
+Replacing a document with identical content is not an error.
+If you'd rather create the document when it's missing, use an upsert:
+
+```java
+datastore.replace(hotel, new ReplaceOptions()
+    .upsert(true));
+```
+
+Versioned entities are checked the same way they are on `save()`: the version is bumped and, if the stored document has a different
+version, a [VersionMismatchException](++javadoc/dev/morphia/VersionMismatchException.html++) is thrown and the entity's version is
+restored.
+
+There is also a `replace()` that takes a `List` of entities.
+It replaces them one at a time, in order, and stops at the first failure, so any entities before the failing one will already have been
+replaced.
+
 ## Supported Operators
 Every effort is made to provide 100% coverage of all the operators offered by MongoDB. Below is listed all the currently supported
 operators. To see an example of an operator in action, click through to see the test cases for that operator.
