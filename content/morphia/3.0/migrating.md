@@ -49,7 +49,7 @@ Gradle, apply the `org.openrewrite.rewrite` plugin, add `rewrite("dev.morphia.mo
 set `activeRecipe("dev.morphia.UpgradeToMorphia30")` in the `rewrite` block, and run `gradle rewriteRun`.
 
 The recipe needs your code to compile against Morphia 2.5 so that it can see the types it's rewriting. Run it before you change the
-Morphia version; with Maven it updates the `morphia-core` dependency in your pom for you. Moving off 2.5's deprecated APIs first
+Morphia version: with Maven, the recipe then updates the `morphia-core` dependency in your pom to 3.0 for you. Moving off 2.5's deprecated APIs first
 leaves less for the recipe, and you, to handle.
 
 The recipe:
