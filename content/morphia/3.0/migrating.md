@@ -298,6 +298,17 @@ or `postLoad` method takes the `Document`. It marks a class for you to finish by
 The order of `@PreLoad` listeners has changed for entities created through a constructor, such as records. They now run after the
 entity's properties are decoded, just before its `@PostLoad` listeners, because the instance can't exist any earlier.
 
+### Final fields
+
+JDK 26 restricts setting final fields through reflection ([JEP 500](https://openjdk.org/jeps/500)), and a future JDK will deny it
+by default. Each final property of an entity, including one initialized where it's declared, should be a parameter of the constructor
+Morphia uses. Otherwise Morphia logs a warning when it maps the entity and sets the property through reflection, and on a JVM that
+denies setting final fields, such as one run with `--illegal-final-field-mutation=deny`, mapping fails. Add a constructor that takes
+the final properties, or make them non-final. Entities with life cycle methods, or with `@EntityListeners` that handle their events,
+are created through their no-argument constructor, so on such a JVM their properties must be non-final. With
+`morphia.ignore-finals=true`, final properties are now skipped when loading as well as when saving, so a value stored before the
+setting was turned on is no longer loaded. See [Final fields](../mapping/#final-fields).
+
 ### List inserts and saves
 
 `insert(List)` and `save(List)` now report exactly which entities weren't stored. See [Saving Lists of Entities](../saving/).
