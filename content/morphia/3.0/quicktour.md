@@ -138,6 +138,9 @@ Updating data in MongoDB is as simple as updating your Java objects and then cal
 For bulk updates (e.g., everyone gets a raise!) this is not the most efficient way of doing updates.
 It is possible to update directly in the database without having to pull in every document, convert to Java objects, update, convert back to a document, and write back to MongoDB. But in order to show you that piece, first we need to see how to query.
 
+To write many entities at once, pass a `List` to `insert()` or `save()`. [Saving Lists of Entities](../saving/) covers how
+those batches behave when some entities fail, such as duplicates against a unique index.
+
 ## Querying
 
 Morphia attempts to make your queries as type safe as possible.
