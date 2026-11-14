@@ -298,6 +298,24 @@ or `postLoad` method takes the `Document`. It marks a class for you to finish by
 The order of `@PreLoad` listeners has changed for entities created through a constructor, such as records. They now run after the
 entity's properties are decoded, just before its `@PostLoad` listeners, because the instance can't exist any earlier.
 
+### List inserts and saves
+
+`insert(List)` and `save(List)` now report exactly which entities weren't stored. See [Saving Lists of Entities](../saving/).
+
+- When any entity isn't stored they throw `MorphiaBulkWriteException`. It extends the driver's `MongoBulkWriteException`, so
+  existing `catch` blocks still work, and adds `getFailures()`, `getFailedEntities()` and `getUnprocessedEntities()`.
+- The indexes in `getWriteErrors()` now refer to positions in the list you passed. Before, they counted from the start of each
+  entity class's own batch, so they were wrong for lists mixing classes.
+- Entities going to the same collection are sent in one batch, rather than one batch per class.
+- A `@Version` conflict inside `save(List)` now arrives as a `MorphiaBulkWriteException`, with the `VersionMismatchException` as
+  its cause and in `getFailures()`, instead of as a bare `VersionMismatchException`. Code that catches `VersionMismatchException`
+  around `save(List)` needs to catch `MorphiaBulkWriteException` instead. The same goes for a `MongoWriteException` from an entity
+  that `save(List)` saves individually (one with an id or a version), such as a unique-index violation on a replace. Saving a single
+  entity is unchanged.
+- With `ordered(false)`, every batch and every individually saved entity is now attempted; before, the first failure stopped the
+  rest.
+- Entities that weren't stored have the version bump and any generated id rolled back, so they can be retried.
+
 ### Untyped values and per-entity discriminator keys
 
 An entity can store its discriminator under its own key with `@Entity(discriminatorKey = "...")`. Where nothing else says what type a
