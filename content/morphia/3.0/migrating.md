@@ -309,7 +309,9 @@ entity's properties are decoded, just before its `@PostLoad` listeners, because 
 - Entities going to the same collection are sent in one batch, rather than one batch per class.
 - A `@Version` conflict inside `save(List)` now arrives as a `MorphiaBulkWriteException`, with the `VersionMismatchException` as
   its cause and in `getFailures()`, instead of as a bare `VersionMismatchException`. Code that catches `VersionMismatchException`
-  around `save(List)` needs to catch `MorphiaBulkWriteException` instead. Saving a single entity is unchanged.
+  around `save(List)` needs to catch `MorphiaBulkWriteException` instead. The same goes for a `MongoWriteException` from an entity
+  that `save(List)` saves individually (one with an id or a version), such as a unique-index violation on a replace. Saving a single
+  entity is unchanged.
 - With `ordered(false)`, every batch and every individually saved entity is now attempted; before, the first failure stopped the
   rest.
 - Entities that weren't stored have the version bump and any generated id rolled back, so they can be retried.
