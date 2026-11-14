@@ -39,25 +39,29 @@ document in the database.
 ## Constructors
 
 Morphia creates an entity through one of its constructors. A constructor can be used when each of its parameters names a mapped
-property and has that property's type. Among those constructors, Morphia picks:
+property and has that property's type. Among those constructors, Morphia picks the one that:
 
-1. one that takes every final property, if there is one, then
-2. the one that takes the most properties.
+1. leaves out the fewest final properties, then
+2. takes the most properties.
+
+If no constructor can be used, Morphia falls back to one with a parameter named for every property, converting values to the
+parameters' types where needed.
 
 Properties the constructor doesn't take are set afterward through their fields or setters, so a constructor needs to take only the
 properties that can't be set any other way, such as final ones. A parameter matches a property by the property's name in the source.
 If a parameter's name can't match it, the [@Name](javadoc/dev/morphia/annotations/Name.html) annotation gives the parameter an explicit
 name to match instead.
 
-An entity with life cycle methods, or with `@EntityListeners`, is always created through its no-argument constructor. See
+An entity with life cycle methods, or with `@EntityListeners` that handle its events, is always created through its no-argument
+constructor. See
 [Life Cycle Methods](../life-cycle-methods/#entities-created-through-a-constructor).
 
 ### Final fields
 
-Starting with JDK 26, [JEP 500](https://openjdk.org/jeps/500) restricts setting a final field through reflection: the JVM prints a warning
-the first time it happens, `--illegal-final-field-mutation=deny` makes it fail, and a future JDK will deny it by default. So that it
-never has to, Morphia sets final properties only through a constructor. Each final property, including one initialized where it's
-declared, such as `final List<String> tags = new ArrayList<>()`, must be a parameter of the constructor Morphia uses:
+Starting with JDK 26, [JEP 500](https://openjdk.org/jeps/500) restricts setting a final field through reflection: by default the JVM prints a
+warning the first time code in a module does it, `--illegal-final-field-mutation=deny` makes it fail, and a future JDK will deny it
+by default. To avoid that, each final property, including one initialized where it's declared, such as
+`final List<String> tags = new ArrayList<>()`, should be a parameter of the constructor Morphia uses:
 
 ```java
 @Entity
@@ -77,10 +81,11 @@ public class Order {
 
 Here `customer` and `items` are passed to the constructor, and `id` and `status` are set afterward.
 
-When an entity's final properties aren't all passed to its constructor, Morphia logs a warning when it maps the entity. On a JVM that
-denies setting final fields, mapping fails instead, with a `ConstraintViolationException` that names the properties. To fix it, add a
-constructor that takes them or make them non-final. An entity with life cycle methods can't take them through a constructor, so its
-properties must be non-final. Morphia doesn't check final properties when `morphia.ignore-finals` is set, since they aren't stored.
+When an entity's final properties aren't all passed to its constructor, Morphia logs a warning when it maps the entity and sets
+them through reflection. On a JVM that denies setting final fields, mapping fails instead, with a `ConstraintViolationException` that
+names the properties. To fix it, add a constructor that takes them or make them non-final. An entity with life cycle methods, or with
+`@EntityListeners` that handle its events, can't take them through a constructor, so on such a JVM its properties must be non-final.
+With `morphia.ignore-finals=true`, final properties are neither stored nor loaded, so Morphia doesn't check them.
 
 {{< admonition type="warning" title="Warning" >}}
 Changing the mapping configuration can interfere with Morphia's ability to map arguments and fields so be careful when making changes to such things as the default field naming strategy or [@Property](javadoc/dev/morphia/annotations/Property.html) definitions.
