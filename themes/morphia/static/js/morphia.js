@@ -25,6 +25,29 @@
     });
   }
 
+  /* ── Top nav mobile menu ── */
+  var navTop = document.querySelector('nav.top');
+  var navMenuBtn = document.getElementById('nav-menu-btn');
+  if (navTop && navMenuBtn) {
+    function closeNavMenu() {
+      navTop.classList.remove('menu-open');
+      navMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+    navMenuBtn.addEventListener('click', function () {
+      var open = navTop.classList.toggle('menu-open');
+      navMenuBtn.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', function (e) {
+      if (!navTop.contains(e.target)) closeNavMenu();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navTop.classList.contains('menu-open')) {
+        closeNavMenu();
+        navMenuBtn.focus();
+      }
+    });
+  }
+
   /* ── Copy buttons ── */
   function copyText(text) {
     if (navigator.clipboard) {
