@@ -24,7 +24,7 @@
       </svg>
       <span>morphia</span>
     </a>
-    <div class="links">
+    <div class="links" id="nav-links">
       {{ with .Site.Data.versions }}
         {{ range .versions }}{{ if .latest }}
         <a class="link" href="{{ printf "morphia/%s/index.html" .display | relURL }}">Docs</a>
@@ -32,6 +32,7 @@
       {{ end }}
       <a class="link" href="{{ "benchmarks/index.html" | relURL }}">Benchmarks</a>
       <a class="link" href="{{ .Site.Params.community }}">Discord</a>
+      <a class="link nav-github" href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
     <div class="actions">
       {{ with .Site.Data.versions }}
@@ -60,7 +61,10 @@
         </div>
       </div>
       {{ end }}
-      <a class="btn primary" href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn primary nav-github-btn" href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub ↗</a>
+      <button class="btn nav-menu-btn" id="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg>
+      </button>
     </div>
   </div>
 </nav>
