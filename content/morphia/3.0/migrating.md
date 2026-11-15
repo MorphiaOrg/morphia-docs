@@ -327,6 +327,22 @@ setting was turned on is no longer loaded. See [Final fields](../mapping/#final-
   rest.
 - Entities that weren't stored have the version bump and any generated id rolled back, so they can be retried.
 
+### Write concerns from `@Entity`
+
+Writes made with default options now use the write concern an entity declares with `@Entity(concern = ...)`. In 2.x,
+`InsertOneOptions`, `InsertManyOptions`, `ReplaceOptions`, `DeleteOptions` and `FindAndDeleteOptions` started out with
+`WriteConcern.ACKNOWLEDGED`, and a write concern on the options always wins, so `insert`, `save`, `replace` and query deletes
+ignored the entity's concern unless you passed `writeConcern(null)`. These options now start with no write concern. A write uses the
+options' concern if you set one, then the entity's, then the collection's or database's default. The entity's concern also applies
+when the options name an alternate collection.
+
+Entities that declare a concern now get it on these writes. To keep the old behavior for a write, set it on the options, for example
+`new InsertOneOptions().writeConcern(WriteConcern.ACKNOWLEDGED)`. When a list insert or save batches entities, those sharing a
+collection but declaring different concerns now go out in separate batches.
+
+`Query.update(UpdateOptions, UpdateOperator...)`, which `merge` also uses, now applies the write concern set on its `UpdateOptions`.
+It used to ignore it. An unacknowledged `merge` returns the entity you passed in, since there's nothing to read back.
+
 ### Untyped values and per-entity discriminator keys
 
 An entity can store its discriminator under its own key with `@Entity(discriminatorKey = "...")`. Where nothing else says what type a
