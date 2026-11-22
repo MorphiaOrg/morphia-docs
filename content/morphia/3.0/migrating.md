@@ -360,6 +360,20 @@ that name holding anything else, such as another value, a number, or a different
 If you keep plain documents in untyped fields and their field names overlap an entity's discriminator key, check that their values can't
 match that entity's discriminator, or give the field a type so Morphia doesn't have to guess.
 
+### Whole numbers in generated commands
+
+Morphia now writes small whole-number parameters as 32-bit integers, as the MongoDB documentation and the shell do. In 2.x it wrote
+them as 64-bit integers:
+
+- sort directions in `$setWindowFields`, `$fill`, `$top`, `$bottom`, `$topN`, `$bottomN` and `$sortArray`;
+- `$skip`, `$limit` and `$sample`'s `size`;
+- `$dateAdd` and `$dateSubtract`'s `amount`, `$shift`'s `by` and `$dateTrunc`'s `binSize`;
+- the operands of `Filters.mod` when you pass whole numbers.
+
+A value too large for 32 bits is still written as a 64-bit integer, and the server treats both alike, so queries and aggregations
+return the same results. The difference shows only if you inspect the commands Morphia sends, for example in a command listener or in
+captured BSON: such a value is now an Int32 where it used to be an Int64. Read it as a number of either width.
+
 ### Legacy query, update and aggregation APIs
 
 3.0 removes the query, update and aggregation APIs that 2.0 replaced. They were deprecated throughout 2.x, and the recipe can't
